@@ -1,0 +1,1304 @@
+<!doctype html><html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>body{margin:0}[hidden]{display:none!important}</style></head><body><title>Choice: Cursed Draft</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Mitr:wght@400;500;600&family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap">
+<style>
+/* Layout: an old handheld battle screen. A red-and-white ball banner whose centre button is the draw; a game text box that talks; Trainer Red and Trainer Blue party screens either side of the field panel. Single committed look, fan-made, no official art. */
+:root{
+  color-scheme:light;
+  --bezel:#1a2034; --bezel2:#262e4a; --screen:#f6f3e4; --screen2:#e7e3cf; --ink:#1f2638; --muted:#5a6381; --edge:#b9bfd0;
+  --red:#d92b34; --red2:#a3141f; --blue:#2c68d6; --yellow:#f6c61c; --green:#35b565; --hpy:#eab308; --hpr:#e0343c;
+  --px:"Press Start 2P","Mitr",monospace;
+  --display:"Mitr","Leelawadee UI","Thonburi",system-ui,sans-serif;
+  --body:"IBM Plex Sans Thai","Leelawadee UI","Thonburi",system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+body{background:var(--bezel) radial-gradient(var(--bezel2) 1.2px,transparent 1.6px) 0 0/14px 14px;color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.6}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:16px;padding-block:24px 56px;display:flex;flex-direction:column;gap:20px}
+.px{font-family:var(--px);font-size:10px;line-height:1.6;letter-spacing:.02em;font-weight:400}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+.box{background:var(--screen);border:4px solid var(--ink);border-radius:12px;box-shadow:inset 0 0 0 3px var(--screen),inset 0 0 0 5px var(--edge),0 6px 0 #0b0f1c}
+
+/* Ball banner */
+.ball{border:5px solid var(--ink);border-radius:30px;overflow:hidden;box-shadow:0 8px 0 #0b0f1c;text-align:center}
+.ball-top{padding:34px 16px 84px;color:#fff;background:linear-gradient(180deg,#ef4a51,var(--red) 55%,var(--red2));position:relative}
+.ball-top::before{content:"";position:absolute;left:7%;top:14px;width:22%;height:16px;border-radius:99px;background:rgba(255,255,255,.35)}
+.eyebrow{font-family:var(--px);font-size:9px;letter-spacing:.08em;color:#ffe2e3}
+h1{font-family:var(--px);font-weight:400;font-size:clamp(34px,10vw,84px);line-height:1.1;margin:18px 0 0;color:#fff;text-shadow:.07em .07em 0 var(--ink)}
+h1 em{display:block;font-style:normal;font-size:.26em;letter-spacing:.2em;margin-top:1.1em;color:var(--yellow);text-shadow:.12em .12em 0 var(--ink)}
+.ball-band{position:relative;height:24px;background:var(--ink)}
+#roll{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:132px;height:132px;border-radius:50%;cursor:pointer;
+  font-family:var(--display);font-weight:600;font-size:20px;color:var(--ink);background:#fff;border:11px solid var(--ink);
+  box-shadow:inset 0 0 0 6px #fff,inset 0 0 0 9px var(--edge),0 5px 0 rgba(0,0,0,.35)}
+#roll:hover:not(:disabled){background:var(--yellow)}
+#roll:disabled{cursor:wait}
+body.rolling #roll{animation:wobble .5s ease-in-out infinite}
+@keyframes wobble{0%,100%{transform:translate(-50%,-50%) rotate(0)}25%{transform:translate(-50%,-50%) rotate(-14deg)}75%{transform:translate(-50%,-50%) rotate(14deg)}}
+.ball-bot{padding:84px 16px 22px;background:linear-gradient(180deg,#fff,var(--screen))}
+.tag{font-family:var(--display);font-weight:600;font-size:clamp(26px,5.6vw,40px);line-height:1.25;margin:0;text-wrap:balance}
+.bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center;margin-top:12px}
+
+button,select{font:inherit}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--yellow);outline-offset:2px}
+.btn{cursor:pointer;padding:9px 14px;background:#fff;color:var(--ink);border:3px solid var(--ink);border-radius:8px;box-shadow:0 3px 0 var(--ink);font-family:var(--display);font-weight:500}
+.btn.px{font-family:var(--px);font-size:11px;padding:11px 12px}
+.btn:hover:not(:disabled){background:var(--yellow)}
+.btn:active:not(:disabled){transform:translateY(3px);box-shadow:none}
+.btn:disabled,select:disabled{opacity:.4;cursor:not-allowed}
+select{padding:8px;border:3px solid var(--ink);border-radius:8px;background:#fff;color:var(--ink)}
+
+/* Game text box */
+.dialog{position:relative;padding:18px 44px 18px 22px;min-height:5.2em;font-family:var(--display);font-weight:500;font-size:clamp(17px,2.4vw,20px);line-height:1.55}
+.dialog::after{content:"▼";position:absolute;right:18px;bottom:12px;color:var(--red);font-size:14px;animation:blink 1s steps(2) infinite}
+@keyframes blink{50%{opacity:0}}
+
+/* Arena */
+.arena{display:grid;gap:20px;grid-template-columns:minmax(0,1fr);grid-template-areas:"mid" "a" "b"}
+#lanes{display:contents}
+#laneA{grid-area:a} #laneB{grid-area:b} .mid{grid-area:mid}
+@media (min-width:720px){.arena{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-areas:"mid mid" "a b"}}
+@media (min-width:1040px){.arena{grid-template-columns:minmax(0,1fr) 250px minmax(0,1fr);grid-template-areas:"a mid b";align-items:start}}
+
+.mid{display:flex;flex-direction:column;align-items:center;gap:10px;padding:20px 16px;text-align:center}
+.lbl{color:var(--muted)}
+.plate{display:grid;place-items:center;min-width:150px;min-height:58px;padding:8px 18px;border:3px solid var(--ink);border-radius:99px;background:var(--screen2);color:var(--muted);font-family:var(--display);font-weight:600;font-size:22px;box-shadow:0 4px 0 var(--ink)}
+body.rolling .plate{animation:blink .4s steps(2) infinite}
+.note{font-size:13px;color:var(--muted)}
+.verdict{margin:6px 0 0;padding-top:12px;border-top:3px dotted var(--edge);font-size:14px;width:100%}
+.timer{display:flex;flex-direction:column;align-items:center;gap:10px;width:100%;margin-top:6px;padding-top:14px;border-top:3px dotted var(--edge)}
+.hp{display:flex;align-items:center;gap:8px;width:100%;background:var(--ink);border-radius:99px;padding:5px 8px 5px 12px}
+.hp b{color:var(--yellow)}
+.hpbar{flex:1;height:10px;border-radius:99px;background:#4b546e;overflow:hidden}
+#hpfill{display:block;height:100%;width:100%;background:var(--green);transition:width .2s linear}
+#hpfill.mid2{background:var(--hpy)} #hpfill.low{background:var(--hpr)}
+.clock{font-size:34px;line-height:1.2}
+.clock.low,.clock.over{color:var(--hpr)}
+#tnote{font-size:13px;color:var(--muted);text-wrap:balance}
+
+/* Party screens */
+.lane{--pc:var(--red);display:flex;flex-direction:column;gap:12px;min-width:0;padding:0 16px 16px;overflow:hidden;transition:box-shadow .2s}
+.lane[data-p="B"]{--pc:var(--blue)}
+.lane.turn{box-shadow:inset 0 0 0 3px var(--screen),inset 0 0 0 5px var(--edge),0 0 0 4px var(--yellow),0 6px 0 4px #0b0f1c}
+.lane-head{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin:0 -16px;padding:12px 16px;background:var(--pc);border-bottom:4px solid var(--ink);color:#fff}
+.lane.turn .lane-head::after{content:"YOUR TURN";font-family:var(--px);font-size:9px;background:var(--yellow);color:var(--ink);padding:4px 6px;border-radius:4px;border:2px solid var(--ink)}
+.lane-head .px{color:#fff;opacity:.9}
+.lane-head input{flex:1;min-width:110px;font-family:var(--display);font-weight:600;font-size:20px;color:#fff;background:transparent;border:0;border-bottom:2px dashed rgba(255,255,255,.6);padding:2px}
+.gb{display:inline-flex}.gb svg{width:38px;height:38px;filter:drop-shadow(0 2px 0 rgba(0,0,0,.4))}
+.row{display:flex;flex-wrap:wrap;gap:8px 10px;align-items:center;font-size:14px;color:var(--muted)}
+.row b{color:var(--ink)}
+.chip{font-family:var(--display);font-weight:600;font-size:14px;padding:2px 12px;border-radius:99px;background:var(--screen2);color:var(--muted);border:2px solid var(--ink)}
+.chip.on{background:linear-gradient(120deg,#8fe3ff,#d8b4ff 50%,#ffd1e8);color:var(--ink)}
+.slots{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;counter-reset:n}
+.slot{counter-increment:n;position:relative;min-height:92px;padding:18px 4px 8px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+  border:3px solid var(--ink);border-radius:10px;background:var(--screen2);color:var(--muted);font-family:var(--display);font-weight:600;font-size:18px;line-height:1.15;box-shadow:0 3px 0 var(--ink)}
+.slot::before{content:counter(n);position:absolute;top:5px;left:7px;font-family:var(--px);font-size:8px;opacity:.75}
+.slot[style]::after{content:"";position:absolute;inset:0;border-radius:6px;pointer-events:none;background:linear-gradient(180deg,rgba(255,255,255,.38),transparent 45%,rgba(0,0,0,.16))}
+.slot small{font-family:var(--px);font-size:7px;letter-spacing:.04em;text-transform:uppercase;opacity:.85;margin-top:4px}
+.marks{position:relative;z-index:1;margin-top:5px;display:flex;gap:2px;flex-wrap:wrap;justify-content:center}
+.marks b{font-family:var(--body);font-size:10px;font-weight:600;line-height:1.45;padding:0 5px;border-radius:99px;background:#1f2638;color:#fff}
+.marks b.seal{background:#35b565}
+.marks b.curse{background:#1f2638;color:#f6c61c}
+.marks b.tera{display:inline-flex;align-items:center;gap:3px;padding-left:3px;background:linear-gradient(120deg,#8fe3ff,#d8b4ff,#ffd1e8);color:#1f2638;box-shadow:0 0 0 1.5px #1f2638}
+.gemi{width:13px;height:13px;flex:none}
+.chip .gemi{width:15px;height:15px;vertical-align:-2px;margin-right:4px}
+.slot:has(.tera){box-shadow:0 0 0 3px #b59cff,0 3px 0 3px var(--ink)}
+.slot:has(.tera)::after{background:linear-gradient(118deg,transparent 30%,rgba(255,255,255,.55) 36%,transparent 42%,transparent 58%,rgba(255,255,255,.4) 63%,transparent 69%),linear-gradient(180deg,rgba(255,255,255,.38),transparent 45%,rgba(0,0,0,.16))}
+.marks b.stolen{background:#fff;color:#a3141f;box-shadow:0 0 0 1.5px #a3141f}
+.slot:has(.curse){border-style:dashed}
+.slot:has(.seal){box-shadow:0 0 0 3px var(--green),0 3px 0 3px var(--ink)}
+.slot.pickable{cursor:pointer;outline:3px dashed var(--red);outline-offset:2px}
+.slot.pickable:focus-visible{outline:4px solid var(--yellow)}
+.slot.picked{outline:4px solid var(--yellow);transform:translateY(-3px)}
+.slot.land{animation:land .3s steps(3)}
+@keyframes land{from{transform:translateY(-12px)}to{transform:none}}
+.say{position:relative;margin:4px 0 0;padding:10px 14px;background:#fff;border:3px solid var(--ink);border-radius:14px;font-family:var(--display);font-weight:500;font-size:16px;line-height:1.45;animation:pop .25s ease-out}
+.say::before{content:"";position:absolute;top:-11px;left:26px;width:16px;height:16px;background:#fff;border-left:3px solid var(--ink);border-top:3px solid var(--ink);transform:rotate(45deg)}
+@keyframes pop{from{transform:scale(.9);opacity:0}to{transform:none;opacity:1}}
+.stat,.rights{margin:0;font-size:14px;color:var(--muted);min-height:1.6em}
+.rights{color:var(--ink);font-weight:600}
+.acts{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.acts select{flex:1;min-width:96px}
+.log{margin:0;font-size:13.5px;white-space:pre-line;color:var(--muted);border-top:3px dotted var(--edge);padding-top:10px}
+.log:empty{display:none}
+
+/* Gym badge pop-up */
+.veil{position:fixed;inset:0;z-index:10;display:grid;place-items:center;padding:16px;background:rgba(14,18,32,.88)}
+.card{width:100%;max-width:430px;padding:26px 20px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:12px;animation:pop .35s ease-out}
+.card h2{font-family:var(--display);font-weight:600;font-size:clamp(24px,6.4vw,32px);line-height:1.2;margin:0;text-wrap:balance}
+.badge-stage{position:relative;width:190px;height:190px;display:grid;place-items:center}
+.badge-stage::before{content:"";position:absolute;inset:0;border-radius:50%;background:repeating-conic-gradient(var(--yellow) 0 12deg,transparent 12deg 24deg);opacity:.75;animation:spin 14s linear infinite;-webkit-mask-image:radial-gradient(circle,#000 35%,transparent 70%);mask-image:radial-gradient(circle,#000 35%,transparent 70%)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.badge-stage svg{position:relative;width:150px;height:150px;filter:drop-shadow(0 5px 0 rgba(0,0,0,.35));animation:award .7s cubic-bezier(.2,1.6,.4,1) both}
+@keyframes award{from{transform:scale(0) rotate(-200deg)}to{transform:none}}
+.card p{margin:0}
+#chOk{font-size:18px;padding:12px 26px;background:var(--yellow)}
+
+.card{max-height:100%;overflow:auto}
+.tgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;width:100%}
+.tbtn{cursor:pointer;padding:9px 4px;border:3px solid var(--ink);border-radius:8px;box-shadow:0 3px 0 var(--ink);font-family:var(--display);font-weight:600;font-size:16px}
+.tbtn:hover:not(:disabled){filter:brightness(1.12)}
+.tbtn:disabled{opacity:.3;cursor:not-allowed}
+.gem{--c:#8fe3ff;position:relative;width:92px;height:92px;transform:rotate(45deg);border:4px solid var(--ink);border-radius:12px;background:linear-gradient(135deg,rgba(255,255,255,.75),transparent 48%,rgba(0,0,0,.2)),var(--c);box-shadow:4px 4px 0 rgba(0,0,0,.35);animation:gemIn .6s cubic-bezier(.2,1.6,.4,1) both}
+@keyframes gemIn{from{transform:rotate(45deg) scale(0)}to{transform:rotate(45deg) scale(1)}}
+#tvOk{font-size:18px;padding:12px 26px;background:var(--yellow)}
+.score{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;font-family:var(--px);font-size:22px;padding-bottom:12px;border-bottom:3px dotted var(--edge)}
+.score .sa{color:var(--red)} .score .sb{color:var(--blue)}
+.win{display:flex;flex-direction:column;align-items:center;gap:8px;width:100%;padding-top:14px;border-top:3px dotted var(--edge);font-size:14px}
+.win div{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.btn.on{background:var(--yellow)}
+.trow{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
+.hist{padding:20px}
+.hist h2{font-family:var(--px);font-weight:400;font-size:12px;line-height:1.8;margin:0 0 10px;text-align:center}
+.hrow{border-top:3px dotted var(--edge);padding:10px 0;display:flex;flex-direction:column;gap:6px;font-size:14px}
+.hhead,.hteam{display:flex;flex-wrap:wrap;gap:5px 8px;align-items:center}
+.hteam .nm{min-width:90px;font-weight:600}
+.pill{font-family:var(--display);font-weight:500;font-size:12px;line-height:1.5;padding:0 8px;border-radius:99px;border:2px solid var(--ink)}
+.wtag{background:var(--yellow);border:2px solid var(--ink);border-radius:4px;padding:0 6px;font-family:var(--px);font-size:8px;line-height:2.2}
+.hempty{color:var(--muted);font-size:14px;text-align:center;margin:0 0 10px}
+.hfoot{display:flex;justify-content:center;margin-top:8px}
+.tc h3{font-family:var(--display);font-weight:600;font-size:14px;margin:6px 0 0;text-align:left;width:100%}
+.tcl{display:flex;flex-wrap:wrap;gap:4px;width:100%;min-height:24px;font-size:13px;color:var(--muted)}
+#tcOut{width:100%;display:flex;flex-direction:column;gap:4px}
+#imgOut{max-width:100%;border:3px solid var(--ink);border-radius:8px}
+/* Layout choice: landscape puts A | field | B side by side, portrait stacks everything */
+body.lay-h .wrap{max-width:1500px}
+body.lay-h .arena{grid-template-columns:minmax(0,1fr) minmax(190px,240px) minmax(0,1fr);grid-template-areas:"a mid b";align-items:start}
+body.lay-h .ball-top{padding:18px 16px 70px} body.lay-h h1{font-size:clamp(28px,6vw,56px);margin-top:8px}
+body.lay-h .ball-bot{padding:72px 16px 16px}
+body.lay-h .slot{min-height:78px;font-size:16px}
+body.lay-v .wrap{max-width:640px}
+body.lay-v .arena{grid-template-columns:minmax(0,1fr);grid-template-areas:"mid" "a" "b"}
+:fullscreen body,body:fullscreen{overflow:auto}
+.ch2{margin-top:22px!important;padding-top:18px;border-top:3px dotted var(--edge)}
+.curses{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:14px}
+.ccard{background:#fff;border:3px solid var(--ink);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:6px;box-shadow:0 3px 0 var(--ink)}
+.ccard h3{margin:0;font-family:var(--display);font-weight:600;font-size:18px;color:var(--ink)}
+.ccard h3 span{font-weight:500;font-size:14px;color:var(--muted)}
+.ccard q{font-family:var(--display);font-weight:500;color:var(--red2);quotes:"“" "”"}
+.ccard p{margin:0;color:var(--ink);line-height:1.6}
+.ctag{font-family:var(--display);font-weight:500;font-size:14px;color:var(--red2)}
+/* Phase tracker: sticky so everyone can see what happens now */
+.steps{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;padding:10px 12px}
+.steps ol{list-style:none;margin:0;padding:0;display:flex;gap:4px;align-items:center;justify-content:space-between}
+.st{flex:1 1 0;min-width:0;display:flex;align-items:center;justify-content:center;gap:6px;padding:5px 4px;border-radius:99px;font-family:var(--display);font-weight:500;font-size:13px;color:var(--muted);white-space:nowrap}
+.st b{flex:none;display:grid;place-items:center;width:24px;height:24px;border-radius:50%;border:2px solid var(--edge);background:#fff;font-family:var(--px);font-size:9px;font-weight:400;color:var(--muted)}
+.st .lab{display:none;overflow:hidden;text-overflow:ellipsis}
+.st.done b{background:var(--green);border-color:var(--ink);color:#fff}
+.st.skip{opacity:.4}
+.st.cur{flex:2.6 1 0;background:var(--yellow);border:2px solid var(--ink);color:var(--ink);font-weight:600}
+.st.cur b{background:var(--ink);border-color:var(--ink);color:var(--yellow)}
+.st.cur .lab{display:inline}
+@media (min-width:860px){.st .lab{display:inline}}
+#stepNow{margin:8px 2px 0;font-family:var(--display);font-weight:500;font-size:15px;text-align:center;text-wrap:balance}
+#stepNow b{color:var(--red2)}
+/* Calamity Draft: darker, harsher header */
+/* Calamity Draft wears a Master Ball: purple top with two pink domes, white bottom */
+body.mode-cal{background:#1a1230 radial-gradient(#2c1f4d 1.2px,transparent 1.6px) 0 0/14px 14px}
+body.mode-cal .ball-top{background:
+  radial-gradient(circle at 12% 62%,#f06aa8 0 9%,#c23f82 9% 10.5%,transparent 11%),
+  radial-gradient(circle at 88% 62%,#f06aa8 0 9%,#c23f82 9% 10.5%,transparent 11%),
+  linear-gradient(180deg,#8d5be0,#6a39c2 55%,#4a2392)}
+body.mode-cal .ball-top::before{background:rgba(255,255,255,.3)}
+body.mode-cal .eyebrow{color:#f1e6ff}
+body.mode-cal h1{text-shadow:.07em .07em 0 #24104f}
+body.mode-cal h1 em{color:#ff8fc8;text-shadow:.12em .12em 0 #24104f}
+body.mode-cal #roll{box-shadow:inset 0 0 0 6px #fff,inset 0 0 0 9px #8d5be0,0 5px 0 rgba(0,0,0,.35)}
+body.mode-cal #roll:hover:not(:disabled){background:#f6c8e2}
+body.mode-cal #itemBtn{background:#6a39c2;color:#fff}
+body.mode-cal .steps .st.cur{background:#f6a8d2}
+.slot .item.mega{background:linear-gradient(120deg,#ffe27a,#ff9de2,#9fd8ff);box-shadow:0 0 0 2px #1f2638;font-weight:700}
+.slot .item{position:relative;z-index:1;margin-top:4px;font-family:var(--body);font-size:10.5px;font-weight:600;line-height:1.3;padding:1px 6px;border-radius:6px;background:rgba(255,255,255,.88);color:#1f2638;max-width:100%;overflow-wrap:anywhere}
+.rules{padding:22px 20px;font-size:15px;color:var(--muted)}
+.rules h2{font-family:var(--px);font-weight:400;font-size:12px;line-height:1.8;color:var(--ink);margin:0 0 12px;text-align:center}
+.rules ol{margin:0;padding-left:24px;columns:2 340px;column-gap:40px}
+.rules li{break-inside:avoid;margin-bottom:8px}
+.rules b{color:var(--ink);font-weight:600}
+.tcount{padding:20px}
+.tcount h2{font-family:var(--px);font-weight:400;font-size:12px;line-height:1.8;margin:0 0 10px;text-align:center}
+.tcrow{display:flex;justify-content:space-between;align-items:center;padding:8px 4px;border-top:3px dotted var(--edge);font-family:var(--px);font-size:10px}
+.tcrow b{font-family:var(--display);font-weight:600;font-size:22px;color:var(--red)}
+.tcrow.cal b{color:#6a39c2} .tcrow.tot b{color:var(--ink);font-size:26px}
+.tcnote{margin:8px 0 0;text-align:center;font-size:13px;color:var(--muted)}
+.fan{margin:0;text-align:center;font-size:12px;color:#8e97b5}
+@media (prefers-reduced-motion:reduce){body.rolling #roll,body.rolling .plate,.dialog::after,.slot.land,.say,.card,.badge-stage::before,.badge-stage svg{animation:none}}
+</style>
+
+<div class="wrap" id="wrap">
+  <header class="ball">
+    <div class="ball-top">
+      <div class="eyebrow">18 TYPES · 6 SLOTS · 2 TRAINERS</div>
+      <h1>CHOICE<em id="modeName">CURSED DRAFT</em></h1>
+    </div>
+    <div class="ball-band"><button id="roll" type="button">กดสุ่ม</button></div>
+    <div class="ball-bot">
+      <p class="tag">ฉันไม่ได้เลือกนาย!</p>
+      <p class="note" style="margin:4px 0 0;font-size:15px">ดวงเลือกให้ พร้อมแถมคำสาปมา</p>
+      <div class="bar">
+        <span class="px" id="round">ROUND 0</span>
+        <button id="undo" class="btn" type="button" disabled>ย้อนกลับ 1 ขั้น</button>
+        <button id="copy" class="btn" type="button" disabled>คัดลอกผล</button>
+        <button id="shot" class="btn" type="button" disabled>บันทึกรูป</button>
+        <button id="chart" class="btn" type="button">ตารางธาตุ</button>
+        <button id="mute" class="btn" type="button">เสียง: เปิด</button>
+        <button id="lang" class="btn" type="button">English</button>
+        <button id="full" class="btn" type="button">เต็มจอ</button>
+        <label class="trow" for="layout"><span id="layoutL">จัดหน้า</span>
+          <select id="layout"><option value="auto">อัตโนมัติ</option><option value="h">แนวนอน</option><option value="v">แนวตั้ง</option></select></label>
+        <label class="trow" for="mode"><span id="modeL">โหมด</span>
+          <select id="mode"><option value="cursed">Cursed Draft</option><option value="cal">Calamity Draft</option></select></label>
+        <button id="reset" class="btn" type="button" disabled>รีเซ็ต</button>
+      </div>
+    </div>
+  </header>
+
+  <nav class="box steps" id="steps" aria-label="Phase"><ol id="stepList"></ol><p id="stepNow" aria-live="polite"></p></nav>
+
+  <div class="box dialog"><span id="dtext" aria-hidden="true"></span><span class="sr" id="sr" aria-live="polite"></span></div>
+
+  <div class="arena">
+    <section class="box mid" aria-label="สนาม">
+      <div class="score" aria-label="คะแนน"><span class="sa">A</span><span id="scA">0</span><span>:</span><span id="scB">0</span><span class="sb">B</span></div>
+      <div class="px lbl">KNOCK OFF</div>
+      <span class="plate" id="curse">?</span>
+      <div class="note">ช่องที่เป็นธาตุนี้ติดสถานะ Knock Off ห้ามถือไอเทม</div>
+      <div class="ctag" id="koTag"></div>
+      <p class="verdict" id="verdict" hidden></p>
+      <div class="timer" id="timer" hidden>
+        <div class="px lbl">TEAM PREVIEW</div>
+        <div class="hp"><b class="px">TIME</b><div class="hpbar"><i id="hpfill"></i></div></div>
+        <span class="clock px" id="clock">2:00</span>
+        <label class="trow" for="tmin">เวลาจัดทีม
+          <select id="tmin"><option value="1">1 นาที</option><option value="2" selected>2 นาที</option><option value="3">3 นาที</option><option value="5">5 นาที</option><option value="10">10 นาที</option></select></label>
+        <button id="itemBtn" class="btn" type="button" hidden>สุ่มไอเทม</button>
+        <p class="ctag" id="autoNote" style="margin:0;text-align:center"></p>
+        <button id="tbtn" class="btn" type="button">เริ่มจับเวลา</button>
+        <span id="tnote" aria-live="polite"></span>
+      </div>
+      <div class="win" id="win" hidden>
+        <span>แบทเทิลจบแล้ว ใครชนะ?</span>
+        <div><button id="winA" class="btn" type="button">A ชนะ</button><button id="winB" class="btn" type="button">B ชนะ</button></div>
+      </div>
+    </section>
+    <div id="lanes"></div>
+  </div>
+
+  <section class="box tcount" aria-label="TRAINER COUNT">
+    <h2>TRAINER COUNT</h2>
+    <div class="tcrow"><span>CURSED DRAFT</span><b id="statCursed">–</b></div>
+    <div class="tcrow cal"><span>CALAMITY DRAFT</span><b id="statCalamity">–</b></div>
+    <div class="tcrow tot"><span>TOTAL</span><b id="statTotal">–</b></div>
+    <p class="tcnote" id="tcNote">นับ 2 คนต่อการสุ่มทีม 1 ครั้ง · ยอดรวมจากทุกเครื่อง</p>
+  </section>
+
+  <section class="box hist" aria-label="ประวัติรอบก่อนหน้า">
+    <h2>BATTLE LOG</h2>
+    <div id="hist"></div>
+    <div class="hfoot"><button id="hclear" class="btn" type="button">ล้างคะแนนและประวัติ</button></div>
+  </section>
+
+  <div class="box rules">
+    <h2>HOW TO PLAY</h2>
+    <ol>
+      <li><b>Future Sight (มองอนาคต):</b> ก่อนสุ่ม ทั้งสองฝ่ายต้องทายว่าในทีมตัวเองจะมีกี่ธาตุ ตั้งแต่ 1 ถึง 6 (ธาตุที่ซ้ำกันนับเป็นธาตุเดียว) ทายถูกได้ Terastal 1 ครั้ง</li>
+      <li><b>สุ่มทีม:</b> แต่ละฝ่ายได้ธาตุ 6 ช่องจาก 18 ธาตุ ซ้ำกันได้ 1 ช่องคือโปเกมอน 1 ตัวที่มีธาตุนั้น</li>
+      <li><b>Knock Off:</b> สุ่ม 1 ธาตุกลางต่อรอบ ช่องที่เป็นธาตุนั้นติดสถานะ Knock Off โปเกมอนในช่องนั้นห้ามถือไอเทม</li>
+      <li><b>Terastal (เทระสตัล):</b> แต่ละฝ่ายมีโอกาส 1 ใน 6 ที่จะได้ ใครได้ เมื่อทั้งสองฝ่ายใช้สิทธิ์ครบแล้ว กดใช้เพื่อเปลี่ยน 1 ช่องของอีกฝ่ายเป็นธาตุอะไรก็ได้ ก่อนเริ่มจับเวลาจัดทีม ช่องที่ป้องกันเปลี่ยนไม่ได้</li>
+      <li><b>Gym Leader (หัวหน้ายิม):</b> เมื่อทีมใดมีธาตุเดียวกัน 4 ช่องขึ้นไป ผู้นั้นได้เป็นหัวหน้ายิมและต้องรับเข็มกลัด ทั้ง 6 ช่องกลายเป็นธาตุนั้น อีกฝ่ายใช้ Roar ไม่ได้ และทีมหัวหน้ายิมไม่ติด Knock Off</li>
+      <li><b>Protect (ป้องกัน):</b> หลังสุ่ม แต่ละฝ่ายเลือกป้องกัน 1 ช่องของตัวเองแบบลับ (ให้อีกฝ่ายหันหน้าหนีตอนแตะ) ระบบซ่อนไว้แล้วเปิดพร้อมกันเมื่อเลือกครบ ช่องนั้นโดน Roar, Trick และ Terastal ไม่ได้</li>
+      <li><b>ลำดับสิทธิ์:</b> ฝ่ายที่มีจำนวนธาตุน้อยกว่าเริ่มก่อน (เสมอกันให้สุ่ม) แล้วสลับกันใช้ทีละสิทธิ์</li>
+      <li><b>Roar (คำราม):</b> ฝ่ายละ 1 ครั้ง เลือกธาตุของอีกฝ่าย ทุกช่องที่เป็นธาตุนั้นถูกไล่ออกแล้วสุ่มใหม่ และไม่ออกธาตุเดิม</li>
+      <li><b>Trick (สับเปลี่ยน):</b> ฝ่ายละ 1 ครั้ง เลือกช่องของตัวเองที่จะให้ และช่องของอีกฝ่ายที่จะเอา แล้วสลับกัน ช่องที่ได้มามีป้าย “ของกลาง” และเอาคืนไม่ได้</li>
+      <li><b>Run (หนี):</b> สละสิทธิ์ที่เหลือทั้งหมดของตัวเอง</li>
+      <li><b>Team Preview:</b> เมื่อใช้สิทธิ์ครบ กดเริ่มจับเวลา ทั้งสองฝ่ายมีเวลาจัดทีมตามที่ตั้งไว้ (ค่าเริ่มต้น 2 นาที) จบแบทเทิลแล้วกดบันทึกว่าใครชนะ</li>
+    </ol>
+    <h2 class="ch2">THE FOUR CURSES</h2>
+    <div id="curses" class="curses"></div>
+  </div>
+  <p class="fan">กติกาแฟนเมดสำหรับเล่นกับเพื่อน ไม่เกี่ยวข้องกับเจ้าของลิขสิทธิ์เกม</p>
+</div>
+
+<div class="veil" id="veil" hidden role="alertdialog" aria-modal="true" aria-labelledby="chTitle" aria-describedby="chText">
+  <div class="box card">
+    <div class="px lbl">GYM LEADER</div>
+    <div class="badge-stage" id="chBadge"></div>
+    <h2 id="chTitle">ได้รับเข็มกลัดหัวหน้ายิม!</h2>
+    <p id="chText"></p>
+    <button id="chOk" class="btn" type="button">รับเข็มกลัด</button>
+  </div>
+</div>
+
+<div class="veil" id="teraVeil" hidden role="dialog" aria-modal="true" aria-labelledby="tvTitle" aria-describedby="tvText">
+  <div class="box card">
+    <div class="px lbl">TERASTAL</div>
+    <div class="badge-stage" id="tvGem" hidden><div class="gem" id="tvGemIn"></div></div>
+    <h2 id="tvTitle"></h2>
+    <p id="tvText"></p>
+    <div class="tgrid" id="tvGrid"></div>
+    <button id="tvCancel" class="btn" type="button">ยกเลิก</button>
+    <button id="tvOk" class="btn" type="button" hidden>ตกลง</button>
+  </div>
+</div>
+
+<div class="veil" id="chartVeil" hidden role="dialog" aria-modal="true" aria-labelledby="tcTitle">
+  <div class="box card tc">
+    <div class="px lbl">TYPE CHART</div>
+    <h2 id="tcTitle">ตารางธาตุ</h2>
+    <p id="tcHint">แตะธาตุเพื่อดูว่าชนะหรือแพ้ทางธาตุไหน</p>
+    <div class="tgrid" id="tcGrid"></div>
+    <div id="tcOut" hidden>
+      <h3>โจมตีได้ผลดี 2×</h3><div class="tcl" id="tcAs"></div>
+      <h3>โจมตีไม่ค่อยได้ผล ½×</h3><div class="tcl" id="tcAh"></div>
+      <h3>โจมตีไม่ได้ผล 0×</h3><div class="tcl" id="tcAz"></div>
+      <h3>แพ้ทาง โดน 2× จาก</h3><div class="tcl" id="tcDs"></div>
+      <h3>ต้านทาน โดน ½× จาก</h3><div class="tcl" id="tcDh"></div>
+      <h3>ไม่โดนเลย 0× จาก</h3><div class="tcl" id="tcDz"></div>
+    </div>
+    <button id="tcClose" class="btn" type="button">ปิด</button>
+  </div>
+</div>
+
+<div class="veil" id="imgVeil" hidden role="dialog" aria-modal="true" aria-labelledby="imTitle">
+  <div class="box card">
+    <div class="px lbl">RESULT CARD</div>
+    <h2 id="imTitle">รูปสรุปผลรอบนี้</h2>
+    <img id="imgOut" alt="รูปสรุปผลการสุ่มของรอบนี้">
+    <p>กดค้างที่รูป หรือคลิกขวา แล้วเลือกบันทึกรูปภาพ</p>
+    <button id="imClose" class="btn" type="button">ปิด</button>
+  </div>
+</div>
+
+<script>
+const TYPES=[
+ ["ปกติ","Normal","#A8A77A",0],["ไฟ","Fire","#EE8130",0],["น้ำ","Water","#6390F0",0],
+ ["ไฟฟ้า","Electric","#F7D02C",0],["หญ้า","Grass","#7AC74C",0],["น้ำแข็ง","Ice","#96D9D6",0],
+ ["ต่อสู้","Fighting","#C22E28",1],["พิษ","Poison","#A33EA1",1],["ดิน","Ground","#E2BF65",0],
+ ["บิน","Flying","#A98FF3",0],["พลังจิต","Psychic","#F95587",0],["แมลง","Bug","#A6B91A",0],
+ ["หิน","Rock","#B6A136",0],["ผี","Ghost","#735797",1],["มังกร","Dragon","#6F35FC",1],
+ ["ความมืด","Dark","#705746",1],["เหล็ก","Steel","#B7B7CE",0],["แฟรี่","Fairy","#D685AD",0]];
+const N=6, P=["A","B"], $=id=>document.getElementById(id);
+let LANG="th";
+const L=(th,en)=>LANG==="en"?en:th;
+const other=p=>p==="A"?"B":"A", tn=t=>TYPES[t][LANG==="en"?1:0];
+const pname=p=>$("name"+p).value.trim()||L("ผู้เล่น ","Player ")+p;
+
+/* ---------- Lines: 10 per case, drawn at random ---------- */
+const QT_TH={
+ rainbow:["Pokédexใกล้ครบแล้ว! ศาสตราจารย์ต้องภูมิใจแน่","หกตัว หกธาตุ ทีมในฝันของเทรนเนอร์มือใหม่","เก็ตดาเซ่! ได้มาครบทุกสีเลย","ทีมสายรุ้ง! เจออะไรก็มีตัวแก้ทาง","ครอบคลุมขนาดนี้ League รออยู่ข้างหน้าแล้ว","ไม่มีธาตุซ้ำเลย ดวงระดับ Champion","ศาสตราจารย์: ยอดเยี่ยม! ไม่เสียแรงที่ให้Pokédexไป","ทีมแบบนี้แหละที่อยากได้มาตลอดการเดินทาง!","It's Super Effective! กับทุกธาตุเลยด้วย","ฝันจะเป็นที่หนึ่ง ใกล้เข้ามาอีกก้าวแล้ว!","ทีมนี้ไม่มีจุดบอด มีแต่จุดเด่น","ครบเครื่องขนาดนี้ คู่แข่งตลอดกาลยังต้องอิจฉา","หกธาตุหกสี สวยเหมือนตู้โชว์เข็มกลัด","ดวงแบบนี้ เดินเข้าพงหญ้าก็เจอตัวหายาก","เริ่มออกเดินทางได้เลย ไม่ต้องรอจับเพิ่ม"],
+ varied:["It's Super Effective!","ซ้ำแค่คู่เดียว ถือว่าฟ้ายังเมตตา","ทีมสมดุลดี เดินทางต่อได้สบาย","ศาสตราจารย์: ไม่เลว แต่Pokédexยังมีช่องว่างนะ","เกือบสมบูรณ์แบบ เกือบ...","ห้าธาตุ พอจะฝ่าแปดยิมได้อยู่","มีตัวซ้ำหนึ่งคู่ ตั้งชื่อเล่นกันสับสนแน่","ทีมนี้ผ่านVictory Roadได้สบาย","Wild Pokémon เห็นทีมนี้ก็ต้องคิดหนัก","ดวงดี แต่ยังไม่ถึงขั้นCritical Hit","ซ้ำคู่เดียว ถือเป็นคู่หูประจำทีม","ทีมนี้เปิดPokédexได้เกือบเต็มหน้า","ขาดอีกนิดเดียวก็เพอร์เฟกต์","ดีพอจะคุยโม้กับคู่แข่งได้","ห้าธาตุ เลือกตัวเปิดได้หลายแบบ"],
+ mixed:["โจมตีโดนตามปกติ","กลาง ๆ ไม่ดีไม่แย่ เหมือนตัวที่จับได้ใน Route 1","ซ้ำสองคู่ จับคู่ไปลง Double Battle ได้พอดี","ทีมแบบนี้ต้องพึ่งฝีมือเทรนเนอร์ล้วน ๆ","ศาสตราจารย์: อืม... พยายามเข้านะ","ไม่เป็นไร ความผูกพันสำคัญกว่าธาตุ","ยังไหว Potion ยังเหลือเต็มกระเป๋า","ดวงระดับเทรนเนอร์ข้างทาง","ธาตุซ้ำนิดหน่อย ถือว่าเป็นเอกลักษณ์ของทีม","พอสู้ได้ ถ้าอีกฝ่ายดวงแย่กว่า","ทีมแบบนี้ต้องใช้สมองมากกว่าใช้ธาตุ","สี่ธาตุ เท่าจำนวนท่าที่จำได้พอดี","ไม่หวือหวา แต่ก็ไม่น่าเกลียด","เทรนเนอร์ข้างทางเห็นแล้วยังกล้าสบตา","ครึ่งแก้วเต็ม หรือครึ่งแก้วว่าง แล้วแต่มุมมอง"],
+ pairs:["It's not very effective...","ครบคู่ทุกตัว จัดงานแต่งโปเกมอนได้เลย","ทีมฝาแฝด มองแล้วตาลาย","ศาสตราจารย์: นี่เธอจับซ้ำเหรอ?","Day Careคงดีใจ","ครบคู่ทุกตัว แต่ไม่ครบธาตุสักอย่าง","ดวงแบบนี้ต้องแวะPokémon Centerด่วน","อย่าเพิ่งท้อ ตัวหนอนยังกลายเป็นผีเสื้อได้","ธาตุน้อยดี เลือกง่าย","ทีมนี้มีจุดอ่อนชัดเจนจนอีกฝ่ายยิ้ม","ได้มาเป็นคู่ ๆ เหมือนขึ้นเรือใหญ่หนีน้ำท่วม","จัดทีมง่ายมาก เพราะไม่มีอะไรให้เลือก","คู่แข่งตลอดกาล: กลิ่นทีมอ่อนโชยมาแต่ไกล","ฟ้าคงกดปุ่มคัดลอกแล้ววางสามรอบ","ทีมนี้ต้องพึ่งCritical Hitอย่างเดียว"],
+ heavy:["ธาตุ{t}เยอะขนาดนี้ อีกนิดก็เปิดยิมได้แล้ว","ว่าที่หัวหน้ายิมธาตุ{t}อยู่ตรงนี้เอง","ฉันชอบธาตุ{t}! ใช้ง่าย สบายดี!","ธาตุ{t}ของผมอยู่ระดับท็อปเปอร์เซ็นต์เลยนะ!","ธาตุ{t}อีกแล้ว? ดูเหมือนฟ้าจะมีธาตุโปรด","สามช่องเป็นธาตุ{t} อีกช่องเดียวได้เข็มกลัด","ธาตุ{t}ล้นทีม เจอตัวแพ้ทางทีเดียวจบ","ใครเกลียดธาตุ{t} อย่ามองทีมนี้","ธาตุ{t}สามตัว ตั้งชื่อเล่นว่าหนึ่ง สอง สาม","ถ้าธาตุ{t}ลดราคา ก็คงเหมามาแบบนี้"],
+ leader:["ผู้ท้าชิงมาแล้วสินะ! ยินดีต้อนรับสู่ยิมธาตุ{t}","ชนะฉันให้ได้ก่อน แล้วค่อยมารับเข็มกลัดธาตุ{t}","ธาตุ{t}คือทุกอย่างของฉัน มาดูกันว่าเธอรับมือได้ไหม","ยิมนี้ไม่เคยแพ้ผู้ท้าชิงที่ไม่มีแผนรับมือธาตุ{t}","ฉันใช้แต่ธาตุ{t}มาทั้งชีวิต ไม่ได้เลือกหรอก ฟ้าเลือกให้","เข็มกลัดธาตุ{t}ไม่ได้ให้กันง่าย ๆ นะ","เทรนเนอร์ในยิมนี้ใช้ธาตุ{t}กันทุกคน รวมถึงฉันด้วย","จุดอ่อนของธาตุ{t}น่ะเหรอ? รู้ แต่ไม่กลัว","ปริศนาหน้าประตูยิมคือ ทำไมฉันมีแต่ธาตุ{t}","หัวหน้ายิมธาตุ{t}คนใหม่ รับคำท้าทุกเมื่อ","ยินดีต้อนรับ! ที่นี่มีแต่ธาตุ{t} ตั้งแต่ประตูยันเก้าอี้","อยากได้เข็มกลัดธาตุ{t}เหรอ? ผ่านฉันไปให้ได้ก่อน","ฉันเชื่อในธาตุ{t} เพราะไม่มีธาตุอื่นให้เชื่อ","ยิมธาตุ{t}เปิดแล้ว! ผู้ท้าชิงคนแรกเชิญเลย","หัวหน้ายิมไม่ถอย แม้อีกฝ่ายจะพกตัวแก้ทางธาตุ{t}มาเต็มทีม"],
+ betHit:["Critical Hit!","มองอนาคตแม่นเป๊ะ!","ทายถูก! It's Super Effective!","สัมผัสที่หกทำงาน!","แม่นราวกับล็อกเป้าไว้","ศาสตราจารย์: เธอมีพรสวรรค์นะ","โดนจุด Critical!","อ่านเกมขาด!","เห็นอนาคตชัดกว่าเห็นธาตุตัวเองอีก","พลังจิตระดับหัวหน้ายิม!","ถูกเผง! เหมือนแอบดูPokédexมาก่อน","ทายแม่นจนคู่แข่งขอดูไพ่","โจมตีก่อนด้วยความแม่น!","ตาทิพย์! Accuracy เพิ่มขึ้น!","อนาคตเป็นไปตามที่เห็นเป๊ะ"],
+ betMiss:["The attack missed!","But nothing happened!","มองอนาคตผิดช่อง","It had no effect...","Accuracy ลดลง!","Confused จนทำร้ายตัวเอง!","ศาสตราจารย์: ยังไม่ถึงเวลาใช้ท่านั้น!","อีกฝ่ายหลบได้!","พลาดไปนิดเดียว... หรือเปล่านะ","Poké Ball สั่นสามที แล้วก็หลุด","อ๊ะ! เกือบจับได้แล้วเชียว","มองอนาคตแล้ว แต่ลืมใส่แว่น","ทายผิด! Attack ลดลง","โธ่! มันหลุดออกมาได้","คำทำนายนี้ไม่มีผลกับธาตุนี้..."],
+ tera:["อะไรนะ? ทีมกำลังเปล่งแสง!","เทระสตัล! เปลี่ยนธาตุอีกฝ่ายได้หนึ่งช่อง","อัญมณีบนหัวส่องประกาย!","ยินดีด้วย! ได้กำหนดธาตุให้อีกฝ่ายหนึ่งช่อง","พลังคริสตัลตื่นขึ้นแล้ว!","แบบนี้ต้องใส่มงกุฎเพชร","วิวัฒนาการ? ไม่ใช่ เปลี่ยนธาตุต่างหาก","ดวงดีเหมือนเจอตัว Shiny!","ธาตุอะไรก็ได้ เลือกให้อีกฝ่ายเจ็บ","ประกายระยิบ! โอกาสหนึ่งในหก"],
+ teraUse:["จงเปล่งประกาย! เทระสตัล!","ส่องแสงให้ถึงขีดสุด! เทระสตัล!","ถึงเวลาเปลี่ยนเกมแล้ว เทระสตัล!","คริสตัลเอ๋ย จงเผยธาตุแท้!","ระยิบระยับดั่งอัญมณี! เทระสตัล!","มงกุฎเพชรสวมแล้ว ธาตุเปลี่ยนแล้ว!","ขอยืมพลังจากลูกแก้วเทระ!","เปล่งแสงเลย! ธาตุใหม่ของนายคือสิ่งนี้!","นี่แหละไพ่ตายของฉัน เทระสตัล!","ประกายนี้จะเปลี่ยนชะตาของนาย!","เบ่งบานให้เต็มที่ แล้วเปล่งประกาย!","เปล่งประกายเลย! ผลึกแห่งความฝัน!","ขึ้นกล้อง เป็นไวรัล แล้วเปล่งประกาย!","ก้าวข้ามความเป็นไปได้ไปเลย!","จงยืนหยัดในเส้นทางของตน! เทระสตัล!","บานสะพรั่งแล้วส่องแสง! ธาตุใหม่มาแล้ว!","ส่องประกายให้สุดทาง! เทระสตัล!","ผลึกเอ๋ย จงเปลี่ยนเขาซะ!","ธาตุเดิมของนายหมดเวลาแล้ว!","รับไปเลย มงกุฎผลึกที่นายไม่ได้ขอ!","ฉันเลือกธาตุให้นายเอง! เทระสตัล!","ประกายเดียวเปลี่ยนทั้งเกม!","เจิดจ้าเกินต้าน! เทระสตัล!","จากนี้ไป นายคือธาตุใหม่!"],
+ roar:["ธาตุ{t}ถูกลากกลับเข้าบอล!","คำรามดังลั่น! ธาตุ{t}เผ่นหนีไป","ธาตุ{t}กลับมา! ตัวใหม่ออกไป!","กลับมาก่อนนะ ธาตุ{t}!","ธาตุ{t}ตกใจจนวิ่งกลับ","เสียงคำรามได้ผล! ธาตุ{t}หายไปจากสนาม","ธาตุ{t}ถูกไล่ออกจากยิม","พอกันที ธาตุ{t}! สลับตัว!","ลมกรรโชกพัดธาตุ{t}ปลิวไป","ธาตุ{t}หนีไปแล้ว ใครจะมาแทนต้องลุ้น","ธาตุ{t}สะดุ้งจนกลับบ้านไม่ทันบอกลา","เสียงดังจนธาตุ{t}ขอย้ายยิม","ธาตุ{t}ถอยกลับ! ใครออกมาแทนไม่มีใครรู้","ไล่ธาตุ{t}สำเร็จ! แต่ตัวใหม่อาจแย่กว่าเดิมนะ","ธาตุ{t}โดนเป่าปลิวออกนอกสนาม","ธาตุ{t}หูอื้อ ขอกลับเข้าบอลไปพัก","คำรามทีเดียว ธาตุ{t}ลืมท่าที่ฝึกมาหมด","ธาตุ{t}โดนเรียกกลับ ทั้งที่ยังไม่ได้ออกท่าสักท่า","ธาตุ{t}หลบหลังเทรนเนอร์ไม่ยอมออกมา","เสียงนี้... ธาตุ{t}จำได้ว่าต้องหนี","ธาตุ{t}ถูกส่งกลับPokémon Centerก่อนเวลา","ลาก่อนธาตุ{t} ตัวต่อไปเชิญ!","ธาตุ{t}สะดุ้งตื่น แล้วก็วิ่งหายไปเลย","ธาตุ{t}หมดสิทธิ์ลงสนามรอบนี้","ไม่ต้องสู้ก็ชนะธาตุ{t}ได้ แค่ตะโกนดัง ๆ"],
+ trick:["ปลิวไปอีกแล้ว~!","รู้สึกแย่จังเลย~","เฮ้ย! นั่นของฉันนะ!","เตรียมตัวรับปัญหา... อ้าว เราเองที่เจอปัญหา","โดนสับเปลี่ยนไปต่อหน้าต่อตา","ขโมย! ใครก็ได้เรียกคุณตำรวจที","ของในกระเป๋าหายไปหนึ่งช่อง","แก๊งวายร้ายมาเยือนอีกแล้ว","แลกแบบนี้ไม่ยุติธรรมเลย!","จำไว้เลยนะ! คราวหน้าไม่พลาดแน่","นี่มันแผนของแก๊งวายร้ายชัด ๆ!","ของฉันไปอยู่ในมือเขาได้ยังไง!","สลับกันตอนไหน ไม่ทันเห็นเลย","เอาคืนมานะ! ...อ้าว เอาคืนไม่ได้","โดนไปอีกแล้ว เหมือนทุกตอน","แผนสมบูรณ์แบบของเราพังอีกแล้ว!","เดี๋ยวก่อน! ยังไม่ได้ท่องบทเปิดตัวเลย","ขุดหลุมดักเขา แต่ตกเองซะงั้น","กระเป๋าเบาลง ใจหนักขึ้น","เมี๊ยว! ของดี ๆ หลุดมือไปอีกแล้ว","หัวหน้าต้องโกรธแน่ ๆ เลย","แค่กะพริบตา ช่องนั้นก็เปลี่ยนเจ้าของ","นี่ฉันโดนปล้นกลางวันแสก ๆ เหรอ","ตัวที่เล็งไว้ว่าจะเป็นตัวหลัก หายไปแล้ว","ได้ของแถมมาแทน แต่ไม่ได้อยากได้เลย"],
+ run:["Got away safely!","Can't escape! ...ล้อเล่น หนีได้","Running Shoes ทำงานเต็มที่","ไม่สู้ ไม่เจ็บ","ถอยก่อน เดี๋ยวค่อยว่ากัน","โยน Poké Doll แล้วเผ่น","เก็บแรงไว้สู้จริงดีกว่า","เทรนเนอร์ที่ดีรู้ว่าเมื่อไรควรถอย","Smokescreen! หายตัวไปแล้ว","ขอผ่าน รอบนี้ไม่อยากมีเรื่อง","ถอยทัพอย่างมีศักดิ์ศรี","วิ่งสิ รออะไร!","ไม่ได้กลัว แค่ประหยัดสิทธิ์","หนีสำเร็จตั้งแต่ครั้งแรก!","ปล่อยให้อีกฝ่ายเหนื่อยไปคนเดียว"],
+ timeup:["เทรนเนอร์ท้าสู้!","หมดเวลาจัดทีม! ออกไปเลย ฉันเลือกนาย!","สายตาสบกันแล้ว ต้องสู้กันเท่านั้น!","ทั้งสองฝ่ายพร้อม! เริ่มการต่อสู้ได้!","กรรมการ: การต่อสู้หกต่อหก เริ่มได้!","ไม่มีเวลาแล้ว! ส่งตัวแรกออกมา!","เวลาหมด! ใครจัดไม่เสร็จก็ต้องลุยทั้งอย่างนั้น","ระฆังดังแล้ว! League เปิดฉาก!","ถึงเวลาพิสูจน์ว่าใครคือที่หนึ่ง!","เลิกคิดได้แล้ว! แบทเทิลสตาร์ต!","หมดเวลา! ใครพร้อมไม่พร้อมก็ต้องสู้","Poké Ball อยู่ในมือแล้ว ปาได้!","เสียงเพลงต่อสู้ดังขึ้นแล้ว!","ผู้ท้าชิงทั้งสองเข้าประจำที่!","ได้เวลาแล้ว! ออกไปเลย คู่หูของฉัน!"]
+};
+// Five lines per type; with the five "heavy" lines that makes ten per type.
+const TQ_TH=[
+ ["หนูของผมอยู่ระดับท็อปเปอร์เซ็นต์เลยนะ!","ธาตุปกติ แต่ความซวยไม่ปกติ","ไม่มีจุดเด่น ก็ไม่มีใครเดาทางได้","นอนขวางถนนไว้ก่อน ใครจะผ่านต้องเป่าขลุ่ย","ร้องเพลงกล่อมจนหลับ แล้วเอาปากกาเขียนหน้า"],
+ ["หางยังลุกโชน แปลว่ายังสู้ไหว!","ไม่เชื่อฟังเทรนเนอร์ แถมพ่นไฟใส่หน้า","ร้อนแรงจนต้องพก Burn Heal","เลือกStarter ธาตุไฟ ยิมแรกเลยลำบาก","ใจมันลุกเป็นไฟ! แต่ระวังฝนตก"],
+ ["ใช้ Splash! ...But nothing happened!","ทะเลกว้างใหญ่ เจอแต่แมงกะพรุน","ฉันคือสาวงามแห่งท้องทะเล ใครจะกล้าแย้ง!","ปวดหัวจนพลังจิตระเบิด ก๊วก","มี Surf แล้ว ไม่ต้องง้อเรือ"],
+ ["ฉันเลือกนาย! ...ทุกตัวเลยเหรอ","Thunderbolt จัดไป!","ไม่ยอมเข้าบอล ขอเดินข้าง ๆ แทน","ช็อตจนจักรยานไหม้ ต้องชดใช้ด้วยนะ","แก้มแดง ๆ นั่นไม่ได้เขิน เก็บไฟอยู่"],
+ ["Vine Whip จัดไป!","ใช้ Synthesis รอ เดี๋ยวก็ชนะเอง","Starter ที่ใครก็มองข้าม แต่ยิมแรกสบาย","โปรย Sleep Powder ก่อน ค่อยคิดแผน","ไม่อยาก Evolve ก็ไม่ต้อง Evolve"],
+ ["หนาวจนตัวแข็ง ขยับไม่ได้เลย!","สวยแต่บาง แพ้ทางไปครึ่งตาราง","Blizzard ไม่ค่อยแม่น แต่วันนี้โดนแน่","นกในตำนานก็ธาตุนี้นะ อย่าดูถูก","เย็นไว้ก่อน แล้วค่อยแช่แข็งอีกฝ่าย"],
+ ["ฝึก! ฝึก! แล้วก็ฝึก!","กล้ามไม่เคยทรยศใคร","ยกหินก้อนนั้นออกไปให้พ้นทาง!","เตะสูงพลาด เจ็บเองซะงั้น","สี่แขนต่อยพร้อมกัน ใครจะรับไหว"],
+ ["เตรียมตัวรับปัญหาได้เลย!","ติด Poison แล้ว เดินสี่ก้าวจอกระพริบที","ถ้ำนี้มีแต่ค้างคาว Repel ก็เอาไม่อยู่","รู้สึกแย่จังเลย~","ใส่ Toxic ไว้ แล้วกด Protect รอ"],
+ ["Earthquake! โดนพวกเดียวกันด้วยนะ","ใช้ Dig หนี ง่ายกว่าเดินกลับ","Sandstorm มา มองไม่เห็นทาง","ไฟฟ้าทำอะไรฉันไม่ได้หรอก","โผล่มาสามหัว แต่ไม่มีใครเคยเห็นตัว"],
+ ["ใช้ Fly กลับเมืองแรกได้ในพริบตา","นก Route 1 เลี้ยงจนเป็นตัวหลัก","ปล่อยไปแล้วบอกว่าจะกลับมารับ... สักวัน","โบยบินสูง แต่กลัวก้อนหินที่สุด","ใช้ Roost พักก่อน เดี๋ยวค่อยสู้"],
+ ["งอช้อนได้ แต่เดาใจฟ้าไม่ได้","ใช้ Hypnosis ให้หลับ... เอ๊ะ ใครหลับก่อน","ถูกสร้างมาให้เป็นที่สุด แล้วใครกันที่ขอให้เกิด","Teleport หนีทุกครั้งที่เจอ","ตัวจิ๋วสีชมพู ว่ากันว่าซ่อนอยู่ใต้รถบรรทุก"],
+ ["ฉันชอบกางเกงขาสั้น! ใส่สบายดี!","Evolve ไว แต่ก็แผ่วไว","ลาก่อนนะ ผีเสื้อของฉัน...","เด็กจับแมลงท้าสู้! มีหนอนหกตัว","ป่านี้เดินกี่ก้าวก็เจอแต่ดักแด้"],
+ ["ตาหยีแบบนี้ แต่มองเห็นชัยชนะนะ","แข็งแกร่งดั่งหิน ใจอ่อนเมื่อเจอสาวสวย","ในถ้ำมีแต่ก้อนหินที่มีแขน","Self-Destruct คือทางออกสุดท้าย","Fossil คืนชีพ! รอมาหลายล้านปีเพื่อวันนี้"],
+ ["หอคอยนี้... มีอะไรตามหลังมาหรือเปล่า","เลียทีเดียวชาไปทั้งตัว","ท่าธรรมดาทำอะไรฉันไม่ได้หรอก","หัวเราะในความมืด แล้วก็หายไป","ต้องมีกล้องส่องผี ถึงจะรู้ว่าเป็นตัวอะไร"],
+ ["ผู้ใช้มังกรไม่มีวันแพ้... ยกเว้นเจอน้ำแข็ง","เลี้ยงยาก โตช้า แต่คุ้มค่ารอ","คำรามทีเดียว ทั้งสนามเงียบ","ผ้าคลุมพลิ้ว ๆ นี่แหละเครื่องแบบของ Champion","ใช้ Outrage สามเทิร์น แล้วก็มึนเอง"],
+ ["กัดไม่ปล่อย พลังจิตทำอะไรไม่ได้","ขโมยไอเทมแล้วทำหน้าไม่รู้เรื่อง","ออกหากินตอนกลางคืนเท่านั้น","เล่นสกปรกนิดหน่อย กติกาไม่ได้ห้าม","ดูร้าย แต่จริง ๆ แค่อยากให้ลูบหัว"],
+ ["ต้านได้เป็นสิบธาตุ จะกลัวอะไร","หนักจน Poké Ball แทบรับไม่ไหว","แม่เหล็กสามตัวรวมกัน ก็ยังเป็นแม่เหล็ก","แข็งนอก แข็งใน แต่ละลายเมื่อเจอไฟ","ขัดจนเงา ส่องหน้าได้เลย"],
+ ["น่ารักแบบนี้ แต่ล้มมังกรได้นะ","มังกรทำอะไรฉันไม่ได้เลยสักนิด","เต้นรำใต้แสงจันทร์บนภูเขา","ยิ้มหวาน แล้วซัดด้วย Moonblast","ชมพูทั้งทีม หวานจนอีกฝ่ายเลี่ยน"]
+];
+
+/* ---------- English lines (same cases as the Thai sets) ---------- */
+const QT_EN={
+ rainbow:["The Pokédex is nearly complete! The Professor would be proud.","Six slots, six types. A rookie's dream team.","Gotcha! One of every color.","A rainbow team! There's an answer for everything.","Coverage like this? The League is waiting.","Not a single repeat. Champion-tier luck.","Professor: Splendid! That Pokédex was worth handing over.","This is the team I wanted for the whole journey!","It's Super Effective! Against everything!","One step closer to the top."],
+ varied:["It's Super Effective!","Just one pair. The heavens were merciful.","A balanced team. Smooth travels ahead.","Professor: Not bad, but the Pokédex still has gaps.","Almost perfect. Almost...","Five types. Enough to clear eight Gyms.","One duplicate pair. Nicknames will get confusing.","This team walks through Victory Road.","Wild Pokémon think twice about this team.","Lucky, but not quite a Critical Hit."],
+ mixed:["The attack hit normally.","Middle of the road, like a Route 1 catch.","Two pairs. Perfect for a Double Battle.","This team runs on pure Trainer skill.","Professor: Hmm... keep at it.","It's fine. Bonds matter more than types.","Still okay. The bag is full of Potions.","Roadside Trainer luck.","A few repeats. Call it team identity.","Winnable, if the other side rolled worse."],
+ pairs:["It's not very effective...","Everything comes in pairs. Time for a Pokémon wedding.","A team of twins. It makes you dizzy.","Professor: Did you catch the same one again?","The Day Care will be thrilled.","Every slot has a partner. No type has coverage.","Luck like this needs a Pokémon Center, fast.","Don't give up. Even a caterpillar becomes a butterfly.","Few types. Easy to choose.","A weakness so obvious the opponent is smiling."],
+ heavy:["So much {t}. One more and you can open a Gym.","The future {t} Gym Leader is right here.","I like {t} types! They're comfy and easy to use!","My {t} types are in the top percentage!","{t} again? The heavens have a favorite.","Three {t} slots. One more for a badge."],
+ leader:["A challenger! Welcome to the {t} Gym.","Beat me first. Then we talk about the {t} Badge.","{t} is everything to me. Let's see you handle it.","This Gym never loses to anyone without a plan for {t}.","I've used {t} my whole life. I didn't choose it. Fate did.","The {t} Badge isn't handed out easily.","Every Trainer in this Gym uses {t}. Me included.","The weakness of {t}? I know it. I'm not scared.","The Gym puzzle is: why do I only have {t}?","New {t} Gym Leader. Challenges accepted anytime."],
+ betHit:["Critical Hit!","Future Sight was spot on!","Correct! It's Super Effective!","Sixth sense activated!","Like you used Lock-On first.","Professor: You have a gift.","A direct hit!","Read like a book!","You saw the future clearer than your own team.","Gym Leader level psychic power!"],
+ betMiss:["The attack missed!","But nothing happened!","Future Sight hit the wrong slot.","It had no effect...","Accuracy fell!","Hurt itself in its confusion!","Professor: This isn't the time to use that!","The foe avoided the attack!","So close... or was it?","The Poké Ball shook three times, then broke free."],
+ tera:["What? The team is glowing!","Terastal! You can change one of the foe's slots.","The jewel on top is shining!","Congratulations! One type of your choice.","Crystal power awakens!","Time to wear the diamond crown.","Evolving? No, changing type.","Lucky as finding a Shiny!","Any type you like. Pick one that hurts.","Sparkle! A one in six chance."],
+ teraUse:["Shine bright! Terastallize!","Glow to the limit! Terastallize!","Time to change the game. Terastallize!","Crystal, reveal the true type!","Sparkle like a jewel! Terastallize!","Crown's on. Type's changed!","Lend me the power of the Tera Orb!","Shine! This is your new type!","Here's my trump card. Terastallize!","This sparkle rewrites your fate!","Bloom to the fullest and shine!","Shine! Crystal of dreams!","I'm choosing your type for you! Terastallize!","Here, a crystal crown you never asked for!"],
+ roar:["{t} was dragged back into its ball!","A mighty roar! {t} ran away.","{t}, come back! Go, next one!","Return for now, {t}!","{t} got scared and fled.","Roar worked! {t} left the field.","{t} was kicked out of the Gym.","Enough, {t}! Switch out!","A gust blew {t} away.","{t} is gone. Who comes next is anyone's guess.","{t} went back without using a single move.","No need to fight {t}. Just shout loudly."],
+ trick:["Blasting off again!","What a rotten feeling~","Hey! That was mine!","Prepare for trouble... wait, we're the ones in trouble.","Swapped right before my eyes.","Thief! Somebody call the officer!","One slot lighter in the bag.","The villains are back again.","That trade wasn't fair!","Remember this! Next time we won't fail!","Our perfect plan failed again!","The boss is going to be furious."],
+ run:["Got away safely!","Can't escape! ...kidding, you can.","Running Shoes at full speed.","No fight, no pain.","Fall back for now.","Tossed a Poké Doll and bolted.","Saving strength for the real battle.","A good Trainer knows when to retreat.","Smokescreen! Gone.","Pass. Not looking for trouble this round."],
+ timeup:["Trainer wants to battle!","Time's up! Go! I choose you!","Eyes met. Now you have to battle!","Both sides ready! Battle begin!","Referee: A six-on-six battle. Begin!","No more time! Send out your first!","Time's up! Ready or not, go.","The bell has rung! The League begins!","Time to prove who's number one!","Stop thinking! Battle start!"]
+};
+const TQ_EN=[
+ ["My rat is in the top percentage!","Normal type, abnormal bad luck.","No standout trait means no one can read you.","Sleeping across the road. You'll need a flute.","Sing them to sleep, then doodle on their face."],
+ ["The tail's still burning, so the fight's still on!","Won't obey, and breathes fire at its Trainer.","So hot you need to carry Burn Heal.","Picked the Fire Starter. The first Gym is rough.","Heart's on fire! Just watch out for rain."],
+ ["Used Splash! But nothing happened!","A wide ocean, and it's all jellyfish.","I'm the beauty of the sea. Who dares argue!","A headache so bad the psychic power bursts out. Quack.","Got Surf. Who needs a boat."],
+ ["I choose you! ...all of you?","Thunderbolt, go!","Refuses the ball. Walks beside you instead.","Fried the bike. You owe me one.","Those red cheeks aren't blushing. They're charging."],
+ ["Vine Whip, go!","Use Synthesis and wait. The win comes.","The Starter everyone skips, but the first Gym is easy.","Sleep Powder first. Plan later.","Doesn't want to Evolve? Then don't."],
+ ["Frozen solid! Can't move!","Pretty but fragile. Weak to half the chart.","Blizzard rarely hits, but today it will.","A legendary bird is this type. Show respect.","Stay cool, then freeze the other side."],
+ ["Train! Train! Train some more!","Muscles never betray you.","Push that boulder out of the way!","The high kick missed. Ouch.","Four arms punching at once. Who can take that?"],
+ ["Prepare for trouble!","Poisoned. The screen flashes every four steps.","This cave is all bats. Repel can't keep up.","What a rotten feeling~","Set Toxic, then Protect and wait."],
+ ["Earthquake! It hits your partner too.","Use Dig. Easier than walking back.","Sandstorm's here. Can't see a thing.","Electricity can't touch me.","Three heads pop up. Nobody has seen the body."],
+ ["Fly back to the first town in a blink.","The Route 1 bird, raised into the ace.","Released it and promised to come back... someday.","Soars high, fears rocks most.","Roost first. Fight later."],
+ ["Can bend spoons, can't read the heavens.","Use Hypnosis... wait, who fell asleep first?","Made to be the strongest. But who asked to be born?","Teleports away every single time.","A tiny pink one, rumored to hide under a truck."],
+ ["I like shorts! They're comfy and easy to wear!","Evolves early, fades early.","Goodbye, my butterfly...","Bug Catcher wants to battle! He has six caterpillars.","Every step in this forest is another cocoon."],
+ ["Eyes like slits, but I can see the win.","Solid as a rock, soft for a pretty face.","The cave is full of rocks with arms.","Self-Destruct is the final answer.","A Fossil revived! Millions of years for this day."],
+ ["This tower... is something following us?","One lick and you're numb all over.","Normal moves can't touch me.","A laugh in the dark, then gone.","You need a scope to know what it really is."],
+ ["Dragon users never lose... except to Ice.","Hard to raise, slow to grow, worth the wait.","One roar and the whole field goes quiet.","A flowing cape is the Champion's uniform.","Outrage for three turns, then confusion."],
+ ["Bites and never lets go. Psychic can't touch it.","Stole the item and played innocent.","Only comes out at night.","Plays a little dirty. Nothing in the rules against it.","Looks mean, just wants head pats."],
+ ["Resists ten types. What's there to fear?","So heavy the Poké Ball can barely hold it.","Three magnets together are still magnets.","Hard outside, hard inside, melts to Fire.","Polished so bright you can see your face."],
+ ["Cute like this, and it beats dragons.","Dragons can't lay a claw on me.","Dancing under the moon on the mountain.","A sweet smile, then Moonblast.","An all-pink team. Sweet enough to make them sick."]
+];
+const QT=new Proxy({}, {get:(_,k)=>(LANG==="en"?QT_EN:QT_TH)[k]});
+const TQ=new Proxy([], {get:(_,k)=>(LANG==="en"?TQ_EN:TQ_TH)[k]});
+
+/* ---------- The four curses: name, tagline and description ---------- */
+const CURSES=[
+ {k:"ko",name:"Knock Off",nick:["คำสาปแห่งมือเปล่า","The Curse of Empty Hands"],tag:["ของที่ถือมา ไม่ใช่ของเจ้าอีกต่อไป","What you carried is no longer yours."],
+  desc:["คำสาปที่แถมมาทุกรอบ ไม่เลือกข้าง ไม่เลือกคน ธาตุที่ถูกสาปจะถูกปัดไอเทมทิ้งตั้งแต่ก่อนลงสนาม ช่องไหนเป็นธาตุนั้น โปเกมอนในช่องนั้นต้องลงสู้มือเปล่า มีเพียงหัวหน้ายิมเท่านั้นที่พลังของเข็มกลัดคุ้มครองไว้ได้",
+        "A curse added every round, sparing no side and no one. Every slot of the cursed type has its item knocked away before the battle begins: that Pokémon fights empty-handed. Only a Gym Leader's badge is strong enough to protect against it."]},
+ {k:"roar",name:"Roar",nick:["คำสาปแห่งการขับไล่","The Curse of Banishment"],tag:["เสียงเดียว ทั้งธาตุต้องถอย","One roar, and a whole type retreats."],
+  desc:["เสียงคำรามที่ไม่ได้ทำร้ายใคร แต่ทำให้ทั้งธาตุของอีกฝ่ายหนีกระเจิง ทุกช่องที่เป็นธาตุที่ถูกเลือกจะถูกไล่ออกจากทีมและสุ่มตัวใหม่เข้ามาแทน ไม่มีทางได้ธาตุเดิมกลับคืน แต่ระวังให้ดี ตัวที่เข้ามาแทนอาจเลวร้ายกว่าตัวที่ไล่ออกไป ช่องที่ Protect ไว้ไม่ได้ยินเสียงนี้ และหัวหน้ายิมคือผู้เดียวที่ไม่หวั่นไหว",
+        "It harms no one, yet scatters an entire type. Every slot of the chosen type is driven out and redrawn, never as the same type. Beware: what comes back may be worse. Protected slots never hear it, and a Gym Leader cannot be roared at."]},
+ {k:"trick",name:"Trick",nick:["คำสาปแห่งการสับเปลี่ยน","The Curse of the Swap"],tag:["สิ่งที่เจ้าให้ไป คือสิ่งที่เจ้าไม่อยากได้","What you give away is what you never wanted."],
+  desc:["มือที่เร็วกว่าตา แลกของในทีมตัวเองกับของในทีมอีกฝ่ายต่อหน้าต่อตา เจ้าเลือกได้ทั้งของที่จะยัดเยียดให้ และของที่จะช่วงชิงมา สิ่งที่ชิงมาได้จะกลายเป็นของกลาง ไม่มีวันถูกชิงกลับ แต่อีกฝ่ายก็จะจำหน้าเจ้าไว้ไปจนจบเกม",
+        "A hand faster than the eye trades one of your slots for one of theirs, right in front of them. You choose what to dump and what to take. What you take is Stolen and can never be taken back, but they will remember your face until the game ends."]},
+ {k:"tera",name:"Terastal",nick:["คำสาปแห่งผลึก","The Curse of Crystal"],tag:["มงกุฎที่สวมให้ ไม่ใช่ของขวัญ","A crown placed on your head is no gift."],
+  desc:["คำสาปที่ได้มาจากสองทาง คือโชคจากการสุ่ม และการทายธาตุถูกด้วย Future Sight ถือซ้อนได้สูงสุด 2 ครั้ง และจะปลดปล่อยได้เมื่อทุกอย่างสงบลงแล้วเท่านั้น ผู้ถือจะสวมมงกุฎผลึกให้โปเกมอนของอีกฝ่าย และกำหนดธาตุใหม่ให้ตามใจ จะทำให้แพ้ทาง หรือดันให้ครบสี่ช่องจนกลายเป็นหัวหน้ายิมโดยไม่ตั้งใจก็ได้ เป็นคำสาปสุดท้ายก่อนเวลาจัดทีมจะเริ่มนับ",
+        "This curse comes two ways: luck in the draw, and a correct Future Sight guess. It stacks up to 2 uses, and can only be unleashed once everything else has settled. The holder crowns an opponent's Pokémon in crystal and chooses its new type: a type that loses, or one that pushes them to four slots and an unwanted Gym Badge. The last curse before the team timer starts."]}];
+// Knock Off taglines: 10 short and direct, 10 playful. One is drawn per round.
+const KO_TH=["ห้ามถือ ห้ามพก ห้ามต่อรอง","ไอเทมหลุดมือ ตั้งแต่ยังไม่ทันลงสนาม","ของดีแค่ไหน ก็ถือไม่ได้","ช่องนี้ลงสนามมือเปล่า","ไอเทมทุกชิ้นต้องฝากไว้ที่ประตู","ถือได้อย่างเดียวคือความหวัง","ไม่มีไอเทม ไม่มีข้อยกเว้น","ของติดตัวเป็นศูนย์ ชิ้นเดียวก็ไม่ได้","ธาตุนี้ถูกยึดไอเทมทั้งหมด","ลงสนามได้ แต่ห้ามพกอะไรติดตัว",
+ "ไอเทมถูกปัดตก! ...ก่อนจะได้ใช้ซะอีก","กระเป๋าว่าง ใจก็ว่าง","Leftovers ก็ไม่เหลือให้กิน","Choice Scarf? ไม่มีให้พันคอหรอก","Focus Sash ขาดตั้งแต่ยังไม่โดนตี","Life Orb แตกคามือ","Berry ร่วงก่อนจะได้กัด","Mega Stone ถูกยึดที่ด่านตรวจ","Rocky Helmet หล่นกลิ้งไปไหนแล้ว","ยืนเท่ ๆ มือเปล่า แต่ใจสั่น"];
+const KO_EN=["No item. No exceptions. No deals.","The item drops before the battle even starts.","However good it is, you can't hold it.","This slot walks in empty-handed.","All items must be left at the door.","The only thing you can hold is hope.","Zero held items. Not even one.","This type's items are confiscated.","You may battle, but carry nothing.","Hands empty, by order of the heavens.",
+ "Knocked off! ...before you even used it.","Empty bag, empty heart.","Not even Leftovers left to eat.","Choice Scarf? Nothing to wrap around your neck.","Focus Sash ripped before the first hit.","Life Orb shattered in your hand.","The Berry fell before you could bite it.","Mega Stone seized at the checkpoint.","Where did the Rocky Helmet roll off to?","Standing cool, empty-handed, shaking inside."];
+const koLine=()=>{const i=(typeof S!=="undefined"&&S.koi!=null)?S.koi:0; return L(KO_TH[i],KO_EN[i]);};
+const CT=k=>{if(k==="ko") return "“"+koLine()+"”"; const c=CURSES.find(x=>x.k===k); return "“"+L(c.tag[0],c.tag[1])+"”";};
+function drawCurses(){
+  const box=$("curses"); box.textContent="";
+  for(const c of CURSES){
+    const d=document.createElement("div"); d.className="ccard";
+    const h3=document.createElement("h3"); h3.textContent=c.name+" "; const sp=document.createElement("span"); sp.textContent="· "+L(c.nick[0],c.nick[1]); h3.appendChild(sp);
+    const q=document.createElement("q"); q.textContent=c.k==="ko"?L("ถือได้อย่างเดียวคือความหวัง","The only thing you can hold is hope."):L(c.tag[0],c.tag[1]);
+    const p=document.createElement("p"); p.textContent=L(c.desc[0],c.desc[1]);
+    d.append(h3,q,p); box.appendChild(d);
+  }
+}
+
+/* ---------- Static page text in both languages ---------- */
+const RULES={
+ th:[
+  ["Future Sight (มองอนาคต)","ก่อนสุ่ม ทั้งสองฝ่ายต้องทายว่าในทีมตัวเองจะมีกี่ธาตุ ตั้งแต่ 1 ถึง 6 (ธาตุที่ซ้ำกันนับเป็นธาตุเดียว) ทายถูกได้ Terastal 1 ครั้ง"],
+  ["สุ่มทีม","แต่ละฝ่ายได้ธาตุ 6 ช่องจาก 18 ธาตุ ซ้ำกันได้ ธาตุเดียวกันออกได้สูงสุด 4 ช่อง 1 ช่องคือโปเกมอน 1 ตัวที่มีธาตุนั้น"],
+  ["Knock Off","สุ่ม 1 ธาตุกลางต่อรอบ ช่องที่เป็นธาตุนั้นติดสถานะ Knock Off โปเกมอนในช่องนั้นห้ามถือไอเทม"],
+  ["Terastal (เทระสตัล)","ได้มาสองทาง คือสุ่มได้ (โอกาส 1 ใน 6) และทาย Future Sight ถูก ถือซ้อนได้สูงสุด 2 ครั้ง เมื่อทั้งสองฝ่ายใช้สิทธิ์ครบแล้ว ใช้ได้ครั้งละ 1 ช่อง เปลี่ยนช่องของอีกฝ่ายเป็นธาตุอะไรก็ได้ ก่อนเริ่มจับเวลาจัดทีม ช่องที่ป้องกันเปลี่ยนไม่ได้"],
+  ["Gym Leader (หัวหน้ายิม)","ได้ธาตุเดียวกันครบ 4 ช่องเมื่อไร สมาคมโปเกมอนจะโผล่มาพร้อมเข็มกลัดและสัญญาจ้างทันที ไม่มีปุ่มปฏิเสธ ทั้งทีมกลายเป็นธาตุนั้น ได้สวัสดิการไม่ติด Knock Off และอีกฝ่ายห้ามใช้ Roar ใส่ผู้บริหาร"],
+  ["Protect (ป้องกัน)","หลังสุ่ม แต่ละฝ่ายเลือกป้องกัน 1 ช่องของตัวเองแบบลับ (ให้อีกฝ่ายหันหน้าหนีตอนแตะ) ระบบซ่อนไว้แล้วเปิดพร้อมกันเมื่อเลือกครบ ช่องนั้นโดน Roar, Trick และ Terastal ไม่ได้"],
+  ["ลำดับสิทธิ์","ฝ่ายที่มีจำนวนธาตุน้อยกว่าเริ่มก่อน (เสมอกันให้สุ่ม) แล้วสลับกันใช้ทีละสิทธิ์"],
+  ["Roar (คำราม)","ฝ่ายละ 1 ครั้ง เลือกธาตุของอีกฝ่าย ทุกช่องที่เป็นธาตุนั้นถูกไล่ออกแล้วสุ่มใหม่ และไม่ออกธาตุเดิม"],
+  ["Trick (สับเปลี่ยน)","ฝ่ายละ 1 ครั้ง เลือกช่องของตัวเองที่จะให้ และช่องของอีกฝ่ายที่จะเอา แล้วสลับกัน ช่องที่ได้มามีป้าย “ของกลาง” และเอาคืนไม่ได้"],
+  ["Run (หนี)","สละสิทธิ์ที่เหลือทั้งหมดของตัวเอง"],
+  ["Calamity Draft (โหมดหายนะ)","โหมดที่โหดกว่า Cursed Draft หลังใช้สิทธิ์ครบต้องกดสุ่มไอเทมให้ทุกช่อง ไอเทมสุ่มจากไอเทมที่มีใน Pokémon Champions ตามธาตุของช่อง (ไอเทมเพิ่มพลังธาตุนั้น เบอร์รี่ลดความเสียหายจากธาตุที่แพ้ทาง หรือไอเทมทั่วไป) ไม่ซ้ำกันในทีม ช่องที่ติด Knock Off ไม่ได้ไอเทม ทุกครั้งที่สุ่ม แต่ละทีมจะได้ Mega Stone 1 ช่อง ใส่โปเกมอนที่เมก้าได้และมีธาตุของช่องนั้นตัวไหนก็ได้ ถ้าไม่มีโปเกมอนหรือหินเมก้าที่ใช้ได้ ให้ใช้ไอเทมสำรองที่สุ่มให้ในช่องเดียวกันแทน และต้องใช้ตามที่สุ่มได้เท่านั้น"],
+  ["Team Preview","เมื่อใช้สิทธิ์ครบ กดเริ่มจับเวลา ทั้งสองฝ่ายมีเวลาจัดทีมตามที่ตั้งไว้ (ค่าเริ่มต้น 2 นาที) จบแบทเทิลแล้วกดบันทึกว่าใครชนะ"]],
+ en:[
+  ["Future Sight","Before the draw, both sides must guess how many different types their own team will have, from 1 to 6 (repeats count once). A correct guess earns 1 Terastal."],
+  ["The draw","Each side gets 6 slots drawn from the 18 types. Repeats are allowed, up to 4 slots of the same type. One slot is one Pokémon that has that type."],
+  ["Knock Off","One type is drawn for the round. Slots of that type get the Knock Off status: the Pokémon in that slot can't hold an item."],
+  ["Terastal","Earned two ways: from the draw (a 1 in 6 chance) and from a correct Future Sight guess. It stacks up to 2 uses. After both sides have used their turns, each use changes 1 of the opponent's slots to any type, before the team timer starts. Protected slots can't be changed."],
+  ["Gym Leader","Get 4 slots of the same type and the Pokémon League shows up on the spot with a badge and an employment contract. There is no decline button. The whole team becomes that type, the job comes with Knock Off immunity, and the opponent may not use Roar on management."],
+  ["Protect","After the draw, each side secretly protects 1 of their own slots (the opponent looks away while you tap). Picks stay hidden and are revealed together. That slot can't be hit by Roar, Trick or Terastal."],
+  ["Turn order","The side with fewer types goes first (a tie is decided at random), then the sides alternate one action at a time."],
+  ["Roar","Once per side. Pick one of the opponent's types: every slot of that type is forced out and redrawn, never as the same type."],
+  ["Trick","Once per side. Pick one of your slots to give and one of the opponent's to take, and they swap. The slot you took is marked “Stolen” and can't be taken back."],
+  ["Run","Give up all of your remaining actions."],
+  ["Calamity Draft","A harsher mode than Cursed Draft. Once all actions are used, press Draw items: every slot gets an item from the Pokémon Champions pool, matched to its type (its type-boosting item, a berry against one of its weaknesses, or a general item). No duplicates within a team. Knock Off slots get nothing. Every draw, each team also gets a Mega Stone in one slot: use any Mega-capable Pokémon of that slot's type. If you don't have a usable Pokémon or Mega Stone, use the backup item drawn for that slot instead. You must use the items exactly as drawn."],
+  ["Team Preview","When all actions are used, start the timer. Both sides build their teams within the set time (2 minutes by default). After the battle, record who won."]]
+};
+function applyLang(){
+  if(typeof showStats==="function"&&$("statTotal")) setTimeout(showStats);
+  document.documentElement.lang=LANG;
+  const set=(sel,th,en)=>{const e=document.querySelector(sel); if(e) e.textContent=L(th,en);};
+  set(".tag","ฉันไม่ได้เลือกนาย!","I Didn't Choose You!");
+  set(".ball-bot .note","ดวงเลือกให้ พร้อมแถมคำสาปมา","Luck chose for me, curse included");
+  set("#undo","ย้อนกลับ 1 ขั้น","Undo 1 step"); set("#shot","บันทึกรูป","Save image"); set("#chart","ตารางธาตุ","Type chart");
+  set("#layoutL","จัดหน้า","Layout"); set("#modeL","โหมด","Mode"); set("#itemBtn","สุ่มไอเทม","Draw items");
+  [["auto","อัตโนมัติ","Auto"],["h","แนวนอน","Landscape"],["v","แนวตั้ง","Portrait"]].forEach(([v,th,en])=>{const o=$("layout").querySelector('option[value="'+v+'"]'); if(o) o.textContent=L(th,en);});
+  $("full").textContent=document.fullscreenElement?L("ออกจากเต็มจอ","Exit full screen"):L("เต็มจอ","Full screen");
+  set("#reset","รีเซ็ต","Reset"); set("#copy","คัดลอกผล","Copy result"); set("#lang","English","ภาษาไทย");
+  $("mute").textContent=L("เสียง: ","Sound: ")+(MUTE?L("ปิด","off"):L("เปิด","on"));
+  set(".mid > .note","ช่องที่เป็นธาตุนี้ติดสถานะ Knock Off ห้ามถือไอเทม","Slots of this type have Knock Off: no held item");
+  set("#win > span","แบทเทิลจบแล้ว ใครชนะ?","Battle over. Who won?");
+  const tl=document.querySelector(".trow"); if(tl) tl.firstChild.nodeValue=L("เวลาจัดทีม ","Team time ");
+  [...$("tmin").options].forEach(o=>o.textContent=o.value+L(" นาที"," min"));
+  set("#hclear","ล้างคะแนนและประวัติ","Clear score and log");
+  set(".fan","กติกาแฟนเมดสำหรับเล่นกับเพื่อน ไม่เกี่ยวข้องกับเจ้าของลิขสิทธิ์เกม","A fan-made rule set for playing with friends. Not affiliated with the game's rights holders.");
+  set("#chOk","รับเข็มกลัด","Accept the badge"); set("#tvCancel","ยกเลิก","Cancel"); set("#tvOk","ตกลง","OK");
+  set("#tcTitle","ตารางธาตุ","Type chart"); set("#tcClose","ปิด","Close"); set("#imClose","ปิด","Close");
+  set("#imTitle","รูปสรุปผลรอบนี้","Result card for this round");
+  set("#imgVeil p","กดค้างที่รูป หรือคลิกขวา แล้วเลือกบันทึกรูปภาพ","Long-press or right-click the image, then choose Save image");
+  const hs=[["โจมตีได้ผลดี 2×","Attacks hit 2×"],["โจมตีไม่ค่อยได้ผล ½×","Attacks hit ½×"],["โจมตีไม่ได้ผล 0×","Attacks hit 0×"],["แพ้ทาง โดน 2× จาก","Weak to, takes 2× from"],["ต้านทาน โดน ½× จาก","Resists, takes ½× from"],["ไม่โดนเลย 0× จาก","Immune, takes 0× from"]];
+  document.querySelectorAll(".tc h3").forEach((e,i)=>e.textContent=L(hs[i][0],hs[i][1]));
+  if($("tcOut").hidden) $("tcHint").textContent=L("แตะธาตุเพื่อดูว่าชนะหรือแพ้ทางธาตุไหน","Tap a type to see what it beats and what beats it");
+  drawCurses(); $("koTag").textContent=CT("ko");
+  document.querySelector(".rules ol").innerHTML=RULES[LANG].map(r=>"<li><b>"+r[0]+":</b> "+r[1]+"</li>").join("");
+  for(const p of P){
+    $("betL"+p).textContent=L(" ทายว่าในทีมจะมีกี่ธาตุ"," Guess how many types");
+    $("bet"+p).options[0].textContent=L("เลือก","Pick");
+    $("teraSkip"+p).textContent=L("ไม่ใช้","Skip");
+    const n=$("name"+p); if(n.value==="ผู้เล่น "+p||n.value==="Player "+p) n.value=L("ผู้เล่น ","Player ")+p;
+    n.setAttribute("aria-label",L("ชื่อผู้เล่น ","Player name ")+p);
+  }
+  [...$("tvGrid").children,...$("tcGrid").children].forEach(b=>b.textContent=tn(+b.dataset.t));
+}
+
+// Unbiased pick: rejection sampling over crypto bytes.
+function pick(n=TYPES.length){
+  const lim=256-(256%n), b=new Uint8Array(1);
+  do{crypto.getRandomValues(b)}while(b[0]>=lim);
+  return b[0]%n;
+}
+const Q=(list,t)=>list[pick(list.length)].replace(/\{t\}/g,t==null?"":tn(t));
+const ty=t=>L("ธาตุ"+tn(t),tn(t));            // "ธาตุไฟ" / "Fire"
+
+/* ---------- Original badge art, one silhouette per type ---------- */
+const BADGE=[[16,1],[5,.45],[3,.6],[4,.35],[6,.55],[6,.3],[4,.75],[7,.6],[4,.707],[3,.3],[9,.7],[6,.8],[5,.85],[8,.5],[10,.45],[5,.3],[12,.8],[5,.65]];
+function star(k,r,R){
+  const s=[];
+  for(let i=0;i<k*2;i++){const a=Math.PI*i/k-Math.PI/2, q=i%2?R*r:R; s.push((50+q*Math.cos(a)).toFixed(1)+","+(50+q*Math.sin(a)).toFixed(1));}
+  return s.join(" ");
+}
+function badgeSVG(t){
+  const [k,r]=BADGE[t], c=TYPES[t][2];
+  return '<svg viewBox="0 0 100 100" role="img" aria-label="'+L("เข็มกลัดธาตุ"+tn(t),tn(t)+" badge")+'">'
+    +'<polygon points="'+star(k,r,46)+'" fill="'+c+'" stroke="#1f2638" stroke-width="4" stroke-linejoin="round"/>'
+    +'<polygon points="'+star(k,r,30)+'" fill="#fff" fill-opacity=".5"/>'
+    +'<circle cx="50" cy="50" r="13" fill="'+c+'" stroke="#1f2638" stroke-width="3.5"/>'
+    +'<circle cx="45" cy="45" r="4" fill="#fff" fill-opacity=".9"/></svg>';
+}
+
+$("lanes").innerHTML=P.map(p=>`
+  <section class="box lane" id="lane${p}" data-p="${p}">
+    <div class="lane-head"><span class="px">TRAINER ${p}</span><input id="name${p}" value="ผู้เล่น ${p}" aria-label="ชื่อผู้เล่น ${p}" maxlength="24"><span class="gb" id="gb${p}"></span></div>
+    <div class="row"><label for="bet${p}"><b class="px">FUTURE SIGHT</b><span id="betL${p}"> ทายว่าในทีมจะมีกี่ธาตุ</span></label>
+      <select id="bet${p}"><option value="">เลือก</option>${[1,2,3,4,5,6].map(n=>`<option>${n}</option>`).join("")}</select></div>
+    <div class="slots" id="slots${p}"></div>
+    <p class="say" id="say${p}" hidden></p>
+    <div class="row"><b class="px">TERASTAL</b><span class="chip" id="wild${p}">?</span>
+      <button id="teraBtn${p}" class="btn px" type="button" hidden>TERA</button>
+      <button id="teraSkip${p}" class="btn" type="button" hidden>ไม่ใช้</button></div>
+    <p class="stat" id="stat${p}"></p>
+    <p class="rights" id="rights${p}"></p>
+    <div class="acts">
+      <select id="ban${p}" aria-label="Roar" disabled></select>
+      <button id="banBtn${p}" class="btn px" type="button" disabled>ROAR</button>
+      <button id="steal${p}" class="btn px" type="button" disabled>TRICK</button>
+      <button id="pass${p}" class="btn px" type="button" disabled>RUN</button>
+    </div>
+    <p class="log" id="log${p}"></p>
+  </section>`).join("");
+
+// Original faceted-crystal mark for the Terastal status.
+const GEM='<svg class="gemi" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12,1 21,7 21,17 12,23 3,17 3,7" fill="#7fd6ff"/><polygon points="12,1 21,7 12,11 3,7" fill="#f2fcff"/><polygon points="3,7 12,11 12,23 3,17" fill="#b59cff"/><polygon points="21,7 21,17 12,23 12,11" fill="#ff9fd0"/><polygon points="12,1 21,7 21,17 12,23 3,17 3,7" fill="none" stroke="#1f2638" stroke-width="1.8" stroke-linejoin="round"/><path d="M12 11V23M3 7l9 4 9-4" fill="none" stroke="#1f2638" stroke-width="1" opacity=".55"/></svg>';
+function paint(el,t,small=true){
+  el.style.background=TYPES[t][2]; el.style.color=TYPES[t][3]?"#fff":"#1f2638";
+  el.innerHTML=tn(t)+(small?"<small>"+TYPES[t][LANG==="en"?0:1]+"</small>":"");
+}
+function blank(el){el.removeAttribute("style"); el.textContent="?";}
+function bump(el){el.classList.remove("land"); void el.offsetWidth; el.classList.add("land");}
+function addLog(p,msg){const l=$("log"+p); l.textContent=(l.textContent?l.textContent+"\n":"")+msg;}
+function say(p,t){const e=$("say"+p); e.hidden=!t; e.textContent=t; if(t){e.style.animation="none"; void e.offsetWidth; e.style.animation="";}}
+const still=()=>matchMedia("(prefers-reduced-motion:reduce)").matches;
+let dlg={t:null,id:null};
+function setDialog(t){
+  if(t===dlg.t) return;
+  dlg.t=t; $("sr").textContent=t; clearInterval(dlg.id);
+  const el=$("dtext");
+  if(still()){el.textContent=t; return}
+  let i=0; el.textContent="";
+  dlg.id=setInterval(()=>{i+=2; el.textContent=t.slice(0,i); if(i>=t.length) clearInterval(dlg.id)},20);
+}
+
+/* ---------- Per-viewer memory: score, history, sound, timer and language ---------- */
+let H={score:{A:0,B:0},rounds:[],mute:false,mins:2,lang:"th"};
+try{const j=JSON.parse(localStorage.getItem("choiceCD")||"null"); if(j&&j.score&&Array.isArray(j.rounds)) H=Object.assign(H,j);}catch(e){}
+function store(){try{localStorage.setItem("choiceCD",JSON.stringify(H))}catch(e){}}
+LANG=H.lang==="en"?"en":"th";
+let U=null;   // one-step undo snapshot
+function saveUndo(){U={S:JSON.parse(JSON.stringify(S)),log:{A:$("logA").textContent,B:$("logB").textContent},say:{A:$("sayA").textContent,B:$("sayB").textContent}};}
+function entry(){return {id:S.id,round:S.round,curse:S.curse,names:{A:pname("A"),B:pname("B")},team:{A:S.team.A.slice(),B:S.team.B.slice()},mono:{A:S.mono.A,B:S.mono.B},winner:S.winner};}
+function archive(){
+  if(!S.id||S.phase==="idle"||S.phase==="rolling") return;
+  const e=entry(), k=H.rounds.findIndex(r=>r.id===e.id);
+  if(k>=0) H.rounds[k]=e; else H.rounds.unshift(e);
+  H.rounds=H.rounds.slice(0,10); store(); drawHist();
+}
+function pill(t){const s=document.createElement("span"); s.className="pill"; s.textContent=tn(t); s.style.background=TYPES[t][2]; s.style.color=TYPES[t][3]?"#fff":"#1f2638"; return s;}
+function drawHist(){
+  const box=$("hist"); box.textContent="";
+  if(!H.rounds.length){const p=document.createElement("p"); p.className="hempty"; p.textContent=L("ยังไม่มีประวัติ ผลของแต่ละรอบจะถูกเก็บไว้ที่นี่ สูงสุด 10 รอบล่าสุด (เก็บในเครื่องนี้เท่านั้น)","No history yet. Each round is kept here, up to the last 10 (stored on this device only)."); box.appendChild(p); return;}
+  for(const r of H.rounds){
+    const row=document.createElement("div"); row.className="hrow";
+    const hd=document.createElement("div"); hd.className="hhead";
+    const n=document.createElement("b"); n.className="px"; n.textContent="ROUND "+r.round; hd.appendChild(n);
+    const k=document.createElement("span"); k.textContent="Knock Off:"; hd.appendChild(k); if(r.curse!=null) hd.appendChild(pill(r.curse));
+    if(!r.winner){const w=document.createElement("span"); w.textContent=L("· ยังไม่บันทึกผู้ชนะ","· no winner recorded"); hd.appendChild(w);}
+    row.appendChild(hd);
+    for(const p of P){
+      const t=document.createElement("div"); t.className="hteam";
+      const nm=document.createElement("span"); nm.className="nm"; nm.textContent=r.names[p]; t.appendChild(nm);
+      r.team[p].forEach(x=>{if(x!=null) t.appendChild(pill(x))});
+      if(r.mono[p]!=null){const g=document.createElement("span"); g.textContent=L("หัวหน้ายิม","Gym Leader"); t.appendChild(g);}
+      if(r.winner===p){const w=document.createElement("span"); w.className="wtag"; w.textContent="WIN"; t.appendChild(w);}
+      row.appendChild(t);
+    }
+    box.appendChild(row);
+  }
+}
+function setWinner(p){
+  if(S.phase!=="done"||S.winner===p) return;
+  if(S.winner) H.score[S.winner]=Math.max(0,H.score[S.winner]-1);
+  S.winner=p; H.score[p]++; archive(); store(); render(); sfx("win");
+  setDialog(L(pname(p)+" ชนะแบทเทิลรอบที่ "+S.round+"! คะแนนตอนนี้ ",pname(p)+" won the round "+S.round+" battle! Score: ")+pname("A")+" "+H.score.A+" : "+H.score.B+" "+pname("B"));
+}
+function undo(){
+  if(!U||S.phase==="rolling") return;
+  if(S.winner&&U.S.winner!==S.winner){H.score[S.winner]=Math.max(0,H.score[S.winner]-1);}
+  stopTimer(); S=U.S; S.steal=null; S.tera=null;
+  for(const p of P){$("log"+p).textContent=U.log[p]; say(p,U.say[p]);}
+  U=null; archive(); store(); S.flash=L("ย้อนกลับ 1 ขั้นแล้ว","Undid 1 step."); render(); S.flash=""; sfx("undo");
+  checkChosen();
+}
+
+/* ---------- Type chart: what each type hits for 2x, 1/2x and 0x ---------- */
+const EFF=[
+ [[],[12,16],[13]],[[4,5,11,16],[1,2,12,14],[]],[[1,8,12],[2,4,14],[]],[[2,9],[3,4,14],[8]],
+ [[2,8,12],[1,4,7,9,11,14,16],[]],[[4,8,9,14],[1,2,5,16],[]],[[0,5,12,15,16],[7,9,10,11,17],[13]],
+ [[4,17],[7,8,12,13],[16]],[[1,3,7,12,16],[4,11],[9]],[[4,6,11],[3,12,16],[]],[[6,7],[10,16],[15]],
+ [[4,10,15],[1,6,7,9,13,16,17],[]],[[1,5,9,11],[6,8,16],[]],[[10,13],[15],[0]],[[14],[16],[17]],
+ [[10,13],[6,15,17],[]],[[5,12,17],[1,2,3,16],[]],[[6,14,15],[1,7,16],[]]];
+function modal(id,on){$(id).hidden=!on; $("wrap").inert=on;}
+let chartT=null;
+function showChart(t){
+  chartT=t;
+  [...$("tcGrid").children].forEach(b=>b.style.outline=+b.dataset.t===t?"4px solid #1f2638":"");
+  const put=(id,list)=>{const e=$(id); e.textContent=""; if(!list.length){e.textContent=L("ไม่มี","None"); return} list.forEach(x=>e.appendChild(pill(x)));};
+  const def=k=>TYPES.map((_,a)=>a).filter(a=>EFF[a][k].includes(t));
+  put("tcAs",EFF[t][0]); put("tcAh",EFF[t][1]); put("tcAz",EFF[t][2]);
+  put("tcDs",def(0)); put("tcDh",def(1)); put("tcDz",def(2));
+  $("tcOut").hidden=false; $("tcHint").textContent=L("ธาตุ"+tn(t)+" เมื่อเป็นฝ่ายโจมตี และเมื่อเป็นฝ่ายโดนโจมตี",tn(t)+" when attacking, and when being attacked");
+}
+
+/* ---------- Result card image ---------- */
+let DL=null; try{window.claude&&claude.use&&claude.use("downloads").then(d=>{DL=d}).catch(()=>{})}catch(e){}
+function rr(x,a,b,w,h,r){x.beginPath(); if(x.roundRect) x.roundRect(a,b,w,h,r); else x.rect(a,b,w,h);}
+function drawCard(){
+  const W=1200, Hh=810, c=document.createElement("canvas"); c.width=W; c.height=Hh;
+  const x=c.getContext("2d"), F=(w,s)=>w+" "+s+'px "Mitr","Leelawadee UI","Thonburi",sans-serif', PX=s=>'400 '+s+'px "Press Start 2P","Mitr",monospace';
+  x.fillStyle="#1a2034"; x.fillRect(0,0,W,Hh); x.textBaseline="middle";
+  x.fillStyle="#d92b34"; rr(x,30,30,W-60,150,26); x.fill(); x.lineWidth=6; x.strokeStyle="#1f2638"; x.stroke();
+  x.fillStyle="#fff"; x.font=PX(52); x.textAlign="left"; x.fillText("CHOICE",62,88);
+  x.fillStyle="#f6c61c"; x.font=PX(19); x.fillText("CURSED DRAFT",64,145);
+  x.textAlign="right"; x.fillStyle="#fff"; x.font=F(600,36); x.fillText(L("ฉันไม่ได้เลือกนาย!","I Didn't Choose You!"),W-62,82);
+  x.font=F(400,23); x.fillText(L("รอบที่ ","Round ")+S.round+"  ·  Knock Off: "+ty(S.curse)+"  ·  "+L("คะแนน ","Score ")+H.score.A+" : "+H.score.B,W-62,138);
+  P.forEach((p,k)=>{
+    const y=205+k*285, col=p==="A"?"#d92b34":"#2c68d6";
+    x.fillStyle="#f6f3e4"; rr(x,30,y,W-60,265,22); x.fill(); x.lineWidth=6; x.strokeStyle="#1f2638"; x.stroke();
+    x.fillStyle=col; rr(x,33,y+3,W-66,62,[18,18,0,0]); x.fill();
+    x.textAlign="left"; x.fillStyle="#fff"; x.font=F(600,30); x.fillText(pname(p),58,y+35);
+    const tags=[]; if(S.mono[p]!=null) tags.push(L("หัวหน้ายิมธาตุ"+tn(S.mono[p]),tn(S.mono[p])+" Gym Leader")); if(S.teraT[p]) tags.push("Terastal ×"+S.teraT[p]); if(S.winner===p) tags.push(L("ชนะรอบนี้","Won this round"));
+    x.textAlign="right"; x.font=F(500,22); x.fillText(tags.join("  ·  ")||summary(S.team[p]).text,W-58,y+35);
+    S.team[p].forEach((t,i)=>{
+      const w=170, sx=54+i*(w+14.4), sy=y+84, hh=160;
+      x.fillStyle=TYPES[t][2]; rr(x,sx,sy,w,hh,14); x.fill(); x.lineWidth=5; x.strokeStyle="#1f2638"; x.stroke();
+      x.fillStyle=TYPES[t][3]?"#fff":"#1f2638"; x.textAlign="center";
+      x.font=F(600,32); x.fillText(tn(t),sx+w/2,sy+52);
+      if(LANG==="en"){x.font=F(400,18); x.fillText(TYPES[t][0],sx+w/2,sy+88);} else {x.font=PX(11); x.fillText(TYPES[t][1].toUpperCase(),sx+w/2,sy+88);}
+      const m=[]; if(S.items&&S.items[p]&&S.items[p][i]) m.push("@"+S.items[p][i]+(S.megaSlot&&S.megaSlot[p]===i&&S.backup[p]?" / "+S.backup[p]:"")); if(S.lock[p]===i) m.push(L("ป้องกัน","Protect")); if(S.taken[p].includes(i)) m.push(L("ของกลาง","Stolen")); if(S.teraMark[p].includes(i)) m.push("Terastal"); if(t===S.curse&&S.mono[p]==null) m.push("Knock Off");
+      if(m.length){x.fillStyle="#1f2638"; rr(x,sx+8,sy+108,w-16,40,10); x.fill(); x.fillStyle="#fff"; x.font=F(500,m.length>1?15:19); x.fillText(m.join(" · "),sx+w/2,sy+129);}
+    });
+  });
+  x.textAlign="center"; x.fillStyle="#8e97b5"; x.font=F(400,18); x.fillText(L("กติกาแฟนเมดสำหรับเล่นกับเพื่อน ไม่เกี่ยวข้องกับเจ้าของลิขสิทธิ์เกม","A fan-made rule set. Not affiliated with the game's rights holders."),W/2,Hh-22);
+  return c;
+}
+async function saveImage(){
+  if(S.phase==="idle"||S.phase==="rolling") return;
+  try{await document.fonts.ready}catch(e){}
+  const c=drawCard();
+  if(DL){
+    try{
+      const blob=await new Promise(r=>c.toBlob(r,"image/png"));
+      await DL.save({filename:"choice-cursed-draft-round-"+S.round+".png",data:blob});
+      setDialog(L("บันทึกรูปสรุปผลรอบที่ "+S.round+" แล้ว","Saved the result card for round "+S.round+".")); return;
+    }catch(e){ if(e&&(e.code==="declined"||e.code==="rate_limited")) return; }
+  }
+  $("imgOut").src=c.toDataURL("image/png"); modal("imgVeil",true); $("imClose").focus();
+}
+
+/* ---------- Calamity Draft: items drawn from the Pokémon Champions item pool ---------- */
+// Type-boosting item and the berry that softens a hit of each type, in TYPES order.
+const BOOST=["Silk Scarf","Charcoal","Mystic Water","Magnet","Miracle Seed","Never-Melt Ice","Black Belt","Poison Barb","Soft Sand","Sharp Beak","Twisted Spoon","Silver Powder","Hard Stone","Spell Tag","Dragon Fang","Black Glasses","Metal Coat","Fairy Feather"];
+const RESIST=["Chilan Berry","Occa Berry","Passho Berry","Wacan Berry","Rindo Berry","Yache Berry","Chople Berry","Kebia Berry","Shuca Berry","Coba Berry","Payapa Berry","Tanga Berry","Charti Berry","Kasib Berry","Haban Berry","Colbur Berry","Babiri Berry","Roseli Berry"];
+const GENERAL=["Focus Sash", "Life Orb", "Leftovers", "Choice Scarf", "White Herb", "Rocky Helmet", "Light Clay", "Eject Button", "Expert Belt", "Wide Lens", "Quick Claw", "Scope Lens", "Iron Ball", "Air Balloon", "Mental Herb", "Bright Powder", "Shell Bell", "Grassy Seed", "Psychic Seed", "Electric Seed", "Damp Rock", "Sitrus Berry", "Lum Berry", "Oran Berry", "Leppa Berry", "Cheri Berry", "Chesto Berry", "Pecha Berry", "Rawst Berry", "Aspear Berry", "Persim Berry", "Big Root", "Binding Band", "Focus Band", "Heat Rock", "Icy Rock", "King's Rock", "Metronome", "Misty Seed", "Muscle Band", "Normal Gem", "Red Card", "Shed Shell", "Smooth Rock", "Terrain Extender", "Wise Glasses", "Zoom Lens"];
+// Mega Stones in Pokémon Champions (Serebii list), with the base Pokémon's types (TYPES indexes).
+const MEGA=[["Venusaurite", "Venusaur", [4, 7]], ["Charizardite X", "Charizard", [1, 9]], ["Charizardite Y", "Charizard", [1, 9]], ["Blastoisinite", "Blastoise", [2]], ["Pidgeotite", "Pidgeot", [0, 9]], ["Clefablite", "Clefable", [17]], ["Alakazite", "Alakazam", [10]], ["Victreebelite", "Victreebel", [4, 7]], ["Slowbronite", "Slowbro", [2, 10]], ["Gengarite", "Gengar", [13, 7]], ["Kangaskhanite", "Kangaskhan", [0]], ["Starminite", "Starmie", [2, 10]], ["Pinsirite", "Pinsir", [11]], ["Aerodactylite", "Aerodactyl", [12, 9]], ["Dragoninite", "Dragonite", [14, 9]], ["Meganiumite", "Meganium", [4]], ["Feraligite", "Feraligatr", [2]], ["Scizorite", "Scizor", [11, 16]], ["Skarmorite", "Skarmory", [16, 9]], ["Houndoominite", "Houndoom", [15, 1]], ["Tyranitarite", "Tyranitar", [12, 15]], ["Gardevoirite", "Gardevoir", [10, 17]], ["Sablenite", "Sableye", [15, 13]], ["Medichamite", "Medicham", [6, 10]], ["Sharpedonite", "Sharpedo", [2, 15]], ["Cameruptite", "Camerupt", [1, 8]], ["Altarianite", "Altaria", [14, 9]], ["Banettite", "Banette", [13]], ["Chimechite", "Chimecho", [10]], ["Absolite", "Absol", [15]], ["Absolite Z", "Absol", [15]], ["Glalitite", "Glalie", [5]], ["Lopunnite", "Lopunny", [0]], ["Lucarionite", "Lucario", [6, 16]], ["Lucarionite Z", "Lucario", [6, 16]], ["Galladite", "Gallade", [10, 6]], ["Froslassite", "Froslass", [5, 13]], ["Emboarite", "Emboar", [1, 6]], ["Excadrite", "Excadrill", [8, 16]], ["Audinite", "Audino", [0]], ["Chandelurite", "Chandelure", [13, 1]], ["Golurkite", "Golurk", [8, 13]], ["Meowsticite", "Meowstic", [10]], ["Hawluchanite", "Hawlucha", [6, 9]], ["Crabominite", "Crabominable", [6, 5]], ["Drampanite", "Drampa", [0, 14]], ["Scovillainite", "Scovillain", [4, 1]], ["Glimmoranite", "Glimmora", [12, 7]], ["Salamencite", "Salamence", [14, 9]], ["Raichunite X", "Raichu", [3]], ["Raichunite Y", "Raichu", [3]], ["Golisopite", "Golisopod", [11, 2]], ["Floettite", "Floette", [17]], ["Garchompite", "Garchomp", [14, 8]], ["Garchompite Z", "Garchomp", [14, 8]], ["Staraptite", "Staraptor", [0, 9]], ["Metagrossite", "Metagross", [16, 10]], ["Delphoxite", "Delphox", [1, 10]], ["Swampertite", "Swampert", [2, 8]], ["Baxcalibrite", "Baxcalibur", [14, 5]], ["Mawilite", "Mawile", [16, 17]], ["Blazikenite", "Blaziken", [1, 6]], ["Pyroarite", "Pyroar", [1, 0]], ["Sceptilite", "Sceptile", [4]], ["Greninjite", "Greninja", [2, 15]], ["Scraftinite", "Scrafty", [15, 6]], ["Abomasite", "Abomasnow", [4, 5]], ["Aggronite", "Aggron", [16, 12]], ["Ampharosite", "Ampharos", [3]], ["Beedrillite", "Beedrill", [11, 7]], ["Dragalgite", "Dragalge", [7, 14]], ["Eelektrossite", "Eelektross", [3]], ["Gyaradosite", "Gyarados", [2, 9]], ["Barbaracite", "Barbaracle", [12, 2]], ["Chesnaughtite", "Chesnaught", [4, 6]], ["Falinksite", "Falinks", [6]], ["Heracronite", "Heracross", [11, 6]], ["Malamarite", "Malamar", [15, 10]], ["Manectite", "Manectric", [3]], ["Scolipite", "Scolipede", [11, 7]], ["Steelixite", "Steelix", [16, 8]]];
+// 35% the slot type's boosting item, 20% a berry against one of its weaknesses, 45% anything general.
+function itemFor(t){
+  const r=pick(100);
+  if(r<35) return BOOST[t];
+  if(r<55){const weak=TYPES.map((_,a)=>a).filter(a=>EFF[a][0].includes(t)); return RESIST[weak[pick(weak.length)]];}
+  return GENERAL[pick(GENERAL.length)];
+}
+const CAL=()=>H.mode==="cal";
+function rollItems(){
+  if(!CAL()||S.phase!=="done"||S.items.A) return;
+  saveUndo();
+  for(const p of P){
+    const used=new Set();
+    S.items[p]=S.team[p].map(t=>{
+      if(t===S.curse&&S.mono[p]==null) return null;      // Knock Off: no item
+      let it, n=0; do{it=itemFor(t); n++;}while(used.has(it)&&n<60);
+      used.add(it); return it;
+    });
+    // Every draw: one random item-holding slot gets a Mega Stone for a Pokémon of that slot's type.
+    const ok=S.items[p].map((it,i)=>it?i:-1).filter(i=>i>=0);
+    if(ok.length){
+      // Shown simply as "Mega Stone": any Mega of a Pokémon with this slot's type. A backup item covers players who don't have one.
+      const i=ok[pick(ok.length)];
+      let b, n=0; do{b=itemFor(S.team[p][i]); n++;}while(used.has(b)&&n<60);
+      used.add(b); S.items[p][i]="Mega Stone"; S.megaSlot[p]=i; S.backup[p]=b;
+    }
+  }
+  S.flash=L("สุ่มไอเทมแล้ว! ห้ามเปลี่ยน ต้องใช้ตามนี้เท่านั้น","Items drawn! No swaps. Use exactly these.");
+  render(); P.forEach(p=>els[p].forEach(bump)); sfx("items");
+}
+function setMode(v){
+  H.mode=v==="cal"?"cal":"cursed"; store();
+  $("mode").value=H.mode; document.body.classList.toggle("mode-cal",CAL());
+  $("modeName").textContent=CAL()?"CALAMITY DRAFT":"CURSED DRAFT";
+  if(typeof S!=="undefined"){applyLang(); render();}
+}
+
+const fresh=round=>({phase:"idle",round,flash:"",koi:pick(KO_TH.length),items:{A:null,B:null},megaSlot:{A:null,B:null},backup:{A:null,B:null},
+  team:{A:Array(N).fill(null),B:Array(N).fill(null)},wild:{A:null,B:null},curse:null,
+  lock:{A:null,B:null},taken:{A:[],B:[]},rights:{A:{ban:0,steal:0,bonus:0},B:{ban:0,steal:0,bonus:0}},
+  lockPick:{A:null,B:null},winner:null,id:0,noBan:{A:false,B:false},mono:{A:null,B:null},turn:null,steal:null,tera:null,teraUsed:{A:false,B:false},teraN:{A:0,B:0},teraT:{A:0,B:0},teraMark:{A:[],B:[]},uniq0:{A:0,B:0},betHit:{A:false,B:false}});
+let S=fresh(0);
+const els={A:[],B:[]};
+for(const p of P) for(let i=0;i<N;i++){
+  const d=document.createElement("div"); d.className="slot"; d.textContent="?";
+  $("slots"+p).appendChild(d); els[p].push(d);
+  d.addEventListener("click",()=>slotPick(p,i));
+  d.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();slotPick(p,i)}});
+}
+
+function counts(arr){const c={}; arr.forEach(i=>c[i]=(c[i]||0)+1); return c;}
+function summary(arr){
+  const c=counts(arr), uniq=Object.keys(c).length;
+  const dup=Object.entries(c).filter(e=>e[1]>1).sort((x,y)=>y[1]-x[1]).map(e=>tn(e[0])+" ×"+e[1]);
+  return {uniq,text:L("มี "+uniq+" ธาตุ",uniq+(uniq===1?" type":" types"))+(dup.length?L(" · ซ้ำ: "," · repeats: ")+dup.join(", "):L(" · ไม่มีธาตุซ้ำ"," · no repeats"))};
+}
+function monoType(p){
+  const c={}; let hit=null;
+  S.team[p].forEach(t=>{if(t!=null&&(c[t]=(c[t]||0)+1)>=4) hit=t});
+  return hit;
+}
+// The line a trainer says once the draw has settled.
+function rollQuote(p){
+  const c=counts(S.team[p]), u=Object.keys(c).length;
+  const top=Object.entries(c).sort((x,y)=>y[1]-x[1])[0];
+  if(top[1]>=3){const t=+top[0]; return Q(TQ[t].concat(QT.heavy),t)}
+  return Q(u===6?QT.rainbow:u===5?QT.varied:u===4?QT.mixed:QT.pairs);
+}
+const banOptions=p=>{const o=other(p); return [...new Set(S.team[o].filter((t,i)=>t!=null&&i!==S.lock[o]))]};
+const canBan=p=>!S.noBan[p]&&S.rights[p].ban+S.rights[p].bonus>0&&banOptions(p).length>0;
+const canSteal=p=>S.rights[p].steal+S.rights[p].bonus>0;
+const canTera=p=>S.teraN[p]>0;
+const canAct=p=>canBan(p)||canSteal(p);
+const teraLeft=()=>P.some(canTera);
+function spend(p,k){const r=S.rights[p]; if(r[k]>0) r[k]--; else r.bonus--;}
+function fixTurn(){
+  if(S.phase!=="act") return;
+  if(!canAct(S.turn)) S.turn=canAct(other(S.turn))?other(S.turn):null;
+  if(!S.turn) S.phase=teraLeft()?"tera":"done";
+}
+const AND=()=>L(" และ "," and ");
+
+/* ---------- Phase tracker ---------- */
+const STEPS=[["ทายธาตุ","Guess"],["สุ่มทีม","Draw"],["Protect","Protect"],["Roar · Trick","Roar · Trick"],["Terastal","Terastal"],["จัดทีม","Team build"],["แบทเทิล","Battle"]];
+function curStep(){
+  const ph=S.phase;
+  if(ph==="idle") return ($("betA").value&&$("betB").value)?2:1;
+  if(ph==="rolling") return 2;
+  if(ph==="lock") return 3;
+  if(ph==="act") return 4;
+  if(ph==="tera") return 5;
+  return (T.over||S.winner)?7:6;
+}
+function renderSteps(){
+  if(typeof S==="undefined") return;
+  const n=curStep(), noTera=S.phase!=="idle"&&S.phase!=="rolling"&&!S.teraT.A&&!S.teraT.B;
+  const ol=$("stepList"); ol.textContent="";
+  STEPS.forEach((s,i)=>{
+    const k=i+1, li=document.createElement("li"), b=document.createElement("b"), lab=document.createElement("span");
+    li.className="st"+(k===n?" cur":k<n?(k===5&&noTera?" skip":" done"):(k===5&&noTera?" skip":""));
+    b.textContent=k<n&&!(k===5&&noTera)?"✓":k; lab.className="lab"; lab.textContent=L(s[0],s[1]);
+    li.append(b,lab); if(k===n) li.setAttribute("aria-current","step"); ol.appendChild(li);
+  });
+  const who=p=>pname(p), missing=P.filter(p=>!$("bet"+p).value).map(who).join(AND());
+  const tx={
+    1:L("ทั้งสองฝ่ายเลือกตัวเลข Future Sight ว่าในทีมจะมีกี่ธาตุ"+(missing?" (ยังไม่เลือก: "+missing+")":""),"Both sides pick a Future Sight number"+(missing?" (still to pick: "+missing+")":"")),
+    2:S.phase==="rolling"?L("กำลังสุ่มทีม...","Drawing teams..."):L("กดปุ่มกลางลูกบอลเพื่อสุ่มทีม","Press the button in the ball to draw"),
+    3:L("แต่ละฝ่ายแตะช่องของตัวเอง 1 ช่องแบบลับ ให้อีกฝ่ายหันหน้าหนี","Each side secretly taps 1 of their own slots while the other looks away"),
+    4:S.turn?L("ตาของ "+who(S.turn)+": เลือก ROAR, TRICK หรือ RUN",who(S.turn)+"'s turn: ROAR, TRICK or RUN"):"",
+    5:L("ผู้ได้ Terastal กด TERA เพื่อเปลี่ยนธาตุอีกฝ่าย 1 ช่อง หรือกดไม่ใช้","Terastal holder: press TERA to change 1 opponent slot, or Skip"),
+    6:CAL()&&!S.items.A?L("กดสุ่มไอเทมในกล่องกลาง แล้วจึงเริ่มจับเวลา","Press Draw items in the middle panel, then start the timer"):T.id?L("กำลังจับเวลา จัดทีมให้ทันก่อนหมดเวลา","Timer running. Build your team before it ends"):L("กดเริ่มจับเวลาในกล่องกลาง แล้วจัดทีมตามธาตุที่ได้","Start the timer in the middle panel, then build your team"),
+    7:S.winner?L("บันทึกผลแล้ว กดสุ่มใหม่เพื่อเล่นรอบต่อไป","Result saved. Press Redraw for the next round"):L("แบทเทิลกันได้เลย จบแล้วกดบันทึกว่าใครชนะ","Battle now. Afterwards, record who won")
+  };
+  const now=$("stepNow"); now.textContent="";
+  const b=document.createElement("b"); b.textContent=L("ขั้นที่ ","Step ")+n+"/7 · "; now.append(b,document.createTextNode(tx[n]));
+}
+
+function render(){
+  const rolling=S.phase==="rolling", live=S.phase!=="idle"&&!rolling, st=S.steal;
+  const acting=S.phase==="act"||S.phase==="tera"||S.phase==="done";
+  document.body.classList.toggle("rolling",rolling);
+  const c=$("curse"); if(S.curse==null) blank(c); else paint(c,S.curse,false);
+  $("koTag").textContent=CT("ko");
+  $("itemBtn").hidden=!(CAL()&&S.phase==="done"&&!S.items.A);
+  $("autoNote").textContent=CAL()?(S.items.A?L("Calamity Draft: ไอเทมถูกกำหนดแล้ว ห้ามเปลี่ยน","Calamity Draft: items are set. No changes."):L("Calamity Draft: ต้องสุ่มไอเทมก่อนเริ่มจับเวลา","Calamity Draft: draw items before starting the timer.")):L("เพื่อความสนุกมากขึ้นเมื่อจัดทีม สามารถสุ่มไอเทมแบบ auto ในตัวเกม","For extra fun while building teams, use the game's auto random item option.");
+  for(const p of P){
+    if(!rolling) els[p].forEach((el,i)=>{
+      const t=S.team[p][i];
+      if(t==null) blank(el); else paint(el,t);
+      const taken=S.taken[p].includes(i);
+      const marks=(S.lock[p]===i?'<b class="seal">'+L("ป้องกัน","Protect")+'</b>':"")+(taken?'<b class="stolen">'+L("ของกลาง","Stolen")+'</b>':"")+(S.teraMark[p].includes(i)?'<b class="tera">'+GEM+'Terastal</b>':"")+(t!=null&&t===S.curse&&S.mono[p]==null?'<b class="curse">Knock Off</b>':"");
+      if(S.items&&S.items[p]&&S.items[p][i]) {const mg=S.megaSlot&&S.megaSlot[p]===i;
+        el.insertAdjacentHTML("beforeend",'<span class="item'+(mg?" mega":"")+'">@ '+S.items[p][i]+"</span>"+(mg&&S.backup[p]?'<span class="item">'+L("สำรอง: ","Backup: ")+S.backup[p]+"</span>":""));}
+      if(marks) el.insertAdjacentHTML("beforeend",'<span class="marks">'+marks+"</span>");
+      let can=false, picked=false;
+      if(S.phase==="lock") can=S.lockPick[p]===null;
+      else if(st){can=st.p===p||(S.lock[p]!==i&&!taken); picked=st.p===p?st.mine===i:st.theirs===i}
+      else if(S.tera) can=S.tera.p!==p&&S.lock[p]!==i;
+      el.classList.toggle("pickable",can); el.classList.toggle("picked",picked);
+      if(can){el.tabIndex=0; el.setAttribute("role","button")}
+      else{el.removeAttribute("tabindex"); el.removeAttribute("role")}
+    });
+    const w=$("wild"+p);
+    w.innerHTML=S.wild[p]==null?"?":!S.teraT[p]?L("ไม่ได้","None"):GEM+(S.teraN[p]>0?"Terastal ×"+S.teraN[p]:L("ใช้แล้ว","Used")); w.classList.toggle("on",S.teraN[p]>0);
+    $("gb"+p).innerHTML=S.mono[p]!=null?badgeSVG(S.mono[p]):"";
+    $("stat"+p).textContent=live?summary(S.team[p]).text+(S.mono[p]!=null?L(" · หัวหน้ายิมธาตุ"+tn(S.mono[p])," · "+tn(S.mono[p])+" Gym Leader"):""):"";
+    const r=S.rights[p], myTurn=S.phase==="act"&&S.turn===p;
+    $("lane"+p).classList.toggle("turn",myTurn);
+    $("rights"+p).textContent=S.phase==="lock"?(S.lockPick[p]!==null?L("Protect: เลือกแล้ว (ซ่อนอยู่)","Protect: chosen (hidden)"):L("Protect: ยังไม่ได้เลือก","Protect: not chosen yet")):acting?L("สิทธิ์เหลือ: ","Left: ")+"Roar "+(S.noBan[p]?L("ใช้ไม่ได้","blocked"):r.ban)+" · Trick "+r.steal+(r.bonus?L(" · โบนัส "," · Bonus ")+r.bonus:"")+(canTera(p)?" · Terastal "+S.teraN[p]:""):"";
+    const sel=$("ban"+p), keep=sel.value; sel.innerHTML="";
+    if(live) banOptions(p).forEach(t=>{const o=document.createElement("option"); o.value=t; o.textContent=tn(t); sel.appendChild(o)});
+    if([...sel.options].some(o=>o.value===keep)) sel.value=keep;
+    const tr=S.tera;
+    sel.disabled=$("banBtn"+p).disabled=!(myTurn&&!st&&!tr&&canBan(p));
+    $("steal"+p).disabled=!(myTurn&&!tr&&canSteal(p));
+    const showT=S.phase==="tera"&&canTera(p);
+    $("teraBtn"+p).hidden=$("teraSkip"+p).hidden=!showT;
+    $("teraSkip"+p).disabled=!!tr;
+    $("teraBtn"+p).disabled=!!tr&&tr.p!==p;
+    $("teraBtn"+p).textContent=tr&&tr.p===p?L("ยกเลิก","CANCEL"):"TERA";
+    $("steal"+p).textContent=st&&st.p===p?L("ยกเลิก","CANCEL"):"TRICK";
+    $("pass"+p).disabled=!(myTurn&&!st&&!tr);
+    $("bet"+p).disabled=rolling;
+  }
+  const v=$("verdict"); v.hidden=!live;
+  if(live){
+    const a=summary(S.team.A).uniq, b=summary(S.team.B).uniq, hi=pname(a>b?"A":"B");
+    v.textContent=L("ศาสตราจารย์ประเมิน: ","Professor's rating: ")+(a===b?L("สูสี ทั้งคู่มี "+a+" ธาตุ","Even. Both have "+a+(a===1?" type":" types"))
+      :L(hi+" ได้ธาตุหลากหลายกว่า "+Math.max(a,b)+" ต่อ "+Math.min(a,b),hi+" has more variety, "+Math.max(a,b)+" to "+Math.min(a,b)));
+  }
+  let s;
+  if(S.phase==="idle") s=L("ทั้งสองฝ่ายต้องใช้ Future Sight ทายว่าในทีมตัวเองจะมีกี่ธาตุก่อน แล้วกดปุ่มกลางลูกบอลเพื่อสุ่ม","Both sides must use Future Sight to guess how many types their team will have. Then press the button in the middle of the ball to draw.");
+  else if(rolling) s=L("ลูกบอลกำลังสั่น...","The ball is shaking...");
+  else if(S.phase==="lock"){const who=P.filter(p=>S.lockPick[p]===null).map(pname).join(AND()); s=L("Protect แบบลับ: "+who+" ยังไม่ได้เลือก ให้อีกฝ่ายหันหน้าหนี แล้วแตะช่องของตัวเอง 1 ช่อง ระบบจะซ่อนไว้และเปิดพร้อมกันเมื่อเลือกครบ","Secret Protect: "+who+" still to choose. Have the other side look away, then tap 1 of your own slots. Picks stay hidden and are revealed together.");}
+  else if(st) s=L(pname(st.p)+" ใช้ Trick! แตะช่องของตัวเองที่จะให้ และช่องของ "+pname(other(st.p))+" ที่จะเอา (ช่องที่ป้องกันและของกลางเอาไม่ได้)",pname(st.p)+" used Trick! Tap one of your slots to give and one of "+pname(other(st.p))+"'s to take (protected and stolen slots can't be taken).");
+  else if(S.tera) s=L(pname(S.tera.p)+" ใช้ Terastal! แตะช่องของ "+pname(other(S.tera.p))+" ที่จะเปลี่ยนธาตุ แล้วเลือกธาตุที่จะใส่ (ช่องที่ป้องกันเปลี่ยนไม่ได้)",pname(S.tera.p)+" is using Terastal! Tap one of "+pname(other(S.tera.p))+"'s slots, then choose its new type (protected slots can't be changed).");
+  else if(S.phase==="act") s=L("ตาของ "+pname(S.turn)+" จะทำอะไรดี? ROAR · TRICK · RUN","What will "+pname(S.turn)+" do? ROAR · TRICK · RUN");
+  else if(S.phase==="tera"){const who=P.filter(canTera).map(pname).join(AND()); s=L("Terastal! "+who+" กด TERA แล้วแตะช่องของอีกฝ่ายเพื่อกำหนดธาตุใหม่ให้ หรือกดไม่ใช้","Terastal! "+who+": press TERA, then tap an opponent's slot to set its new type, or press Skip.");}
+  else s=L("ใช้สิทธิ์ครบแล้ว! กดเริ่มจับเวลา Team Preview มีเวลาจัดทีม "+mins()+" นาที จบแบทเทิลแล้วกดบันทึกว่าใครชนะ","All actions used! Start the Team Preview timer: "+mins()+" min to build teams. After the battle, record who won.");
+  setDialog((S.flash?S.flash+" ":"")+s);
+  $("timer").hidden=S.phase!=="done";
+  $("round").textContent="ROUND "+S.round;
+  $("roll").disabled=rolling; $("roll").textContent=S.round?L("สุ่มใหม่","Redraw"):L("กดสุ่ม","Draw");
+  $("copy").disabled=$("shot").disabled=!live; $("reset").disabled=rolling||!S.round;
+  $("undo").disabled=!U||rolling;
+  $("win").hidden=S.phase!=="done";
+  for(const p of P){const b=$("win"+p); b.textContent=L(pname(p)+" ชนะ",pname(p)+" won"); b.classList.toggle("on",S.winner===p);}
+  $("scA").textContent=H.score.A; $("scB").textContent=H.score.B;
+  renderSteps();
+}
+
+/* ---------- Team Preview timer, drawn as an HP bar ---------- */
+let TEAM_MS=120000, T={id:null,end:0,over:false}, AC=null;
+const mins=()=>Math.round(TEAM_MS/60000);
+function showClock(ms){
+  const s=Math.ceil(ms/1000), f=ms/TEAM_MS;
+  $("clock").textContent=Math.floor(s/60)+":"+String(s%60).padStart(2,"0");
+  const h=$("hpfill"); h.style.width=(f*100)+"%"; h.className=f<=.2?"low":f<=.5?"mid2":"";
+}
+function timerText(){
+  $("tbtn").textContent=T.id?L("ยกเลิก","Cancel"):T.over?L("จับเวลาใหม่","Restart timer"):L("เริ่มจับเวลา","Start timer");
+  renderSteps();
+  $("tnote").textContent=T.id?L("กำลังนับถอยหลัง "+mins()+" นาที","Counting down "+mins()+" min"):T.over?L("หมดเวลาจัดทีม เริ่มแบทเทิลได้","Time's up. Start the battle."):"";
+}
+function stopTimer(){
+  clearInterval(T.id); T.id=null; T.over=false; showClock(TEAM_MS);
+  $("clock").classList.remove("low","over"); $("tmin").disabled=false; timerText();
+}
+/* ---------- Sound: small synthesized chiptune effects, no audio files ---------- */
+let MUTE=false;
+function audio(){try{AC=AC||new (window.AudioContext||window.webkitAudioContext)(); AC.resume()}catch(e){} return AC;}
+function tone(f,at,dur,type="square",vol=.07,f2){
+  try{
+    const o=AC.createOscillator(), g=AC.createGain(), t=AC.currentTime+at;
+    o.type=type; o.frequency.setValueAtTime(f,t); if(f2) o.frequency.exponentialRampToValueAtTime(f2,t+dur);
+    g.gain.setValueAtTime(vol,t); g.gain.exponentialRampToValueAtTime(.0001,t+dur);
+    o.connect(g); g.connect(AC.destination); o.start(t); o.stop(t+dur+.02);
+  }catch(e){}
+}
+let NB=null;   // shared white-noise buffer
+function noise(at,dur,vol,f1,f2,q=1,type="bandpass"){
+  try{
+    if(!NB){NB=AC.createBuffer(1,AC.sampleRate*2,AC.sampleRate); const d=NB.getChannelData(0); for(let i=0;i<d.length;i++) d[i]=Math.random()*2-1;}
+    const s=AC.createBufferSource(), f=AC.createBiquadFilter(), g=AC.createGain(), t=AC.currentTime+at;
+    s.buffer=NB; f.type=type; f.Q.value=q; f.frequency.setValueAtTime(f1,t); f.frequency.exponentialRampToValueAtTime(f2,t+dur);
+    g.gain.setValueAtTime(.0001,t); g.gain.exponentialRampToValueAtTime(vol,t+Math.min(.08,dur/3)); g.gain.exponentialRampToValueAtTime(.0001,t+dur);
+    s.connect(f); f.connect(g); g.connect(AC.destination); s.start(t); s.stop(t+dur+.05);
+  }catch(e){}
+}
+function vib(f,at,dur,type,vol,f2,rate,depth){
+  try{
+    const o=AC.createOscillator(), l=AC.createOscillator(), lg=AC.createGain(), g=AC.createGain(), t=AC.currentTime+at;
+    o.type=type; o.frequency.setValueAtTime(f,t); o.frequency.exponentialRampToValueAtTime(f2,t+dur);
+    l.frequency.value=rate; lg.gain.value=depth; l.connect(lg); lg.connect(o.frequency);
+    g.gain.setValueAtTime(.0001,t); g.gain.exponentialRampToValueAtTime(vol,t+.06); g.gain.setValueAtTime(vol,t+dur*.6); g.gain.exponentialRampToValueAtTime(.0001,t+dur);
+    o.connect(g); g.connect(AC.destination); o.start(t); l.start(t); o.stop(t+dur+.05); l.stop(t+dur+.05);
+  }catch(e){}
+}
+const SFX_EXTRA={items:()=>{for(let i=0;i<8;i++) tone(600+i*110,i*.06,.06,"square",.05); tone(1568,.55,.35,"triangle",.08); tone(2093,.62,.4,"triangle",.06)}};
+const SFX={
+  roll:()=>{for(let i=0;i<9;i++) tone(i%2?330:262,i*.22,.09)},
+  land:()=>{tone(523,0,.1); tone(784,.1,.18)},
+  protect:()=>{tone(660,0,.08,"triangle",.1); tone(990,.08,.2,"triangle",.1)},
+  reveal:()=>{tone(440,0,.08); tone(660,.09,.08); tone(880,.18,.2)},
+  // A growl: wobbling low saw and square sliding down, over a noise rumble
+  roar:()=>{vib(170,0,1.2,"sawtooth",.13,70,28,18); vib(112,0,1.2,"square",.06,48,24,10); noise(0,1.2,.28,900,220,.8,"lowpass"); noise(.04,.55,.14,2600,700,1.2)},
+  // Magic swap: rising whoosh, sparkle, then a soft poof
+  trick:()=>{noise(0,.45,.2,300,4200,2); [1568,2093,2637,3136].forEach((f,i)=>tone(f,.36+i*.06,.2,"triangle",.06)); noise(.66,.28,.25,1800,350,.7,"lowpass"); tone(523,.66,.1,"square",.05,1047)},
+  run:()=>{tone(660,0,.07); tone(520,.07,.07); tone(400,.14,.07); tone(300,.21,.12)},
+  // Pressing TERA: a bright rising "ving" with a quick echo
+  teraOn:()=>{[0,.09,.18].forEach((d,k)=>{tone(900,d,.5,"sine",.1/(k+1),2600); tone(907,d,.5,"sine",.05/(k+1),2660);}); tone(3200,.06,.6,"triangle",.03)},
+  // Terastallizing: crystal sweep, glittering arpeggio, chord bloom and bells
+  teraDone:()=>{noise(0,.9,.13,400,6500,3); [523,659,784,1047,1319,1568,2093].forEach((f,i)=>tone(f,.1+i*.07,.35,"triangle",.07));
+    [1047,1319,1568].forEach(f=>tone(f,.62,1.1,"sine",.07)); [2637,3136,3951].forEach((f,i)=>{tone(f,.7+i*.12,.5,"sine",.05); tone(f,.95+i*.12,.4,"sine",.02);})},
+  // Gym Leader: a short brass-style fanfare, then a held chord with sparkles
+  badge:()=>{[[523,0,.12],[523,.13,.12],[523,.26,.12],[659,.39,.36],[587,.78,.12],[659,.91,.12],[784,1.04,.6]].forEach(([f,t,d])=>{tone(f,t,d,"square",.07); tone(f/2,t,d,"triangle",.06);});
+    [523,659,784,1047].forEach(f=>tone(f,1.7,1,"sawtooth",.035)); tone(262,1.7,1,"triangle",.09); [2093,2637,3136].forEach((f,i)=>tone(f,1.72+i*.1,.5,"sine",.04))},
+  win:()=>{[659,659,659,523,659,784].forEach((f,i)=>tone(f,i*.12,.11)); tone(1047,.75,.45)},
+  undo:()=>{tone(500,0,.1,"square",.07,250)},
+  click:()=>tone(700,0,.05),
+  time:()=>{tone(880,0,.2); tone(880,.3,.2); tone(880,.6,.5)}
+};
+function sfx(n){if(MUTE||!audio()) return; const f=SFX[n]||SFX_EXTRA[n]; f&&f();}
+function tick(){
+  const left=T.end-Date.now();
+  if(left<=0){
+    clearInterval(T.id); T.id=null; T.over=true; showClock(0);
+    $("clock").classList.remove("low"); $("clock").classList.add("over"); timerText();
+    setDialog(Q(QT.timeup)); sfx("time"); return;
+  }
+  showClock(left); $("clock").classList.toggle("low",left<=10000);
+  const s=Math.ceil(left/1000);
+  if(s!==T.last){T.last=s; if(!MUTE&&audio()){ if(s<=3) tone(1320,0,.18,"square",.09); else if(s<=10) tone(990,0,.1,"square",.07); else tone(1800,0,.025,"square",.025);} }
+}
+$("tbtn").addEventListener("click",()=>{
+  if(T.id){stopTimer(); return}
+  if(CAL()&&S.phase==="done"&&!S.items.A){setDialog(L("Calamity Draft: กดสุ่มไอเทมก่อน แล้วจึงเริ่มจับเวลา","Calamity Draft: draw items first, then start the timer.")); return}
+  stopTimer();
+  audio(); sfx("click");
+  T.end=Date.now()+TEAM_MS; T.id=setInterval(tick,200); $("tmin").disabled=true; timerText();
+});
+$("tmin").addEventListener("change",()=>{TEAM_MS=+$("tmin").value*60000; H.mins=+$("tmin").value; store(); if(!T.id) stopTimer(); render();});
+
+/* ---------- Gym Leader: 4+ of one type. The badge must be accepted. ---------- */
+function checkChosen(){
+  const p=P.find(q=>S.mono[q]==null&&monoType(q)!=null), v=$("veil");
+  if(!p){v.hidden=true; $("wrap").inert=false; return}
+  const t=monoType(p), n=S.team[p].filter(x=>x===t).length, o=pname(other(p));
+  v.dataset.p=p; $("chBadge").innerHTML=badgeSVG(t);
+  $("chTitle").textContent=L("ได้รับเข็มกลัดยิมธาตุ"+tn(t)+"!","You got the "+tn(t)+" Gym Badge!");
+  $("chText").textContent=L(pname(p)+" ได้ธาตุ"+tn(t)+" "+n+" ช่อง สมาคมโปเกมอนมาถึงพร้อมเข็มกลัดและสัญญาจ้างแล้ว ไม่มีปุ่มปฏิเสธ ทั้ง 6 ช่องจะกลายเป็นธาตุ"+tn(t)+" ได้สวัสดิการไม่ติด Knock Off และ "+o+" ห้ามใช้ Roar ใส่ผู้บริหาร",
+    pname(p)+" drew "+n+" "+tn(t)+" slots. The Pokémon League has arrived with a badge and an employment contract. There is no decline button. All 6 slots turn into "+tn(t)+", the job comes with Knock Off immunity, and "+o+" may not use Roar on management.");
+  v.hidden=false; $("wrap").inert=true; $("chOk").focus(); sfx("badge");
+}
+function chosen(p){
+  const t=monoType(p);
+  if(t==null||S.mono[p]!=null) return;
+  S.team[p].fill(t); S.taken[p]=[]; S.teraMark[p]=[]; S.mono[p]=t; S.noBan[other(p)]=true; S.flash="";
+  addLog(p,L("ได้เข็มกลัดหัวหน้ายิมธาตุ"+tn(t)+" ทั้ง 6 ช่องเป็นธาตุ"+tn(t)+" · "+pname(other(p))+" ใช้ Roar ไม่ได้ · ไม่ติด Knock Off",
+    "Got the "+tn(t)+" Gym Badge. All 6 slots are "+tn(t)+" · "+pname(other(p))+" can't use Roar · ignores Knock Off"));
+  say(p,Q(QT.leader,t));
+  fixTurn(); render(); els[p].forEach(bump);
+}
+$("chOk").addEventListener("click",()=>{chosen($("veil").dataset.p); checkChosen();});
+
+function roll(){
+  if(S.phase==="rolling") return;
+  const bets={A:$("betA").value,B:$("betB").value};
+  const missing=P.filter(p=>bets[p]==="");
+  if(missing.length){
+    const who=missing.map(pname).join(AND());
+    setDialog(L("ยังสุ่มไม่ได้! "+who+" ต้องใช้ Future Sight ทายว่าในทีมจะมีกี่ธาตุก่อน","Can't draw yet! "+who+" must use Future Sight to guess the number of types first."));
+    $("bet"+missing[0]).focus(); return;
+  }
+  stopTimer(); archive(); U=null; sfx("roll"); countDraw(CAL()?"calamity":"cursed");
+  S=fresh(S.round+1); S.phase="rolling"; S.id=Date.now();
+  // A type can come up in at most 4 of a team's 6 slots.
+  const draw=()=>{const a=[]; while(a.length<N){const t=pick(); if(a.filter(x=>x===t).length<4) a.push(t);} return a;};
+  const team={A:draw(),B:draw()};
+  const curse=pick(), wild={A:pick(6)===0,B:pick(6)===0};
+  P.forEach(p=>{$("log"+p).textContent=""; say(p,""); els[p].forEach(el=>el.className="slot")});
+  render();
+  const done=()=>{
+    S.team=team; S.curse=curse; S.wild=wild;
+    for(const p of P){
+      const u=summary(team[p]).uniq; S.uniq0[p]=u;
+      S.betHit[p]=+bets[p]===u; S.teraT[p]=S.teraN[p]=Math.min(2,(wild[p]?1:0)+(S.betHit[p]?1:0));
+      addLog(p,L("Future Sight ทาย "+bets[p]+" ได้จริง "+u+" → ","Future Sight guessed "+bets[p]+", got "+u+" → ")+(S.betHit[p]?Q(QT.betHit)+L(" ได้ Terastal +1"," +1 Terastal"):Q(QT.betMiss)));
+      if(wild[p]) addLog(p,"Terastal → "+Q(QT.tera)+L(" ใช้เปลี่ยนธาตุ 1 ช่องของอีกฝ่ายได้ตอนท้าย ก่อนจับเวลา"," Use it at the end, before the timer, to change 1 of the opponent's slots."));
+      if(monoType(p)==null) say(p,rollQuote(p));
+    }
+    S.flash=L("Knock Off รอบนี้คือธาตุ"+tn(curse)+" ","This round's Knock Off is "+tn(curse)+". ")+CT("ko");
+    S.phase="lock"; render(); sfx("land"); checkChosen();
+  };
+  if(still()){done(); return}
+  let left=N*2;
+  P.forEach(p=>els[p].forEach((el,i)=>{
+    const spin=setInterval(()=>paint(el,Math.floor(Math.random()*TYPES.length)),70);
+    setTimeout(()=>{clearInterval(spin); paint(el,team[p][i]); bump(el); if(--left===0) done()},700+i*220);
+  }));
+}
+/* ---------- Terastal: tap a slot, choose the type in a pop-up, then the announcement ---------- */
+const typeBtns=()=>TYPES.map((t,i)=>'<button type="button" class="tbtn" data-t="'+i+'" style="background:'+t[2]+';color:'+(t[3]?"#fff":"#1f2638")+'">'+tn(i)+"</button>").join("");
+$("tvGrid").innerHTML=typeBtns();
+function teraVeil(on){$("teraVeil").hidden=!on; $("wrap").inert=on;}
+function openTeraPick(){
+  const p=S.tera.p, o=other(p), i=S.tera.slot, now=S.team[o][i];
+  $("tvTitle").textContent=L("เลือกธาตุที่จะใส่","Choose the new type");
+  $("tvText").textContent=L(pname(p)+" จะเปลี่ยนช่อง "+(i+1)+" ของ "+pname(o)+" (ตอนนี้ธาตุ"+tn(now)+") เป็นธาตุอะไร?",pname(p)+" is changing slot "+(i+1)+" of "+pname(o)+" (now "+tn(now)+"). Into which type?");
+  $("tvGem").hidden=true; $("tvOk").hidden=true; $("tvGrid").hidden=false; $("tvCancel").hidden=false;
+  [...$("tvGrid").children].forEach(b=>b.disabled=+b.dataset.t===now);
+  teraVeil(true); $("tvCancel").focus();
+}
+function applyTera(t){
+  if(S.phase!=="tera"||!S.tera||S.tera.slot==null) return;
+  saveUndo();
+  const p=S.tera.p, o=other(p), i=S.tera.slot, was=S.team[o][i], line=Q(QT.teraUse);
+  S.team[o][i]=t; S.tera=null; S.teraN[p]--; S.teraUsed[p]=S.teraN[p]<=0; S.teraLast={o,i};
+  if(!S.teraMark[o].includes(i)) S.teraMark[o].push(i);
+  say(p,line); S.flash="";
+  addLog(p,L("Terastal ใส่ช่อง "+(i+1)+" ของ "+pname(o)+": ","Terastal on slot "+(i+1)+" of "+pname(o)+": ")+tn(was)+" → "+tn(t));
+  if(monoType(o)==null) say(o,rollQuote(o));
+  if(!teraLeft()) S.phase="done";
+  render();
+  $("tvGemIn").style.setProperty("--c",TYPES[t][2]);
+  $("tvTitle").textContent=line;
+  $("tvText").textContent=CT("tera")+" "+L(pname(p)+" ใช้ Terastal! ช่อง "+(i+1)+" ของ "+pname(o)+" เปลี่ยนจากธาตุ"+tn(was)+"เป็นธาตุ"+tn(t)+"!",pname(p)+" used Terastal! Slot "+(i+1)+" of "+pname(o)+" changed from "+tn(was)+" to "+tn(t)+"!");
+  $("tvGrid").hidden=true; $("tvCancel").hidden=true; $("tvGem").hidden=false; $("tvOk").hidden=false;
+  $("tvOk").focus(); sfx("teraDone");
+}
+$("tvGrid").addEventListener("click",e=>{const b=e.target.closest(".tbtn"); if(b&&!b.disabled) applyTera(+b.dataset.t);});
+$("tvCancel").addEventListener("click",()=>{if(S.tera) S.tera.slot=null; teraVeil(false);});
+$("tvOk").addEventListener("click",()=>{
+  teraVeil(false);
+  if(S.teraLast){bump(els[S.teraLast.o][S.teraLast.i]); S.teraLast=null;}
+  checkChosen();
+});
+
+function startAct(){
+  for(const p of P) S.rights[p]={ban:1,steal:1,bonus:0};
+  const a=S.uniq0.A, b=S.uniq0.B;
+  S.turn=a<b?"A":b<a?"B":P[pick(2)];
+  addLog(S.turn,a===b?L("จำนวนธาตุเท่ากัน สุ่มได้ออกตัวก่อน","Same number of types. Drawn at random to go first."):L("จำนวนธาตุน้อยกว่า ได้ออกตัวก่อน","Fewer types, so goes first."));
+  S.phase="act"; fixTurn();
+}
+function slotPick(q,i){
+  if(S.phase==="lock"){
+    if(S.lockPick[q]!==null) return;
+    saveUndo(); S.lockPick[q]=i; S.flash="";
+    if(S.lockPick.A!==null&&S.lockPick.B!==null){
+      for(const p of P){S.lock[p]=S.lockPick[p]; addLog(p,L("Protect ช่อง ","Protect on slot ")+(S.lock[p]+1)+" ("+tn(S.team[p][S.lock[p]])+")");}
+      startAct(); render(); sfx("reveal"); P.forEach(p=>bump(els[p][S.lock[p]]));
+    }else{render(); sfx("protect");}
+    return;
+  }
+  if(S.phase==="tera"&&S.tera){
+    const o=other(S.tera.p);
+    if(q!==o||S.lock[o]===i) return;
+    S.tera.slot=i; openTeraPick(); return;
+  }
+  const st=S.steal; if(S.phase!=="act"||!st) return;
+  const p=st.p, o=other(p);
+  if(q===p) st.mine=i; else{ if(S.lock[q]===i||S.taken[q].includes(i)) return; st.theirs=i; }
+  if(st.mine===null||st.theirs===null){render(); return}
+  saveUndo();
+  const a=st.mine, b=st.theirs, mine=S.team[p][a], theirs=S.team[o][b];
+  S.team[p][a]=theirs; S.team[o][b]=mine; S.steal=null; spend(p,"steal");
+  S.flash=CT("trick")+" "+L(pname(p)+" ใช้ Trick สำเร็จ!",pname(p)+"'s Trick worked!");
+  if(!S.taken[p].includes(a)) S.taken[p].push(a);
+  S.teraMark[p]=S.teraMark[p].filter(x=>x!==a); S.teraMark[o]=S.teraMark[o].filter(x=>x!==b);
+  addLog(p,L("Trick เอา "+tn(theirs)+" (ช่อง "+(b+1)+" ของ "+pname(o)+") มาใส่ช่อง "+(a+1)+" แลกกับ "+tn(mine),"Trick took "+tn(theirs)+" (slot "+(b+1)+" of "+pname(o)+") into slot "+(a+1)+", giving "+tn(mine)));
+  say(o,Q(QT.trick));
+  S.turn=o; fixTurn(); render(); bump(els[p][a]); bump(els[o][b]); sfx("trick");
+  checkChosen();
+}
+function ban(p){
+  if(S.phase!=="act"||S.turn!==p||S.steal||S.tera||!canBan(p)) return;
+  const o=other(p), t=+$("ban"+p).value, hit=[], idx=[];
+  if(!banOptions(p).includes(t)) return;
+  saveUndo();
+  S.team[o].forEach((v,i)=>{
+    if(v!==t||i===S.lock[o]) return;
+    let n; do{n=pick()}while(n===t||S.team[o].filter(x=>x===n).length>=4);
+    S.team[o][i]=n; idx.push(i); S.teraMark[o]=S.teraMark[o].filter(x=>x!==i); hit.push(L("ช่อง "+(i+1)+" ได้ ","slot "+(i+1)+" got ")+tn(n));
+  });
+  spend(p,"ban");
+  S.flash=CT("roar")+" "+L(pname(p)+" ใช้ Roar! ",pname(p)+" used Roar! ")+Q(QT.roar,t);
+  if(monoType(o)==null) say(o,rollQuote(o));
+  addLog(p,L("Roar ใส่ธาตุ"+tn(t)+" ของ "+pname(o)+" → ","Roar on "+pname(o)+"'s "+tn(t)+" → ")+hit.join(", "));
+  S.turn=o; fixTurn(); render(); idx.forEach(i=>bump(els[o][i])); sfx("roar");
+  checkChosen();
+}
+function steal(p){
+  if(S.phase!=="act"||S.turn!==p) return;
+  if(S.tera) return;
+  if(S.steal) S.steal=null; else if(canSteal(p)){S.steal={p,mine:null,theirs:null}; S.flash="";}
+  render();
+}
+function pass(p){
+  if(S.phase!=="act"||S.turn!==p||S.steal||S.tera) return;
+  saveUndo();
+  S.rights[p]={ban:0,steal:0,bonus:0}; S.flash="";
+  addLog(p,L("Run สละสิทธิ์ที่เหลือทั้งหมด","Run: gave up all remaining actions")); say(p,Q(QT.run)); sfx("run");
+  S.turn=other(p); fixTurn(); render();
+}
+
+$("roll").addEventListener("click",roll);
+/* ---------- Global trainer count: shared by every device through /api/stats ---------- */
+let GS=null, GLOCAL={cursed:0,calamity:0};
+try{GLOCAL=Object.assign(GLOCAL,JSON.parse(localStorage.getItem("choiceTC")||"{}"))}catch(e){}
+function showStats(){
+  const s=GS||{cursed:GLOCAL.cursed,calamity:GLOCAL.calamity,total:GLOCAL.cursed+GLOCAL.calamity};
+  const f=n=>Number(n).toLocaleString()+L(" คน"," trainers");
+  $("statCursed").textContent=f(s.cursed); $("statCalamity").textContent=f(s.calamity); $("statTotal").textContent=f(s.total);
+  $("tcNote").textContent=GS?L("นับ 2 คนต่อการสุ่มทีม 1 ครั้ง · ยอดรวมจากทุกเครื่อง","2 trainers per team draw · totals from every device")
+                            :L("นับ 2 คนต่อการสุ่มทีม 1 ครั้ง · ตอนนี้แสดงยอดในเครื่องนี้ (เชื่อมยอดรวมไม่ได้)","2 trainers per team draw · showing this device only (shared count unavailable)");
+}
+async function loadStats(){
+  try{const r=await fetch("/api/stats",{cache:"no-store"}); if(r.ok){GS=await r.json()}}catch(e){}
+  showStats();
+}
+async function countDraw(mode){
+  GLOCAL[mode]+=2; try{localStorage.setItem("choiceTC",JSON.stringify(GLOCAL))}catch(e){}
+  try{const r=await fetch("/api/stats",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({mode})}); if(r.ok){GS=await r.json()}}catch(e){}
+  showStats();
+}
+loadStats(); setInterval(loadStats,60000);
+$("reset").addEventListener("click",()=>{
+  if(S.phase==="rolling") return;
+  stopTimer(); archive(); U=null; S=fresh(0);
+  P.forEach(p=>{$("log"+p).textContent=""; say(p,""); $("name"+p).value=L("ผู้เล่น ","Player ")+p; $("bet"+p).value=""; els[p].forEach(el=>el.className="slot")});
+  render();
+});
+$("copy").addEventListener("click",()=>{
+  if(S.phase==="idle"||S.phase==="rolling") return;
+  const line=p=>pname(p)+": "+S.team[p].map((t,i)=>tn(t)+(S.items&&S.items[p]&&S.items[p][i]?" @"+S.items[p][i]+(S.megaSlot&&S.megaSlot[p]===i&&S.backup[p]?" ("+L("สำรอง ","backup ")+S.backup[p]+")":""):"")+(S.lock[p]===i?" [Protect]":"")).join(", ")+(S.mono[p]!=null?" | "+L("หัวหน้ายิมธาตุ"+tn(S.mono[p]),tn(S.mono[p])+" Gym Leader"):"")+(S.wild[p]?" | "+L("ได้ Terastal","Got Terastal"):"");
+  const txt=L("Choice: Cursed Draft ฉันไม่ได้เลือกนาย! รอบที่ ","Choice: Cursed Draft, I Didn't Choose You! Round ")+S.round+"\nKnock Off: "+tn(S.curse)+"\n"+line("A")+"\n"+line("B");
+  const done=()=>{$("copy").textContent=L("คัดลอกแล้ว","Copied"); setTimeout(()=>$("copy").textContent=L("คัดลอกผล","Copy result"),1500)};
+  const fallback=()=>setDialog(txt.replace(/\n/g," | "));
+  try{navigator.clipboard.writeText(txt).then(done,fallback)}catch(e){fallback()}
+});
+for(const p of P){
+  $("banBtn"+p).addEventListener("click",()=>ban(p));
+  $("steal"+p).addEventListener("click",()=>steal(p));
+  $("pass"+p).addEventListener("click",()=>pass(p));
+  $("teraBtn"+p).addEventListener("click",()=>{
+    if(S.phase!=="tera"||!canTera(p)||(S.tera&&S.tera.p!==p)) return;
+    if(S.tera) S.tera=null; else{S.tera={p,slot:null}; S.flash=""; sfx("teraOn");}
+    render();
+  });
+  $("teraSkip"+p).addEventListener("click",()=>{
+    if(S.phase!=="tera"||!canTera(p)||S.tera) return;
+    saveUndo(); S.teraN[p]=0; S.teraUsed[p]=true; S.flash=""; addLog(p,L("ไม่ใช้ Terastal ที่เหลือ","Skipped remaining Terastal")); sfx("click");
+    if(!teraLeft()) S.phase="done";
+    render();
+  });
+}
+$("undo").addEventListener("click",undo);
+$("betA").addEventListener("change",()=>renderSteps()); $("betB").addEventListener("change",()=>renderSteps());
+$("shot").addEventListener("click",saveImage);
+$("imClose").addEventListener("click",()=>modal("imgVeil",false));
+$("tcGrid").innerHTML=typeBtns();
+$("tcGrid").addEventListener("click",e=>{const b=e.target.closest(".tbtn"); if(b){showChart(+b.dataset.t); sfx("click");}});
+$("chart").addEventListener("click",()=>{modal("chartVeil",true); $("tcClose").focus();});
+$("tcClose").addEventListener("click",()=>modal("chartVeil",false));
+$("winA").addEventListener("click",()=>setWinner("A"));
+$("winB").addEventListener("click",()=>setWinner("B"));
+$("hclear").addEventListener("click",()=>{H.score={A:0,B:0}; H.rounds=[]; S.winner=null; store(); drawHist(); render();});
+$("mute").addEventListener("click",()=>{MUTE=!MUTE; H.mute=MUTE; store(); applyLang(); if(!MUTE) sfx("click");});
+// Switching language redraws everything on screen; lines already written to the logs stay as they were.
+$("lang").addEventListener("click",()=>{
+  LANG=LANG==="en"?"th":"en"; H.lang=LANG; store();
+  applyLang(); drawHist(); timerText(); if(chartT!=null) showChart(chartT); render(); sfx("click");
+});
+MUTE=!!H.mute;
+$("itemBtn").addEventListener("click",rollItems);
+$("mode").addEventListener("change",()=>{setMode($("mode").value); sfx("click");});
+setMode(H.mode);
+/* ---------- Full screen and layout ---------- */
+function setLayout(v){
+  document.body.classList.toggle("lay-h",v==="h"); document.body.classList.toggle("lay-v",v==="v");
+  $("layout").value=v; H.layout=v; store(); lockOrient();
+}
+function lockOrient(){
+  try{
+    const o=screen.orientation, v=H.layout;
+    if(!o||!document.fullscreenElement) return;
+    if(v==="h") o.lock("landscape").catch(()=>{}); else if(v==="v") o.lock("portrait").catch(()=>{}); else o.unlock&&o.unlock();
+  }catch(e){}
+}
+$("layout").addEventListener("change",()=>{setLayout($("layout").value); sfx("click");});
+$("full").addEventListener("click",async()=>{
+  try{
+    if(document.fullscreenElement){H.autofs=false; store(); await document.exitFullscreen();}
+    else{await document.documentElement.requestFullscreen(); H.autofs=true; store();}
+  }catch(e){
+    setDialog(L("อุปกรณ์หรือแอปนี้ไม่ให้เปิดเต็มจอ ลองเปิดหน้านี้ในเบราว์เซอร์บนคอมพิวเตอร์ หรือหมุนเครื่องแล้วเลือกจัดหน้าแนวนอนแทน","This device or app doesn't allow full screen. Try a desktop browser, or rotate the device and pick the Landscape layout."));
+  }
+});
+document.addEventListener("fullscreenchange",()=>{applyLang(); lockOrient();});
+setLayout(["auto","h","v"].includes(H.layout)?H.layout:"auto");
+// Browsers only allow full screen after a tap. If full screen was on last time,
+// the first tap anywhere on the page turns it back on.
+if(H.autofs&&document.fullscreenEnabled){
+  const go=e=>{
+    if(e.target&&e.target.closest&&e.target.closest("#full")) return;
+    document.removeEventListener("pointerdown",go,true);
+    if(!document.fullscreenElement) document.documentElement.requestFullscreen().catch(()=>{});
+  };
+  document.addEventListener("pointerdown",go,true);
+}
+if([1,2,3,5,10].includes(+H.mins)){$("tmin").value=String(H.mins); TEAM_MS=H.mins*60000;}
+applyLang(); drawHist(); stopTimer(); render();
+</script>
+
+</body></html>
