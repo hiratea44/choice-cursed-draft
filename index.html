@@ -311,7 +311,7 @@ body.mode-cal .steps .st.cur{background:#f6a8d2}
       <li><b>Run (หนี):</b> สละสิทธิ์ที่เหลือทั้งหมดของตัวเอง</li>
       <li><b>Team Preview:</b> เมื่อใช้สิทธิ์ครบ กดเริ่มจับเวลา ทั้งสองฝ่ายมีเวลาจัดทีมตามที่ตั้งไว้ (ค่าเริ่มต้น 2 นาที) จบแบทเทิลแล้วกดบันทึกว่าใครชนะ</li>
     </ol>
-    <h2 class="ch2">THE FOUR CURSES</h2>
+    <h2 class="ch2">THE FIVE CURSES</h2>
     <div id="curses" class="curses"></div>
   </div>
   <p class="fan">กติกาแฟนเมดสำหรับเล่นกับเพื่อน ไม่เกี่ยวข้องกับเจ้าของลิขสิทธิ์เกม</p>
@@ -464,7 +464,7 @@ QT_EN.presentGot=["I didn't order this!","No returns, no swaps... really?","Than
 const QT=new Proxy({}, {get:(_,k)=>(LANG==="en"?QT_EN:QT_TH)[k]});
 const TQ=new Proxy([], {get:(_,k)=>(LANG==="en"?TQ_EN:TQ_TH)[k]});
 
-/* ---------- The four curses: name, tagline and description ---------- */
+/* ---------- The five curses: name, tagline and description ---------- */
 const CURSES=[
  {k:"ko",name:"Knock Off",nick:["คำสาปแห่งมือเปล่า","The Curse of Empty Hands"],tag:["ของที่ถือมา ไม่ใช่ของเจ้าอีกต่อไป","What you carried is no longer yours."],
   desc:["คำสาปที่แถมมาทุกรอบ ไม่เลือกข้าง ไม่เลือกคน ธาตุที่ถูกสาปจะถูกปัดไอเทมทิ้งตั้งแต่ก่อนลงสนาม ช่องไหนเป็นธาตุนั้น โปเกมอนในช่องนั้นต้องลงสู้มือเปล่า มีเพียงหัวหน้ายิมเท่านั้นที่พลังของเข็มกลัดคุ้มครองไว้ได้",
@@ -475,6 +475,9 @@ const CURSES=[
  {k:"trick",name:"Trick",nick:["คำสาปแห่งการสับเปลี่ยน","The Curse of the Swap"],tag:["สิ่งที่เจ้าให้ไป คือสิ่งที่เจ้าไม่อยากได้","What you give away is what you never wanted."],
   desc:["มือที่เร็วกว่าตา แลกของในทีมตัวเองกับของในทีมอีกฝ่ายต่อหน้าต่อตา เจ้าเลือกได้ทั้งของที่จะยัดเยียดให้ และของที่จะช่วงชิงมา สิ่งที่ชิงมาได้จะกลายเป็นของกลาง ไม่มีวันถูกชิงกลับ แต่อีกฝ่ายก็จะจำหน้าเจ้าไว้ไปจนจบเกม",
         "A hand faster than the eye trades one of your slots for one of theirs, right in front of them. You choose what to dump and what to take. What you take is Stolen and can never be taken back, but they will remember your face until the game ends."]},
+ {k:"present",name:"Present",nick:["คำสาปแห่งของขวัญ","The Curse of the Gift"],tag:["ของขวัญที่ไม่ได้ขอ ห้ามคืน","An unasked-for gift. No returns."],
+  desc:["กล่องของขวัญห่ออย่างดี ส่งตรงถึงทุกช่องของธาตุที่ถูกเลือก ข้างในเป็นไอเทมที่สุ่มมาตามธาตุ อาจเป็นของดีที่ไม่เคยคิดจะใช้ หรือของที่ทำให้แผนทั้งทีมพัง แต่เมื่อรับแล้วต้องถือลงสนาม ห้ามคืน ห้ามเปลี่ยน ช่องที่ป้องกันไว้ ธาตุที่ติด Knock Off และหัวหน้ายิมเท่านั้นที่ปฏิเสธของขวัญได้ ถ้าช่องนั้นถูก Trick ไป ของขวัญก็ติดมือไปด้วย",
+        "A gift box, beautifully wrapped, delivered to every slot of the chosen type. Inside is a random item matched to that type: maybe something good you'd never have picked, maybe something that wrecks the whole plan. Once received, it must be held into battle. No returns, no swaps. Only protected slots, the Knock Off type and a Gym Leader can refuse it, and if the slot gets Tricked away, the gift goes with it."]},
  {k:"tera",name:"Terastal",nick:["คำสาปแห่งผลึก","The Curse of Crystal"],tag:["มงกุฎที่สวมให้ ไม่ใช่ของขวัญ","A crown placed on your head is no gift."],
   desc:["คำสาปที่ได้มาจากสองทาง คือโชคจากการสุ่ม และการทายธาตุถูกด้วย Future Sight ถือซ้อนได้สูงสุด 2 ครั้ง และจะปลดปล่อยได้เมื่อทุกอย่างสงบลงแล้วเท่านั้น ผู้ถือจะสวมมงกุฎผลึกให้โปเกมอนของอีกฝ่าย และกำหนดธาตุใหม่ให้ตามใจ จะทำให้แพ้ทาง หรือดันให้ครบสี่ช่องจนกลายเป็นหัวหน้ายิมโดยไม่ตั้งใจก็ได้ เป็นคำสาปสุดท้ายก่อนเวลาจัดทีมจะเริ่มนับ",
         "This curse comes two ways: luck in the draw, and a correct Future Sight guess. It stacks up to 2 uses, and can only be unleashed once everything else has settled. The holder crowns an opponent's Pokémon in crystal and chooses its new type: a type that loses, or one that pushes them to four slots and an unwanted Gym Badge. The last curse before the team timer starts."]}];
@@ -484,7 +487,7 @@ const KO_TH=["ห้ามถือ ห้ามพก ห้ามต่อร�
 const KO_EN=["No item. No exceptions. No deals.","The item drops before the battle even starts.","However good it is, you can't hold it.","This slot walks in empty-handed.","All items must be left at the door.","The only thing you can hold is hope.","Zero held items. Not even one.","This type's items are confiscated.","You may battle, but carry nothing.","Hands empty, by order of the heavens.",
  "Knocked off! ...before you even used it.","Empty bag, empty heart.","Not even Leftovers left to eat.","Choice Scarf? Nothing to wrap around your neck.","Focus Sash ripped before the first hit.","Life Orb shattered in your hand.","The Berry fell before you could bite it.","Mega Stone seized at the checkpoint.","Where did the Rocky Helmet roll off to?","Standing cool, empty-handed, shaking inside."];
 const koLine=()=>{const i=(typeof S!=="undefined"&&S.koi!=null)?S.koi:0; return L(KO_TH[i],KO_EN[i]);};
-const CT=k=>{if(k==="ko") return "“"+koLine()+"”"; if(k==="present") return "“"+L("ของขวัญที่ไม่ได้ขอ ห้ามคืน","An unasked-for gift. No returns.")+"”"; const c=CURSES.find(x=>x.k===k); return "“"+L(c.tag[0],c.tag[1])+"”";};
+const CT=k=>{if(k==="ko") return "“"+koLine()+"”";  const c=CURSES.find(x=>x.k===k); return "“"+L(c.tag[0],c.tag[1])+"”";};
 function drawCurses(){
   const box=$("curses"); box.textContent="";
   for(const c of CURSES){
