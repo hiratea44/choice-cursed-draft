@@ -204,6 +204,7 @@ body.mode-cal #roll{box-shadow:inset 0 0 0 6px #fff,inset 0 0 0 9px #8d5be0,0 5p
 body.mode-cal #roll:hover:not(:disabled){background:#f6c8e2}
 body.mode-cal #itemBtn{background:#6a39c2;color:#fff}
 body.mode-cal .steps .st.cur{background:#f6a8d2}
+.slot .item.gift{background:#ffe3f1;box-shadow:0 0 0 2px #c23f82}
 .slot .item.mega{background:linear-gradient(120deg,#ffe27a,#ff9de2,#9fd8ff);box-shadow:0 0 0 2px #1f2638;font-weight:700}
 .slot .item{position:relative;z-index:1;margin-top:4px;font-family:var(--body);font-size:10.5px;font-weight:600;line-height:1.3;padding:1px 6px;border-radius:6px;background:rgba(255,255,255,.88);color:#1f2638;max-width:100%;overflow-wrap:anywhere}
 .rules{padding:22px 20px;font-size:15px;color:var(--muted)}
@@ -302,7 +303,7 @@ body.mode-cal .steps .st.cur{background:#f6a8d2}
       <li><b>Knock Off:</b> สุ่ม 1 ธาตุกลางต่อรอบ ช่องที่เป็นธาตุนั้นติดสถานะ Knock Off โปเกมอนในช่องนั้นห้ามถือไอเทม</li>
       <li><b>Terastal (เทระสตัล):</b> แต่ละฝ่ายมีโอกาส 1 ใน 6 ที่จะได้ ใครได้ เมื่อทั้งสองฝ่ายใช้สิทธิ์ครบแล้ว กดใช้เพื่อเปลี่ยน 1 ช่องของอีกฝ่ายเป็นธาตุอะไรก็ได้ ก่อนเริ่มจับเวลาจัดทีม ช่องที่ป้องกันเปลี่ยนไม่ได้</li>
       <li><b>Gym Leader (หัวหน้ายิม):</b> เมื่อทีมใดมีธาตุเดียวกัน 4 ช่องขึ้นไป ผู้นั้นได้เป็นหัวหน้ายิมและต้องรับเข็มกลัด ทั้ง 6 ช่องกลายเป็นธาตุนั้น อีกฝ่ายใช้ Roar ไม่ได้ และทีมหัวหน้ายิมไม่ติด Knock Off</li>
-      <li><b>Protect (ป้องกัน):</b> หลังสุ่ม แต่ละฝ่ายเลือกป้องกัน 1 ช่องของตัวเองแบบลับ (ให้อีกฝ่ายหันหน้าหนีตอนแตะ) ระบบซ่อนไว้แล้วเปิดพร้อมกันเมื่อเลือกครบ ช่องนั้นโดน Roar, Trick และ Terastal ไม่ได้</li>
+      <li><b>Protect (ป้องกัน):</b> หลังสุ่ม แต่ละฝ่ายเลือกป้องกัน 1 ช่องของตัวเองแบบลับ (ให้อีกฝ่ายหันหน้าหนีตอนแตะ) ระบบซ่อนไว้แล้วเปิดพร้อมกันเมื่อเลือกครบ ช่องนั้นโดน Roar, Trick, Present และ Terastal ไม่ได้</li>
       <li><b>ลำดับสิทธิ์:</b> ฝ่ายที่มีจำนวนธาตุน้อยกว่าเริ่มก่อน (เสมอกันให้สุ่ม) แล้วสลับกันใช้ทีละสิทธิ์</li>
       <li><b>Roar (คำราม):</b> ฝ่ายละ 1 ครั้ง เลือกธาตุของอีกฝ่าย ทุกช่องที่เป็นธาตุนั้นถูกไล่ออกแล้วสุ่มใหม่ และไม่ออกธาตุเดิม</li>
       <li><b>Trick (สับเปลี่ยน):</b> ฝ่ายละ 1 ครั้ง เลือกช่องของตัวเองที่จะให้ และช่องของอีกฝ่ายที่จะเอา แล้วสลับกัน ช่องที่ได้มามีป้าย “ของกลาง” และเอาคืนไม่ได้</li>
@@ -455,6 +456,10 @@ const TQ_EN=[
  ["Resists ten types. What's there to fear?","So heavy the Poké Ball can barely hold it.","Three magnets together are still magnets.","Hard outside, hard inside, melts to Fire.","Polished so bright you can see your face."],
  ["Cute like this, and it beats dragons.","Dragons can't lay a claw on me.","Dancing under the moon on the mountain.","A sweet smile, then Moonblast.","An all-pink team. Sweet enough to make them sick."]
 ];
+QT_TH.present=["ของขวัญสำหรับธาตุ{t}! ห้ามคืนนะ","ห่อมาอย่างดี ส่งตรงถึงธาตุ{t}","Delibird บินมาส่งของให้ธาตุ{t}แล้ว!","เปิดกล่องเลย ธาตุ{t}! ...หวังว่าจะชอบนะ","ของฝากถึงธาตุ{t} ไม่ต้องเกรงใจ","สุขสันต์วันสุ่ม ธาตุ{t}!","ธาตุ{t}ได้รับพัสดุ 1 ชิ้น เซ็นรับด้วย","ของขวัญไม่ได้ขอ แต่ได้แล้วต้องถือ","ธาตุ{t} รับไปเลย ใจดีขนาดนี้","ห่อของขวัญสวย ข้างในลุ้นเอา"];
+QT_TH.presentGot=["นี่ฉันไม่ได้สั่งของนะ!","ห้ามคืน ห้ามเปลี่ยน... จริงเหรอ","ขอบคุณ... มั้ง","ใครส่งมาเนี่ย!","ของขวัญที่ไม่อยากเปิด","ถือก็ถือ ไม่ได้อยากถือหรอก","ใบเสร็จอยู่ไหน ขอเปลี่ยนได้ไหม","น้ำใจที่หนักมือเหลือเกิน"];
+QT_EN.present=["A gift for {t}! No returns.","Wrapped with care, delivered to {t}.","Delibird just dropped something off for {t}!","Open it, {t}! ...hope you like it.","A little something for {t}. Don't mention it.","Happy draw day, {t}!","{t} has 1 parcel. Sign here.","You didn't ask for it, but now you hold it.","Take it, {t}. So generous.","Pretty wrapping. The inside is a surprise."];
+QT_EN.presentGot=["I didn't order this!","No returns, no swaps... really?","Thanks... I guess.","Who sent this?!","A gift I don't want to open.","Fine, I'll hold it. Not that I want to.","Where's the receipt? Can I exchange it?","Kindness that weighs a ton."];
 const QT=new Proxy({}, {get:(_,k)=>(LANG==="en"?QT_EN:QT_TH)[k]});
 const TQ=new Proxy([], {get:(_,k)=>(LANG==="en"?TQ_EN:TQ_TH)[k]});
 
@@ -478,7 +483,7 @@ const KO_TH=["ห้ามถือ ห้ามพก ห้ามต่อร�
 const KO_EN=["No item. No exceptions. No deals.","The item drops before the battle even starts.","However good it is, you can't hold it.","This slot walks in empty-handed.","All items must be left at the door.","The only thing you can hold is hope.","Zero held items. Not even one.","This type's items are confiscated.","You may battle, but carry nothing.","Hands empty, by order of the heavens.",
  "Knocked off! ...before you even used it.","Empty bag, empty heart.","Not even Leftovers left to eat.","Choice Scarf? Nothing to wrap around your neck.","Focus Sash ripped before the first hit.","Life Orb shattered in your hand.","The Berry fell before you could bite it.","Mega Stone seized at the checkpoint.","Where did the Rocky Helmet roll off to?","Standing cool, empty-handed, shaking inside."];
 const koLine=()=>{const i=(typeof S!=="undefined"&&S.koi!=null)?S.koi:0; return L(KO_TH[i],KO_EN[i]);};
-const CT=k=>{if(k==="ko") return "“"+koLine()+"”"; const c=CURSES.find(x=>x.k===k); return "“"+L(c.tag[0],c.tag[1])+"”";};
+const CT=k=>{if(k==="ko") return "“"+koLine()+"”"; if(k==="present") return "“"+L("ของขวัญที่ไม่ได้ขอ ห้ามคืน","An unasked-for gift. No returns.")+"”"; const c=CURSES.find(x=>x.k===k); return "“"+L(c.tag[0],c.tag[1])+"”";};
 function drawCurses(){
   const box=$("curses"); box.textContent="";
   for(const c of CURSES){
@@ -498,10 +503,11 @@ const RULES={
   ["Knock Off","สุ่ม 1 ธาตุกลางต่อรอบ ช่องที่เป็นธาตุนั้นติดสถานะ Knock Off โปเกมอนในช่องนั้นห้ามถือไอเทม"],
   ["Terastal (เทระสตัล)","ได้มาสองทาง คือสุ่มได้ (โอกาส 1 ใน 6) และทาย Future Sight ถูก ถือซ้อนได้สูงสุด 2 ครั้ง เมื่อทั้งสองฝ่ายใช้สิทธิ์ครบแล้ว ใช้ได้ครั้งละ 1 ช่อง เปลี่ยนช่องของอีกฝ่ายเป็นธาตุอะไรก็ได้ ก่อนเริ่มจับเวลาจัดทีม ช่องที่ป้องกันเปลี่ยนไม่ได้"],
   ["Gym Leader (หัวหน้ายิม)","ได้ธาตุเดียวกันครบ 4 ช่องเมื่อไร สมาคมโปเกมอนจะโผล่มาพร้อมเข็มกลัดและสัญญาจ้างทันที ไม่มีปุ่มปฏิเสธ ทั้งทีมกลายเป็นธาตุนั้น ได้สวัสดิการไม่ติด Knock Off และอีกฝ่ายห้ามใช้ Roar ใส่ผู้บริหาร"],
-  ["Protect (ป้องกัน)","หลังสุ่ม แต่ละฝ่ายเลือกป้องกัน 1 ช่องของตัวเองแบบลับ (ให้อีกฝ่ายหันหน้าหนีตอนแตะ) ระบบซ่อนไว้แล้วเปิดพร้อมกันเมื่อเลือกครบ ช่องนั้นโดน Roar, Trick และ Terastal ไม่ได้"],
-  ["ลำดับสิทธิ์","ฝ่ายที่มีจำนวนธาตุน้อยกว่าเริ่มก่อน (เสมอกันให้สุ่ม) แล้วสลับกันใช้ทีละสิทธิ์"],
-  ["Roar (คำราม)","ฝ่ายละ 1 ครั้ง เลือกธาตุของอีกฝ่าย ทุกช่องที่เป็นธาตุนั้นถูกไล่ออกแล้วสุ่มใหม่ และไม่ออกธาตุเดิม"],
-  ["Trick (สับเปลี่ยน)","ฝ่ายละ 1 ครั้ง เลือกช่องของตัวเองที่จะให้ และช่องของอีกฝ่ายที่จะเอา แล้วสลับกัน ช่องที่ได้มามีป้าย “ของกลาง” และเอาคืนไม่ได้"],
+  ["Protect (ป้องกัน)","หลังสุ่ม แต่ละฝ่ายเลือกป้องกัน 1 ช่องของตัวเองแบบลับ (ให้อีกฝ่ายหันหน้าหนีตอนแตะ) ระบบซ่อนไว้แล้วเปิดพร้อมกันเมื่อเลือกครบ ช่องนั้นโดน Roar, Trick, Present และ Terastal ไม่ได้"],
+  ["สิทธิ์และลำดับ","แต่ละฝ่ายมี 2 สิทธิ์ เลือกใช้จาก Roar, Trick และ Present ท่าละไม่เกิน 1 ครั้ง (ต้องทิ้งไว้ 1 ท่าเสมอ) ฝ่ายที่มีจำนวนธาตุน้อยกว่าเริ่มก่อน (เสมอกันให้สุ่ม) แล้วสลับกันใช้ทีละสิทธิ์"],
+  ["Roar (คำราม)","ใช้ได้ไม่เกิน 1 ครั้ง เลือกธาตุของอีกฝ่าย ทุกช่องที่เป็นธาตุนั้นถูกไล่ออกแล้วสุ่มใหม่ และไม่ออกธาตุเดิม"],
+  ["Trick (สับเปลี่ยน)","ใช้ได้ไม่เกิน 1 ครั้ง เลือกช่องของตัวเองที่จะให้ และช่องของอีกฝ่ายที่จะเอา แล้วสลับกัน ช่องที่ได้มามีป้าย “ของกลาง” และเอาคืนไม่ได้"],
+  ["Present (ของขวัญ)","ใช้ได้ไม่เกิน 1 ครั้ง เลือกธาตุของอีกฝ่าย ทุกช่องที่เป็นธาตุนั้นได้ไอเทมสุ่มจาก Pokémon Champions ตามธาตุ (ไม่ซ้ำกันในทีม) ต้องถือตามนั้น ห้ามเปลี่ยน ช่องที่ป้องกัน ธาตุที่ติด Knock Off และทีมหัวหน้ายิมรับของขวัญไม่ได้ ช่องที่โดน Trick พาไอเทมไปด้วย ช่องที่โดน Roar ไอเทมหายไปพร้อมโปเกมอนตัวเดิม ในโหมด Calamity ไอเทมจาก Present จะคงอยู่ ไม่ถูกสุ่มทับ"],
   ["Run (หนี)","สละสิทธิ์ที่เหลือทั้งหมดของตัวเอง"],
   ["Calamity Draft (โหมดหายนะ)","โหมดที่โหดกว่า Cursed Draft หลังใช้สิทธิ์ครบต้องกดสุ่มไอเทมให้ทุกช่อง ไอเทมสุ่มจากไอเทมที่มีใน Pokémon Champions ตามธาตุของช่อง (ไอเทมเพิ่มพลังธาตุนั้น เบอร์รี่ลดความเสียหายจากธาตุที่แพ้ทาง หรือไอเทมทั่วไป) ไม่ซ้ำกันในทีม ช่องที่ติด Knock Off ไม่ได้ไอเทม ทุกครั้งที่สุ่ม แต่ละทีมจะได้ Mega Stone 1 ช่อง ใส่โปเกมอนที่เมก้าได้และมีธาตุของช่องนั้นตัวไหนก็ได้ ถ้าไม่มีโปเกมอนหรือหินเมก้าที่ใช้ได้ ให้ใช้ไอเทมสำรองที่สุ่มให้ในช่องเดียวกันแทน และต้องใช้ตามที่สุ่มได้เท่านั้น"],
   ["Team Preview","เมื่อใช้สิทธิ์ครบ กดเริ่มจับเวลา ทั้งสองฝ่ายมีเวลาจัดทีมตามที่ตั้งไว้ (ค่าเริ่มต้น 2 นาที) จบแบทเทิลแล้วกดบันทึกว่าใครชนะ"]],
@@ -511,10 +517,11 @@ const RULES={
   ["Knock Off","One type is drawn for the round. Slots of that type get the Knock Off status: the Pokémon in that slot can't hold an item."],
   ["Terastal","Earned two ways: from the draw (a 1 in 6 chance) and from a correct Future Sight guess. It stacks up to 2 uses. After both sides have used their turns, each use changes 1 of the opponent's slots to any type, before the team timer starts. Protected slots can't be changed."],
   ["Gym Leader","Get 4 slots of the same type and the Pokémon League shows up on the spot with a badge and an employment contract. There is no decline button. The whole team becomes that type, the job comes with Knock Off immunity, and the opponent may not use Roar on management."],
-  ["Protect","After the draw, each side secretly protects 1 of their own slots (the opponent looks away while you tap). Picks stay hidden and are revealed together. That slot can't be hit by Roar, Trick or Terastal."],
-  ["Turn order","The side with fewer types goes first (a tie is decided at random), then the sides alternate one action at a time."],
-  ["Roar","Once per side. Pick one of the opponent's types: every slot of that type is forced out and redrawn, never as the same type."],
-  ["Trick","Once per side. Pick one of your slots to give and one of the opponent's to take, and they swap. The slot you took is marked “Stolen” and can't be taken back."],
+  ["Protect","After the draw, each side secretly protects 1 of their own slots (the opponent looks away while you tap). Picks stay hidden and are revealed together. That slot can't be hit by Roar, Trick, Present or Terastal."],
+  ["Actions and order","Each side has 2 actions, chosen from Roar, Trick and Present, each move at most once (one is always left unused). The side with fewer types goes first (a tie is decided at random), then the sides alternate one action at a time."],
+  ["Roar","At most once. Pick one of the opponent's types: every slot of that type is forced out and redrawn, never as the same type."],
+  ["Trick","At most once. Pick one of your slots to give and one of the opponent's to take, and they swap. The slot you took is marked “Stolen” and can't be taken back."],
+  ["Present","At most once. Pick one of the opponent's types: every slot of that type gets a random type-matched item from the Pokémon Champions pool (no duplicates within the team), and must hold it. No swaps. Protected slots, the Knock Off type and a Gym Leader's team can't receive gifts. A slot taken by Trick carries its item along; a slot hit by Roar loses its item with the old Pokémon. In Calamity Draft, Present items stay and are not redrawn."],
   ["Run","Give up all of your remaining actions."],
   ["Calamity Draft","A harsher mode than Cursed Draft. Once all actions are used, press Draw items: every slot gets an item from the Pokémon Champions pool, matched to its type (its type-boosting item, a berry against one of its weaknesses, or a general item). No duplicates within a team. Knock Off slots get nothing. Every draw, each team also gets a Mega Stone in one slot: use any Mega-capable Pokémon of that slot's type. If you don't have a usable Pokémon or Mega Stone, use the backup item drawn for that slot instead. You must use the items exactly as drawn."],
   ["Team Preview","When all actions are used, start the timer. Both sides build their teams within the set time (2 minutes by default). After the battle, record who won."]]
@@ -596,6 +603,8 @@ $("lanes").innerHTML=P.map(p=>`
     <div class="acts">
       <select id="ban${p}" aria-label="Roar" disabled></select>
       <button id="banBtn${p}" class="btn px" type="button" disabled>ROAR</button>
+      <select id="gift${p}" aria-label="Present" disabled></select>
+      <button id="giftBtn${p}" class="btn px" type="button" disabled>PRESENT</button>
       <button id="steal${p}" class="btn px" type="button" disabled>TRICK</button>
       <button id="pass${p}" class="btn px" type="button" disabled>RUN</button>
     </div>
@@ -718,7 +727,7 @@ function drawCard(){
       x.fillStyle=TYPES[t][3]?"#fff":"#1f2638"; x.textAlign="center";
       x.font=F(600,32); x.fillText(tn(t),sx+w/2,sy+52);
       if(LANG==="en"){x.font=F(400,18); x.fillText(TYPES[t][0],sx+w/2,sy+88);} else {x.font=PX(11); x.fillText(TYPES[t][1].toUpperCase(),sx+w/2,sy+88);}
-      const m=[]; if(S.items&&S.items[p]&&S.items[p][i]) m.push("@"+S.items[p][i]+(S.megaSlot&&S.megaSlot[p]===i&&S.backup[p]?" / "+S.backup[p]:"")); if(S.lock[p]===i) m.push(L("ป้องกัน","Protect")); if(S.taken[p].includes(i)) m.push(L("ของกลาง","Stolen")); if(S.teraMark[p].includes(i)) m.push("Terastal"); if(t===S.curse&&S.mono[p]==null) m.push("Knock Off");
+      const m=[]; if(itemAt(p,i)) m.push("@"+itemAt(p,i)+(S.megaSlot&&S.megaSlot[p]===i&&S.backup[p]?" / "+S.backup[p]:"")); if(S.lock[p]===i) m.push(L("ป้องกัน","Protect")); if(S.taken[p].includes(i)) m.push(L("ของกลาง","Stolen")); if(S.teraMark[p].includes(i)) m.push("Terastal"); if(t===S.curse&&S.mono[p]==null) m.push("Knock Off");
       if(m.length){x.fillStyle="#1f2638"; rr(x,sx+8,sy+108,w-16,40,10); x.fill(); x.fillStyle="#fff"; x.font=F(500,m.length>1?15:19); x.fillText(m.join(" · "),sx+w/2,sy+129);}
     });
   });
@@ -759,13 +768,15 @@ function rollItems(){
   saveUndo();
   for(const p of P){
     const used=new Set();
-    S.items[p]=S.team[p].map(t=>{
+    S.team[p].forEach((t,i)=>{const g=S.gift[p][i]; if(g&&!(t===S.curse&&S.mono[p]==null)) used.add(g)});
+    S.items[p]=S.team[p].map((t,i)=>{
       if(t===S.curse&&S.mono[p]==null) return null;      // Knock Off: no item
+      if(S.gift[p][i]) return S.gift[p][i];              // Present gifts stay as they are
       let it, n=0; do{it=itemFor(t); n++;}while(used.has(it)&&n<60);
       used.add(it); return it;
     });
     // Every draw: one random item-holding slot gets a Mega Stone for a Pokémon of that slot's type.
-    const ok=S.items[p].map((it,i)=>it?i:-1).filter(i=>i>=0);
+    let ok=S.items[p].map((it,i)=>it&&!S.gift[p][i]?i:-1).filter(i=>i>=0);
     if(ok.length){
       // Shown simply as "Mega Stone": any Mega of a Pokémon with this slot's type. A backup item covers players who don't have one.
       const i=ok[pick(ok.length)];
@@ -785,7 +796,7 @@ function setMode(v){
 
 const fresh=round=>({phase:"idle",round,flash:"",koi:pick(KO_TH.length),items:{A:null,B:null},megaSlot:{A:null,B:null},backup:{A:null,B:null},
   team:{A:Array(N).fill(null),B:Array(N).fill(null)},wild:{A:null,B:null},curse:null,
-  lock:{A:null,B:null},taken:{A:[],B:[]},rights:{A:{ban:0,steal:0,bonus:0},B:{ban:0,steal:0,bonus:0}},
+  lock:{A:null,B:null},taken:{A:[],B:[]},rights:{A:{ban:0,steal:0,gift:0,left:0},B:{ban:0,steal:0,gift:0,left:0}},gift:{A:Array(N).fill(null),B:Array(N).fill(null)},
   lockPick:{A:null,B:null},winner:null,id:0,noBan:{A:false,B:false},mono:{A:null,B:null},turn:null,steal:null,tera:null,teraUsed:{A:false,B:false},teraN:{A:0,B:0},teraT:{A:0,B:0},teraMark:{A:[],B:[]},uniq0:{A:0,B:0},betHit:{A:false,B:false}});
 let S=fresh(0);
 const els={A:[],B:[]};
@@ -815,12 +826,17 @@ function rollQuote(p){
   return Q(u===6?QT.rainbow:u===5?QT.varied:u===4?QT.mixed:QT.pairs);
 }
 const banOptions=p=>{const o=other(p); return [...new Set(S.team[o].filter((t,i)=>t!=null&&i!==S.lock[o]))]};
-const canBan=p=>!S.noBan[p]&&S.rights[p].ban+S.rights[p].bonus>0&&banOptions(p).length>0;
-const canSteal=p=>S.rights[p].steal+S.rights[p].bonus>0;
+const canBan=p=>!S.noBan[p]&&S.rights[p].left>0&&S.rights[p].ban>0&&banOptions(p).length>0;
+const canSteal=p=>S.rights[p].left>0&&S.rights[p].steal>0;
+// Present: any opponent type except protected slots and the Knock Off type; a Gym Leader refuses gifts.
+const giftOptions=p=>{const o=other(p); if(S.mono[o]!=null) return []; return [...new Set(S.team[o].filter((t,i)=>t!=null&&i!==S.lock[o]&&t!==S.curse))]};
+const canGift=p=>S.rights[p].left>0&&S.rights[p].gift>0&&giftOptions(p).length>0;
+// The item a slot holds: Calamity items once drawn, otherwise a Present gift (Knock Off still strips it).
+const itemAt=(p,i)=>{if(S.items&&S.items[p]) return S.items[p][i]; const g=S.gift&&S.gift[p]?S.gift[p][i]:null; if(!g) return null; if(S.team[p][i]===S.curse&&S.mono[p]==null) return null; return g;};
 const canTera=p=>S.teraN[p]>0;
-const canAct=p=>canBan(p)||canSteal(p);
+const canAct=p=>canBan(p)||canSteal(p)||canGift(p);
 const teraLeft=()=>P.some(canTera);
-function spend(p,k){const r=S.rights[p]; if(r[k]>0) r[k]--; else r.bonus--;}
+function spend(p,k){const r=S.rights[p]; r[k]--; r.left--;}
 function fixTurn(){
   if(S.phase!=="act") return;
   if(!canAct(S.turn)) S.turn=canAct(other(S.turn))?other(S.turn):null;
@@ -829,7 +845,7 @@ function fixTurn(){
 const AND=()=>L(" และ "," and ");
 
 /* ---------- Phase tracker ---------- */
-const STEPS=[["ทายธาตุ","Guess"],["สุ่มทีม","Draw"],["Protect","Protect"],["Roar · Trick","Roar · Trick"],["Terastal","Terastal"],["จัดทีม","Team build"],["แบทเทิล","Battle"]];
+const STEPS=[["ทายธาตุ","Guess"],["สุ่มทีม","Draw"],["Protect","Protect"],["ใช้สิทธิ์","Actions"],["Terastal","Terastal"],["จัดทีม","Team build"],["แบทเทิล","Battle"]];
 function curStep(){
   const ph=S.phase;
   if(ph==="idle") return ($("betA").value&&$("betB").value)?2:1;
@@ -877,8 +893,8 @@ function render(){
       if(t==null) blank(el); else paint(el,t);
       const taken=S.taken[p].includes(i);
       const marks=(S.lock[p]===i?'<b class="seal">'+L("ป้องกัน","Protect")+'</b>':"")+(taken?'<b class="stolen">'+L("ของกลาง","Stolen")+'</b>':"")+(S.teraMark[p].includes(i)?'<b class="tera">'+GEM+'Terastal</b>':"")+(t!=null&&t===S.curse&&S.mono[p]==null?'<b class="curse">Knock Off</b>':"");
-      if(S.items&&S.items[p]&&S.items[p][i]) {const mg=S.megaSlot&&S.megaSlot[p]===i;
-        el.insertAdjacentHTML("beforeend",'<span class="item'+(mg?" mega":"")+'">@ '+S.items[p][i]+"</span>"+(mg&&S.backup[p]?'<span class="item">'+L("สำรอง: ","Backup: ")+S.backup[p]+"</span>":""));}
+      if(itemAt(p,i)) {const mg=S.items[p]&&S.megaSlot&&S.megaSlot[p]===i, gf=S.gift[p][i]&&S.gift[p][i]===itemAt(p,i);
+        el.insertAdjacentHTML("beforeend",'<span class="item'+(mg?" mega":gf?" gift":"")+'">'+(gf?"🎁 ":"@ ")+itemAt(p,i)+"</span>"+(mg&&S.backup[p]?'<span class="item">'+L("สำรอง: ","Backup: ")+S.backup[p]+"</span>":""));}
       if(marks) el.insertAdjacentHTML("beforeend",'<span class="marks">'+marks+"</span>");
       let can=false, picked=false;
       if(S.phase==="lock") can=S.lockPick[p]===null;
@@ -894,11 +910,15 @@ function render(){
     $("stat"+p).textContent=live?summary(S.team[p]).text+(S.mono[p]!=null?L(" · หัวหน้ายิมธาตุ"+tn(S.mono[p])," · "+tn(S.mono[p])+" Gym Leader"):""):"";
     const r=S.rights[p], myTurn=S.phase==="act"&&S.turn===p;
     $("lane"+p).classList.toggle("turn",myTurn);
-    $("rights"+p).textContent=S.phase==="lock"?(S.lockPick[p]!==null?L("Protect: เลือกแล้ว (ซ่อนอยู่)","Protect: chosen (hidden)"):L("Protect: ยังไม่ได้เลือก","Protect: not chosen yet")):acting?L("สิทธิ์เหลือ: ","Left: ")+"Roar "+(S.noBan[p]?L("ใช้ไม่ได้","blocked"):r.ban)+" · Trick "+r.steal+(r.bonus?L(" · โบนัส "," · Bonus ")+r.bonus:"")+(canTera(p)?" · Terastal "+S.teraN[p]:""):"";
+    $("rights"+p).textContent=S.phase==="lock"?(S.lockPick[p]!==null?L("Protect: เลือกแล้ว (ซ่อนอยู่)","Protect: chosen (hidden)"):L("Protect: ยังไม่ได้เลือก","Protect: not chosen yet")):acting?L("สิทธิ์เหลือ "+r.left+"/2: ","Actions left "+r.left+"/2: ")+[S.noBan[p]?"Roar ✕":r.ban?"Roar":"",r.steal?"Trick":"",r.gift?"Present":""].filter(Boolean).join(" · ")+(canTera(p)?" · Terastal "+S.teraN[p]:""):"";
     const sel=$("ban"+p), keep=sel.value; sel.innerHTML="";
     if(live) banOptions(p).forEach(t=>{const o=document.createElement("option"); o.value=t; o.textContent=tn(t); sel.appendChild(o)});
     if([...sel.options].some(o=>o.value===keep)) sel.value=keep;
+    const gs=$("gift"+p), gkeep=gs.value; gs.innerHTML="";
+    if(live) giftOptions(p).forEach(t=>{const o=document.createElement("option"); o.value=t; o.textContent=tn(t); gs.appendChild(o)});
+    if([...gs.options].some(o=>o.value===gkeep)) gs.value=gkeep;
     const tr=S.tera;
+    gs.disabled=$("giftBtn"+p).disabled=!(myTurn&&!st&&!tr&&canGift(p));
     sel.disabled=$("banBtn"+p).disabled=!(myTurn&&!st&&!tr&&canBan(p));
     $("steal"+p).disabled=!(myTurn&&!tr&&canSteal(p));
     const showT=S.phase==="tera"&&canTera(p);
@@ -922,7 +942,7 @@ function render(){
   else if(S.phase==="lock"){const who=P.filter(p=>S.lockPick[p]===null).map(pname).join(AND()); s=L("Protect แบบลับ: "+who+" ยังไม่ได้เลือก ให้อีกฝ่ายหันหน้าหนี แล้วแตะช่องของตัวเอง 1 ช่อง ระบบจะซ่อนไว้และเปิดพร้อมกันเมื่อเลือกครบ","Secret Protect: "+who+" still to choose. Have the other side look away, then tap 1 of your own slots. Picks stay hidden and are revealed together.");}
   else if(st) s=L(pname(st.p)+" ใช้ Trick! แตะช่องของตัวเองที่จะให้ และช่องของ "+pname(other(st.p))+" ที่จะเอา (ช่องที่ป้องกันและของกลางเอาไม่ได้)",pname(st.p)+" used Trick! Tap one of your slots to give and one of "+pname(other(st.p))+"'s to take (protected and stolen slots can't be taken).");
   else if(S.tera) s=L(pname(S.tera.p)+" ใช้ Terastal! แตะช่องของ "+pname(other(S.tera.p))+" ที่จะเปลี่ยนธาตุ แล้วเลือกธาตุที่จะใส่ (ช่องที่ป้องกันเปลี่ยนไม่ได้)",pname(S.tera.p)+" is using Terastal! Tap one of "+pname(other(S.tera.p))+"'s slots, then choose its new type (protected slots can't be changed).");
-  else if(S.phase==="act") s=L("ตาของ "+pname(S.turn)+" จะทำอะไรดี? ROAR · TRICK · RUN","What will "+pname(S.turn)+" do? ROAR · TRICK · RUN");
+  else if(S.phase==="act") s=L("ตาของ "+pname(S.turn)+" จะทำอะไรดี? (สิทธิ์เหลือ "+S.rights[S.turn].left+"/2) ROAR · TRICK · PRESENT · RUN","What will "+pname(S.turn)+" do? ("+S.rights[S.turn].left+"/2 left) ROAR · TRICK · PRESENT · RUN");
   else if(S.phase==="tera"){const who=P.filter(canTera).map(pname).join(AND()); s=L("Terastal! "+who+" กด TERA แล้วแตะช่องของอีกฝ่ายเพื่อกำหนดธาตุใหม่ให้ หรือกดไม่ใช้","Terastal! "+who+": press TERA, then tap an opponent's slot to set its new type, or press Skip.");}
   else s=L("ใช้สิทธิ์ครบแล้ว! กดเริ่มจับเวลา Team Preview มีเวลาจัดทีม "+mins()+" นาที จบแบทเทิลแล้วกดบันทึกว่าใครชนะ","All actions used! Start the Team Preview timer: "+mins()+" min to build teams. After the battle, record who won.");
   setDialog((S.flash?S.flash+" ":"")+s);
@@ -984,7 +1004,7 @@ function vib(f,at,dur,type,vol,f2,rate,depth){
     o.connect(g); g.connect(AC.destination); o.start(t); l.start(t); o.stop(t+dur+.05); l.stop(t+dur+.05);
   }catch(e){}
 }
-const SFX_EXTRA={items:()=>{for(let i=0;i<8;i++) tone(600+i*110,i*.06,.06,"square",.05); tone(1568,.55,.35,"triangle",.08); tone(2093,.62,.4,"triangle",.06)}};
+const SFX_EXTRA={present:()=>{[784,988,1175,1568].forEach((f,i)=>tone(f,i*.09,.16,"triangle",.08)); tone(2093,.4,.4,"sine",.06); noise(.36,.18,.12,3000,1200,1)},items:()=>{for(let i=0;i<8;i++) tone(600+i*110,i*.06,.06,"square",.05); tone(1568,.55,.35,"triangle",.08); tone(2093,.62,.4,"triangle",.06)}};
 const SFX={
   roll:()=>{for(let i=0;i<9;i++) tone(i%2?330:262,i*.22,.09)},
   land:()=>{tone(523,0,.1); tone(784,.1,.18)},
@@ -1125,7 +1145,7 @@ $("tvOk").addEventListener("click",()=>{
 });
 
 function startAct(){
-  for(const p of P) S.rights[p]={ban:1,steal:1,bonus:0};
+  for(const p of P) S.rights[p]={ban:1,steal:1,gift:1,left:2};
   const a=S.uniq0.A, b=S.uniq0.B;
   S.turn=a<b?"A":b<a?"B":P[pick(2)];
   addLog(S.turn,a===b?L("จำนวนธาตุเท่ากัน สุ่มได้ออกตัวก่อน","Same number of types. Drawn at random to go first."):L("จำนวนธาตุน้อยกว่า ได้ออกตัวก่อน","Fewer types, so goes first."));
@@ -1152,7 +1172,7 @@ function slotPick(q,i){
   if(st.mine===null||st.theirs===null){render(); return}
   saveUndo();
   const a=st.mine, b=st.theirs, mine=S.team[p][a], theirs=S.team[o][b];
-  S.team[p][a]=theirs; S.team[o][b]=mine; S.steal=null; spend(p,"steal");
+  S.team[p][a]=theirs; S.team[o][b]=mine; [S.gift[p][a],S.gift[o][b]]=[S.gift[o][b],S.gift[p][a]]; S.steal=null; spend(p,"steal");
   S.flash=CT("trick")+" "+L(pname(p)+" ใช้ Trick สำเร็จ!",pname(p)+"'s Trick worked!");
   if(!S.taken[p].includes(a)) S.taken[p].push(a);
   S.teraMark[p]=S.teraMark[p].filter(x=>x!==a); S.teraMark[o]=S.teraMark[o].filter(x=>x!==b);
@@ -1169,13 +1189,31 @@ function ban(p){
   S.team[o].forEach((v,i)=>{
     if(v!==t||i===S.lock[o]) return;
     let n; do{n=pick()}while(n===t||S.team[o].filter(x=>x===n).length>=4);
-    S.team[o][i]=n; idx.push(i); S.teraMark[o]=S.teraMark[o].filter(x=>x!==i); hit.push(L("ช่อง "+(i+1)+" ได้ ","slot "+(i+1)+" got ")+tn(n));
+    S.team[o][i]=n; S.gift[o][i]=null; idx.push(i); S.teraMark[o]=S.teraMark[o].filter(x=>x!==i); hit.push(L("ช่อง "+(i+1)+" ได้ ","slot "+(i+1)+" got ")+tn(n));
   });
   spend(p,"ban");
   S.flash=CT("roar")+" "+L(pname(p)+" ใช้ Roar! ",pname(p)+" used Roar! ")+Q(QT.roar,t);
   if(monoType(o)==null) say(o,rollQuote(o));
   addLog(p,L("Roar ใส่ธาตุ"+tn(t)+" ของ "+pname(o)+" → ","Roar on "+pname(o)+"'s "+tn(t)+" → ")+hit.join(", "));
   S.turn=o; fixTurn(); render(); idx.forEach(i=>bump(els[o][i])); sfx("roar");
+  checkChosen();
+}
+function present(p){
+  if(S.phase!=="act"||S.turn!==p||S.steal||S.tera||!canGift(p)) return;
+  const o=other(p), t=+$("gift"+p).value, idx=[], got=[];
+  if(!giftOptions(p).includes(t)) return;
+  saveUndo();
+  const used=new Set(S.gift[o].filter(Boolean));
+  S.team[o].forEach((v,i)=>{
+    if(v!==t||i===S.lock[o]) return;
+    let it, n=0; do{it=itemFor(t); n++;}while(used.has(it)&&n<60);
+    used.add(it); S.gift[o][i]=it; idx.push(i); got.push(L("ช่อง "+(i+1)+" ได้ ","slot "+(i+1)+" got ")+it);
+  });
+  spend(p,"gift");
+  S.flash=CT("present")+" "+L(pname(p)+" ใช้ Present! ",pname(p)+" used Present! ")+Q(QT.present,t);
+  say(o,Q(QT.presentGot));
+  addLog(p,L("Present ใส่ธาตุ"+tn(t)+" ของ "+pname(o)+" → ","Present on "+pname(o)+"'s "+tn(t)+" → ")+got.join(", "));
+  S.turn=o; fixTurn(); render(); idx.forEach(i=>bump(els[o][i])); sfx("present");
   checkChosen();
 }
 function steal(p){
@@ -1187,7 +1225,7 @@ function steal(p){
 function pass(p){
   if(S.phase!=="act"||S.turn!==p||S.steal||S.tera) return;
   saveUndo();
-  S.rights[p]={ban:0,steal:0,bonus:0}; S.flash="";
+  S.rights[p]={ban:0,steal:0,gift:0,left:0}; S.flash="";
   addLog(p,L("Run สละสิทธิ์ที่เหลือทั้งหมด","Run: gave up all remaining actions")); say(p,Q(QT.run)); sfx("run");
   S.turn=other(p); fixTurn(); render();
 }
@@ -1221,7 +1259,7 @@ $("reset").addEventListener("click",()=>{
 });
 $("copy").addEventListener("click",()=>{
   if(S.phase==="idle"||S.phase==="rolling") return;
-  const line=p=>pname(p)+": "+S.team[p].map((t,i)=>tn(t)+(S.items&&S.items[p]&&S.items[p][i]?" @"+S.items[p][i]+(S.megaSlot&&S.megaSlot[p]===i&&S.backup[p]?" ("+L("สำรอง ","backup ")+S.backup[p]+")":""):"")+(S.lock[p]===i?" [Protect]":"")).join(", ")+(S.mono[p]!=null?" | "+L("หัวหน้ายิมธาตุ"+tn(S.mono[p]),tn(S.mono[p])+" Gym Leader"):"")+(S.wild[p]?" | "+L("ได้ Terastal","Got Terastal"):"");
+  const line=p=>pname(p)+": "+S.team[p].map((t,i)=>tn(t)+(itemAt(p,i)?" @"+itemAt(p,i)+(S.megaSlot&&S.megaSlot[p]===i&&S.backup[p]?" ("+L("สำรอง ","backup ")+S.backup[p]+")":""):"")+(S.lock[p]===i?" [Protect]":"")).join(", ")+(S.mono[p]!=null?" | "+L("หัวหน้ายิมธาตุ"+tn(S.mono[p]),tn(S.mono[p])+" Gym Leader"):"")+(S.wild[p]?" | "+L("ได้ Terastal","Got Terastal"):"");
   const txt=L("Choice: Cursed Draft ฉันไม่ได้เลือกนาย! รอบที่ ","Choice: Cursed Draft, I Didn't Choose You! Round ")+S.round+"\nKnock Off: "+tn(S.curse)+"\n"+line("A")+"\n"+line("B");
   const done=()=>{$("copy").textContent=L("คัดลอกแล้ว","Copied"); setTimeout(()=>$("copy").textContent=L("คัดลอกผล","Copy result"),1500)};
   const fallback=()=>setDialog(txt.replace(/\n/g," | "));
@@ -1230,6 +1268,7 @@ $("copy").addEventListener("click",()=>{
 for(const p of P){
   $("banBtn"+p).addEventListener("click",()=>ban(p));
   $("steal"+p).addEventListener("click",()=>steal(p));
+  $("giftBtn"+p).addEventListener("click",()=>present(p));
   $("pass"+p).addEventListener("click",()=>pass(p));
   $("teraBtn"+p).addEventListener("click",()=>{
     if(S.phase!=="tera"||!canTera(p)||(S.tera&&S.tera.p!==p)) return;
