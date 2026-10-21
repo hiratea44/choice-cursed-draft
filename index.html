@@ -299,7 +299,7 @@ body.mode-cal .steps .st.cur{background:#f6a8d2}
     <h2>HOW TO PLAY</h2>
     <ol>
       <li><b>Future Sight (มองอนาคต):</b> ก่อนสุ่ม ทั้งสองฝ่ายต้องทายว่าในทีมตัวเองจะมีกี่ธาตุ ตั้งแต่ 1 ถึง 6 (ธาตุที่ซ้ำกันนับเป็นธาตุเดียว) ทายถูกได้ Terastal 1 ครั้ง</li>
-      <li><b>สุ่มทีม:</b> แต่ละฝ่ายได้ธาตุ 6 ช่องจาก 18 ธาตุ ซ้ำกันได้ 1 ช่องคือโปเกมอน 1 ตัวที่มีธาตุนั้น</li>
+      <li><b>สุ่มทีม:</b> แต่ละฝ่ายได้ธาตุ 6 ช่องจาก 18 ธาตุ ซ้ำกันได้ ธาตุเดียวกันออกได้สูงสุด 6 ช่อง 1 ช่องคือโปเกมอน 1 ตัวที่มีธาตุนั้น</li>
       <li><b>Knock Off:</b> สุ่ม 1 ธาตุกลางต่อรอบ ช่องที่เป็นธาตุนั้นติดสถานะ Knock Off โปเกมอนในช่องนั้นห้ามถือไอเทม</li>
       <li><b>Terastal (เทระสตัล):</b> แต่ละฝ่ายมีโอกาส 1 ใน 6 ที่จะได้ ใครได้ เมื่อทั้งสองฝ่ายใช้สิทธิ์ครบแล้ว กดใช้เพื่อเปลี่ยน 1 ช่องของอีกฝ่ายเป็นธาตุอะไรก็ได้ ก่อนเริ่มจับเวลาจัดทีม ช่องที่ป้องกันเปลี่ยนไม่ได้</li>
       <li><b>Gym Leader (หัวหน้ายิม):</b> เมื่อทีมใดมีธาตุเดียวกัน 4 ช่องขึ้นไป ผู้นั้นได้เป็นหัวหน้ายิมและต้องรับเข็มกลัด ทั้ง 6 ช่องกลายเป็นธาตุนั้น อีกฝ่ายใช้ Roar ไม่ได้ และทีมหัวหน้ายิมไม่ติด Knock Off</li>
@@ -503,7 +503,7 @@ function drawCurses(){
 const RULES={
  th:[
   ["Future Sight (มองอนาคต)","ก่อนสุ่ม ทั้งสองฝ่ายต้องทายว่าในทีมตัวเองจะมีกี่ธาตุ ตั้งแต่ 1 ถึง 6 (ธาตุที่ซ้ำกันนับเป็นธาตุเดียว) ทายถูกได้ Terastal 1 ครั้ง"],
-  ["สุ่มทีม","แต่ละฝ่ายได้ธาตุ 6 ช่องจาก 18 ธาตุ ซ้ำกันได้ ธาตุเดียวกันออกได้สูงสุด 4 ช่อง 1 ช่องคือโปเกมอน 1 ตัวที่มีธาตุนั้น"],
+  ["สุ่มทีม","แต่ละฝ่ายได้ธาตุ 6 ช่องจาก 18 ธาตุ ซ้ำกันได้ ธาตุเดียวกันออกได้สูงสุด 6 ช่อง 1 ช่องคือโปเกมอน 1 ตัวที่มีธาตุนั้น"],
   ["Knock Off","สุ่ม 1 ธาตุกลางต่อรอบ ช่องที่เป็นธาตุนั้นติดสถานะ Knock Off โปเกมอนในช่องนั้นห้ามถือไอเทม"],
   ["Terastal (เทระสตัล)","ได้มาสองทาง คือสุ่มได้ (โอกาส 1 ใน 6) และทาย Future Sight ถูก ถือซ้อนได้สูงสุด 2 ครั้ง เมื่อทั้งสองฝ่ายใช้สิทธิ์ครบแล้ว ใช้ได้ครั้งละ 1 ช่อง เปลี่ยนช่องของอีกฝ่ายเป็นธาตุอะไรก็ได้ ก่อนเริ่มจับเวลาจัดทีม ช่องที่ป้องกันเปลี่ยนไม่ได้"],
   ["Gym Leader (หัวหน้ายิม)","ได้ธาตุเดียวกันครบ 4 ช่องเมื่อไร สมาคมโปเกมอนจะโผล่มาพร้อมเข็มกลัดและสัญญาจ้างทันที ไม่มีปุ่มปฏิเสธ ทั้งทีมกลายเป็นธาตุนั้น ได้สวัสดิการไม่ติด Knock Off และอีกฝ่ายห้ามใช้ Roar ใส่ผู้บริหาร"],
@@ -517,7 +517,7 @@ const RULES={
   ["Team Preview","เมื่อใช้สิทธิ์ครบ กดเริ่มจับเวลา ทั้งสองฝ่ายมีเวลาจัดทีมตามที่ตั้งไว้ (ค่าเริ่มต้น 2 นาที) จบแบทเทิลแล้วกดบันทึกว่าใครชนะ"]],
  en:[
   ["Future Sight","Before the draw, both sides must guess how many different types their own team will have, from 1 to 6 (repeats count once). A correct guess earns 1 Terastal."],
-  ["The draw","Each side gets 6 slots drawn from the 18 types. Repeats are allowed, up to 4 slots of the same type. One slot is one Pokémon that has that type."],
+  ["The draw","Each side gets 6 slots drawn from the 18 types. Repeats are allowed, up to all 6 slots of the same type. One slot is one Pokémon that has that type."],
   ["Knock Off","One type is drawn for the round. Slots of that type get the Knock Off status: the Pokémon in that slot can't hold an item."],
   ["Terastal","Earned two ways: from the draw (a 1 in 6 chance) and from a correct Future Sight guess. It stacks up to 2 uses. After both sides have used their turns, each use changes 1 of the opponent's slots to any type, before the team timer starts. Protected slots can't be changed."],
   ["Gym Leader","Get 4 slots of the same type and the Pokémon League shows up on the spot with a badge and an employment contract. There is no decline button. The whole team becomes that type, the job comes with Knock Off immunity, and the opponent may not use Roar on management."],
@@ -1086,8 +1086,8 @@ function roll(){
   }
   stopTimer(); archive(); U=null; sfx("roll"); countDraw(CAL()?"calamity":"cursed");
   S=fresh(S.round+1); S.phase="rolling"; S.id=Date.now();
-  // A type can come up in at most 4 of a team's 6 slots.
-  const draw=()=>{const a=[]; while(a.length<N){const t=pick(); if(a.filter(x=>x===t).length<4) a.push(t);} return a;};
+  // Any type can repeat, up to all 6 slots (4 or more makes a Gym Leader).
+  const draw=()=>{const a=[]; while(a.length<N) a.push(pick()); return a;};
   const team={A:draw(),B:draw()};
   const curse=pick(), wild={A:pick(6)===0,B:pick(6)===0};
   P.forEach(p=>{$("log"+p).textContent=""; say(p,""); els[p].forEach(el=>el.className="slot")});
@@ -1192,7 +1192,7 @@ function ban(p){
   saveUndo();
   S.team[o].forEach((v,i)=>{
     if(v!==t||i===S.lock[o]) return;
-    let n; do{n=pick()}while(n===t||S.team[o].filter(x=>x===n).length>=4);
+    let n; do{n=pick()}while(n===t);
     S.team[o][i]=n; S.gift[o][i]=null; idx.push(i); S.teraMark[o]=S.teraMark[o].filter(x=>x!==i); hit.push(L("ช่อง "+(i+1)+" ได้ ","slot "+(i+1)+" got ")+tn(n));
   });
   spend(p,"ban");
