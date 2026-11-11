@@ -1068,7 +1068,7 @@ const RULES={
   ["Gym Leader (หัวหน้ายิม)","ได้ธาตุเดียวกัน 4 ช่องขึ้นไปเมื่อไร ต้องรับเข็มกลัดทันที ทั้งทีมกลายเป็นธาตุนั้น ไม่ติด Knock Off ไม่รับ Present และอีกฝ่ายใช้ Roar ไม่ได้"],
   ["ไพ่คำสาป (Curse Hand)","หลังสุ่ม แต่ละฝ่ายจั่วการ์ด 4 ใบ (Starter Draft 3 ใบ) จากกอง 19 ใบ: Roar ×2, Trick ×2, Present ×2, Mirror Coat, Substitute, Conversion, Copycat, Wish, Rain Dance, Sandstorm, Entrainment, Sketch, Doom Desire, Destiny Bond, Swagger, Role Play บวกการ์ด Terastal ที่ได้ (สูงสุด 2 ใบ) ไพ่ในมือคว่ำไว้ อีกฝ่ายมองไม่เห็น"],
   ["เฟสสั่งการ","มี 2 คำสั่ง ทุกคำสั่งทั้งสองฝ่ายเลือกแบบลับทีละคน (อีกฝ่ายหันหน้าหนี): Protect 1 ช่อง + การ์ด 1 ใบ (หรือไม่ใช้) + เป้าหมาย แล้วเปิดพร้อมกัน การ์ดฝั่งตัวเอง (Substitute, Conversion, Mirror Coat) ทำงานก่อน ตามด้วยการ์ดเล็งศัตรู ฝ่ายที่มีธาตุน้อยกว่าทำงานก่อน"],
-  ["Protect (ป้องกัน)","เลือกใหม่ทุกคำสั่ง การ์ดที่เล็งช่อง (Trick, Terastal) ถ้าโดนช่องที่ Protect ไว้จะล้มเหลว การ์ดที่เล็งธาตุ (Roar, Present) ถ้าธาตุนั้นมีช่องที่ Protect ไว้ จะล้มเหลวทั้งใบ อ่านใจให้ถูก"],
+  ["Protect (ป้องกัน)","เลือกใหม่ทุกคำสั่ง ป้องกันได้ 1 ช่องเท่านั้น การ์ดที่เล็งช่องนั้น (Trick, Terastal) จะล้มเหลว การ์ดที่เล็งธาตุ (Roar, Present) จะไม่โดนช่องที่ Protect แต่ช่องอื่นที่เป็นธาตุเดียวกันยังโดน อ่านใจให้ถูก"],
   ["Roar (คำราม)","เลือกธาตุของอีกฝ่าย ทุกช่องที่เป็นธาตุนั้นถูกไล่ออกแล้วสุ่มใหม่ ไม่ออกธาตุเดิม"],
   ["Trick (สับเปลี่ยน)","เลือกช่องของตัวเองที่จะให้ และช่องของอีกฝ่ายที่จะเอา แล้วสลับกัน ช่องที่ได้มามีป้าย “ของกลาง” เอาคืนไม่ได้ ไอเทมจาก Present ติดไปด้วย"],
   ["Present (ของขวัญ)","เลือกธาตุของอีกฝ่าย ทุกช่องที่เป็นธาตุนั้นได้ไอเทมสุ่มตามธาตุ ต้องถือตามนั้น ห้ามเปลี่ยน ธาตุ Knock Off และหัวหน้ายิมรับไม่ได้"],
@@ -1113,7 +1113,7 @@ const RULES={
   ["Gym Leader","Get 4 or more slots of the same type and the badge is yours, no refusals. The whole team becomes that type, ignores Knock Off, refuses Present, and can't be roared at."],
   ["Curse Hand","After the draw each side draws 4 cards (3 in Starter Draft) from a 19-card deck: Roar ×2, Trick ×2, Present ×2, Mirror Coat, Substitute, Conversion, Copycat, Wish, Rain Dance, Sandstorm, Entrainment, Sketch, Doom Desire, Destiny Bond, Swagger and Role Play, plus any Terastal cards earned (up to 2). Hands stay face-down."],
   ["Commands","There are 2 commands. In each, both sides choose in secret one at a time (the other looks away): Protect 1 slot + 1 card (or none) + its target. Then everything is revealed at once. Own-side cards (Substitute, Conversion, Mirror Coat) resolve first, then enemy-target cards; the side with fewer types goes first."],
-  ["Protect","Chosen again every command. A card aimed at a slot (Trick, Terastal) fails on a protected slot. A card aimed at a type (Roar, Present) fails completely if any slot of that type is protected. Read your opponent."],
+  ["Protect","Chosen again every command, and it guards 1 slot only. A card aimed at that slot (Trick, Terastal) fails. A card aimed at a type (Roar, Present) skips the protected slot, but other slots of that type are still hit. Read your opponent."],
   ["Roar","Pick one of the opponent's types: every slot of that type is redrawn, never as the same type."],
   ["Trick","Pick one of your slots to give and one of theirs to take, and they swap. The taken slot is Stolen and can't be taken back. Present items travel with it."],
   ["Present","Pick one of the opponent's types: every slot of that type gets a random type-matched item and must hold it. The Knock Off type and a Gym Leader can't receive it."],
@@ -1887,7 +1887,7 @@ function renderWizard(){
   }
   if(st==="protect"){
     $("cwTitle").textContent=L("เลือกช่องที่จะ Protect","Choose a slot to Protect");
-    $("cwText").textContent=L("การ์ดของอีกฝ่ายที่เล็งช่องนี้ หรือเล็งธาตุของช่องนี้ จะล้มเหลว","Opponent cards aimed at this slot, or at its type, will fail.")+(S.lastLock[p]!=null?L(" (เลือกช่องเดิมไว้ให้แล้ว)"," (Your last pick is preselected.)"):"");
+    $("cwText").textContent=L("ช่องนี้ช่องเดียวจะไม่โดนการ์ดของอีกฝ่าย ช่องอื่นที่เป็นธาตุเดียวกันยังโดนได้","Only this slot is safe from the opponent's cards. Other slots of the same type can still be hit.")+(S.lastLock[p]!=null?L(" (เลือกช่องเดิมไว้ให้แล้ว)"," (Your last pick is preselected.)"):"");
     const g=grid("sgrid"); for(let i=0;i<N;i++) g.appendChild(slotBtn(p,i,d.protect===i,false,()=>{d.protect=i; if(d.self===i) d.self=null; d.step="card"; render();}));
     body.appendChild(g);
     next.textContent=L("ต่อไป ›","Next ›"); next.disabled=d.protect==null; next.onclick=()=>{d.step="card"; render();};
@@ -2393,21 +2393,25 @@ function effect(p,v,pl,refl,out){
     if(c==="roar"&&S.mono[v]!=null) return fail(L(pname(v)+" เป็นหัวหน้ายิม ห้ามใช้ Roar ใส่ผู้บริหาร Roar จึงล้มเหลว",pname(v)+" is a Gym Leader, and Roar can't be used on management. Roar failed."),L("หัวหน้ายิมไม่สะทกสะท้าน "+failLine(),"The Gym Leader doesn't flinch. "+failLine()));
     if(c==="present"&&S.mono[v]!=null) return fail(L(pname(v)+" เป็นหัวหน้ายิม ไม่รับของขวัญ Present จึงล้มเหลว",pname(v)+" is a Gym Leader and refuses gifts. Present failed."),failLine());
     if(c==="present"&&isKO(t)) return fail(L("ธาตุ"+tn(t)+"ติด Knock Off ถือไอเทมไม่ได้ Present จึงล้มเหลว",tn(t)+" has Knock Off and can't hold items. Present failed."),failLine());
-    const blk=S.team[v].map((x,i)=>x===t&&guarded(v,i)?i:-1).filter(i=>i>=0);
-    if(blk.length) return fail(L(pname(v)+" ป้องกัน"+blk.map(i=>"ช่อง "+(i+1)).join(", ")+" ซึ่งเป็นธาตุ"+tn(t)+"ไว้ การ์ดที่เล็งธาตุ"+tn(t)+"จึงล้มเหลวทั้งใบ (อ่านใจถูก!)",pname(v)+" protected "+blk.map(i=>"slot "+(i+1)).join(", ")+", which is "+tn(t)+", so a card aimed at "+tn(t)+" fails completely. Good read!"),L("โดน Protect ดักทาง! ","Blocked by Protect! ")+failLine(),blk.map(i=>[v,i]));
-    const idx=S.team[v].map((x,i)=>x===t?i:-1).filter(i=>i>=0);
-    if(!idx.length) return fail(L("ตอนการ์ดนี้ทำงาน ทีมของ "+pname(v)+" ไม่มีธาตุ"+tn(t)+"เหลือแล้ว (ถูกเปลี่ยนไปก่อนหน้าในคำสั่งนี้) การ์ดจึงไม่โดนอะไร","When this card resolved, "+pname(v)+" had no "+tn(t)+" left (it changed earlier this command), so it hit nothing."),L("ไม่มีธาตุ"+tn(t)+"ให้โดน ","No "+tn(t)+" to hit. ")+failLine());
+    const all=S.team[v].map((x,i)=>x===t?i:-1).filter(i=>i>=0);
+    if(!all.length) return fail(L("ตอนการ์ดนี้ทำงาน ทีมของ "+pname(v)+" ไม่มีธาตุ"+tn(t)+"เหลือแล้ว (ถูกเปลี่ยนไปก่อนหน้าในคำสั่งนี้) การ์ดจึงไม่โดนอะไร","When this card resolved, "+pname(v)+" had no "+tn(t)+" left (it changed earlier this command), so it hit nothing."),L("ไม่มีธาตุ"+tn(t)+"ให้โดน ","No "+tn(t)+" to hit. ")+failLine());
+    // Protect shields only its own slot: other slots of the same type still get hit.
+    const blk=all.filter(i=>guarded(v,i)), idx=all.filter(i=>!guarded(v,i));
+    if(!idx.length) return fail(L(pname(v)+" ป้องกัน"+blk.map(i=>"ช่อง "+(i+1)).join(", ")+" ซึ่งเป็นธาตุ"+tn(t)+"ทุกช่องที่มีไว้ "+nm+" จึงไม่โดนอะไรเลย (อ่านใจถูก!)",pname(v)+" protected "+blk.map(i=>"slot "+(i+1)).join(", ")+", every "+tn(t)+" slot they had, so "+nm+" hit nothing. Good read!"),L("โดน Protect ดักทาง! ","Blocked by Protect! ")+failLine(),blk.map(i=>[v,i]));
+    if(blk.length&&!refl) S.hl[v].read++;
+    ev.block=blk.map(i=>[v,i]);
+    const saved=blk.length?L(" · ช่อง "+blk.map(i=>i+1).join(", ")+" ที่ Protect ไว้ไม่โดน"," · protected slot "+blk.map(i=>i+1).join(", ")+" was spared"):"";
     const got=[];
     if(c==="roar"){
       idx.forEach(i=>{dittoOff(v,i); let n; do{n=pick()}while(n===t); S.team[v][i]=n; S.gift[v][i]=null; S.teraMark[v]=S.teraMark[v].filter(x=>x!==i); got.push(L("ช่อง "+(i+1)+(isHid(v,i)?" ได้ ?":" ได้ "+tn(n)),"slot "+(i+1)+(isHid(v,i)?" got ?":" got "+tn(n))));});
       out.lines.push(CT("roar")+" "+L(pname(p)+" ใช้ Roar! ",pname(p)+" used Roar! ")+who+Q(QT.roar,t)); out.sfx.push("roar");
-      ev.why=pre+L("ทุกช่องธาตุ"+tn(t)+"ของ "+pname(v)+" ("+idx.map(i=>i+1).join(", ")+") ถูกไล่ออก แล้วสุ่มธาตุใหม่เข้ามา: "+got.join(", "),"Every "+tn(t)+" slot of "+pname(v)+" ("+idx.map(i=>i+1).join(", ")+") was driven out and redrawn: "+got.join(", "));
+      ev.why=pre+L("ช่องธาตุ"+tn(t)+"ของ "+pname(v)+" ("+idx.map(i=>i+1).join(", ")+") ถูกไล่ออก แล้วสุ่มธาตุใหม่เข้ามา: "+got.join(", ")+saved,"The "+tn(t)+" slots of "+pname(v)+" ("+idx.map(i=>i+1).join(", ")+") were driven out and redrawn: "+got.join(", ")+saved);
       if(monoType(v)==null) say(v,rollQuote(v));
     }else{
       const used=new Set(S.gift[v].filter(Boolean));
       idx.forEach(i=>{let it,n=0; do{it=itemFor(t); n++}while(used.has(it)&&n<60); used.add(it); S.gift[v][i]=it; got.push(L("ช่อง "+(i+1)+" ได้ ","slot "+(i+1)+" got ")+(isHid(v,i)?"?":it));});
       out.lines.push(CT("present")+" "+L(pname(p)+" ใช้ Present! ",pname(p)+" used Present! ")+who+Q(QT.present,t)); out.sfx.push("present"); say(v,Q(QT.presentGot));
-      ev.why=pre+L("ทุกช่องธาตุ"+tn(t)+"ของ "+pname(v)+" ได้ไอเทมสุ่ม ต้องถือตามนี้ ห้ามเปลี่ยน: "+got.join(", "),"Every "+tn(t)+" slot of "+pname(v)+" got a random item it must hold: "+got.join(", "));
+      ev.why=pre+L("ช่องธาตุ"+tn(t)+"ของ "+pname(v)+" ได้ไอเทมสุ่ม ต้องถือตามนี้ ห้ามเปลี่ยน: "+got.join(", ")+saved,"The "+tn(t)+" slots of "+pname(v)+" got a random item they must hold: "+got.join(", ")+saved);
     }
     idx.forEach(i=>out.bump.push([v,i])); ev.hit=idx.map(i=>[v,i]); out.res[p]=refl?"reflect":"hit"; if(c==="roar") S.hl[v].lost+=idx.length;
     addLog(p,L("คำสั่ง "+S.cmdN+": ","Command "+S.cmdN+": ")+nm+L(" ใส่ธาตุ"+tn(t)+" ของ "+pname(v)+" → "," on "+pname(v)+"'s "+tn(t)+" → ")+got.join(", "));
@@ -2476,7 +2480,7 @@ function reveal(){
     addLog(p,(S.lock[p]>=0?L("คำสั่ง "+S.cmdN+": Protect ช่อง "+(S.lock[p]+1)+" · การ์ด ","Command "+S.cmdN+": Protect slot "+(S.lock[p]+1)+" · card "):L("คำสั่ง "+S.cmdN+": การ์ด ","Command "+S.cmdN+": card "))+cardName(pl[p].card));
   }
   if(!BARE()){const s0=snap(); out.ev.push({kind:"protect",rows:["A","B"],before:s0,after:s0,hit:P.map(p=>[p,S.lock[p]]),ok:true,
-    why:L(P.map(p=>pname(p)+" ป้องกัน"+sl(p,S.lock[p])).join(" · ")+" — การ์ดที่เล็งช่องนี้ หรือเล็งธาตุของช่องนี้ จะล้มเหลว",P.map(p=>pname(p)+" protects "+sl(p,S.lock[p])).join(" · ")+". Cards aimed at that slot, or at its type, will fail.")});}
+    why:L(P.map(p=>pname(p)+" ป้องกัน"+sl(p,S.lock[p])).join(" · ")+" — ช่องนี้ช่องเดียวจะไม่โดนการ์ดของอีกฝ่าย",P.map(p=>pname(p)+" protects "+sl(p,S.lock[p])).join(" · ")+". Only that slot is safe from the other side's cards.")});}
   for(const p of ord) if(S.doom[p]===n){S.doom[p]=0; doomHit(p,out,false);}
   // Own-side cards first, in turn order
   for(const p of ord){
