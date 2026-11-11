@@ -2,7 +2,7 @@
 
 ฉันไม่ได้เลือกนาย! — ดวงเลือกให้ พร้อมแถมคำสาปมา
 
-กติกาแบทเทิลแฟนเมดสำหรับ Pokémon Champions: สุ่มธาตุให้ฝ่ายละ 6 ช่อง แล้วเอาชีวิตรอดจากคำสาปทั้งห้า
+กติกาแบทเทิลแฟนเมดสำหรับ Pokémon Champions: สุ่มธาตุให้ฝ่ายละ 6 ช่อง แล้วเอาชีวิตรอดจากคำสาปทั้งห้า · 4 โหมด: Cursed Draft, Double Cursed, Safari Draft, Blind Draft
 
 - เล่นได้ที่ https://choice-cursed-draft.vercel.app
 - `index.html` หน้าเกม
