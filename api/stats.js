@@ -4,7 +4,7 @@
 // Storage: Upstash Redis (Vercel Marketplace). Env vars are added automatically when you connect the store.
 const URL_ = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
 const TOKEN = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
-const KEYS = { starter: "choice:trainers:starter", cursed: "choice:trainers:cursed", calamity: "choice:trainers:calamity", safari: "choice:trainers:safari", blind: "choice:trainers:blind", mirror: "choice:trainers:mirror", chaos: "choice:trainers:chaos" };
+const KEYS = { buildup: "choice:trainers:buildup", luck: "choice:trainers:luck", box: "choice:trainers:box", color: "choice:trainers:color", starter: "choice:trainers:starter", cursed: "choice:trainers:cursed", calamity: "choice:trainers:calamity", safari: "choice:trainers:safari", blind: "choice:trainers:blind", mirror: "choice:trainers:mirror", chaos: "choice:trainers:chaos" };
 
 async function redis(...cmd) {
   const r = await fetch(URL_, { method: "POST", headers: { Authorization: `Bearer ${TOKEN}` }, body: JSON.stringify(cmd) });
@@ -12,9 +12,9 @@ async function redis(...cmd) {
   return (await r.json()).result;
 }
 async function totals() {
-  const [c, k, sa, bl, mi, ch, st] = await redis("MGET", KEYS.cursed, KEYS.calamity, KEYS.safari, KEYS.blind, KEYS.mirror, KEYS.chaos, KEYS.starter);
-  const cursed = Number(c) || 0, calamity = Number(k) || 0, safari = Number(sa) || 0, blind = Number(bl) || 0, mirror = Number(mi) || 0, chaos = Number(ch) || 0, starter = Number(st) || 0;
-  return { starter, cursed, calamity, safari, blind, mirror, chaos, total: starter + cursed + calamity + safari + blind + mirror + chaos };
+  const [c, k, sa, bl, mi, ch, st, bu, lu, bo, co] = await redis("MGET", KEYS.cursed, KEYS.calamity, KEYS.safari, KEYS.blind, KEYS.mirror, KEYS.chaos, KEYS.starter, KEYS.buildup, KEYS.luck, KEYS.box, KEYS.color);
+  const cursed = Number(c) || 0, calamity = Number(k) || 0, safari = Number(sa) || 0, blind = Number(bl) || 0, mirror = Number(mi) || 0, chaos = Number(ch) || 0, starter = Number(st) || 0, buildup = Number(bu) || 0, luck = Number(lu) || 0, box = Number(bo) || 0, color = Number(co) || 0;
+  return { starter, cursed, calamity, safari, blind, mirror, chaos, buildup, luck, box, color, total: starter + cursed + calamity + safari + blind + mirror + chaos + buildup + luck + box + color };
 }
 
 export default async function handler(req, res) {
