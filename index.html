@@ -438,6 +438,26 @@ body.mode-blind .steps .st.cur{background:#ffcf9a}
 .modegrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;width:100%}
 .modeg{grid-column:1/-1;margin:8px 0 -2px;text-align:left;font-family:var(--display);font-weight:600;font-size:16px;color:var(--muted)}
 .modes{max-height:100%;overflow:auto}
+.modelist{display:flex;flex-direction:column;gap:8px;width:100%}
+.moderow{cursor:pointer;display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:10px 12px;border:3px solid var(--ink);border-radius:12px;background:#fff;color:var(--ink);box-shadow:0 3px 0 var(--ink);font-family:var(--body);font-size:14px;line-height:1.35;min-height:60px}
+.moderow .mball{flex:none;width:30px;height:30px;border-width:3px}
+.moderow .mtx{flex:1;display:flex;flex-direction:column;gap:2px;min-width:0}
+.moderow .mtx b{font-family:var(--display);font-weight:600;font-size:17px}
+.moderow .mtx>span{color:var(--muted)}
+.moderow .mfull{color:var(--ink)!important}
+.mrec{font-family:var(--body);font-weight:700;font-size:11.5px;padding:1px 7px;border-radius:99px;background:var(--yellow);border:2px solid var(--ink);white-space:nowrap;vertical-align:2px}
+.mdiff{flex:none;align-self:flex-start;font-style:normal;font-family:var(--display);font-size:12.5px;padding:1px 9px;border-radius:99px;border:2px solid var(--ink)}
+.mdiff.d0{background:#c9f0d4}.mdiff.d1{background:#ffe9a8}.mdiff.d2{background:#ffc4c4}
+.moderow.sel{background:#fff6cf;outline:4px solid var(--yellow);outline-offset:-1px}
+.moderow:disabled{opacity:.5;cursor:not-allowed}
+.modemore{width:100%;border:3px solid var(--ink);border-radius:12px;background:#fff;text-align:left}
+.modemore summary{cursor:pointer;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:4px 10px;padding:10px 12px;font-size:14px}
+.modemore summary b{font-family:var(--display);font-weight:600;font-size:15px}
+.modemore summary span{color:var(--muted)}
+.modemore[open] summary{border-bottom:2px dashed var(--line,#d8d2c0)}
+.modemore .serrow{padding:10px 12px}
+.modefoot{position:sticky;bottom:-26px;margin:0 -20px -26px;padding:10px 20px 16px;width:calc(100% + 40px);background:linear-gradient(transparent,var(--screen,#f6f1e1) 30%);display:flex;justify-content:center}
+.modefoot #modeGo{width:100%;max-width:340px}
 .modecard{cursor:pointer;display:flex;flex-direction:column;align-items:flex-start;gap:4px;text-align:left;padding:12px;border:3px solid var(--ink);border-radius:12px;background:#fff;color:var(--ink);box-shadow:0 4px 0 var(--ink);font-family:var(--body);font-size:13px;line-height:1.4}
 .modecard b{font-family:var(--display);font-weight:600;font-size:18px}
 .modecard em{font-style:normal;font-family:var(--display);font-size:12px;padding:0 8px;border-radius:99px;border:2px solid var(--ink);background:var(--screen2)}
@@ -813,10 +833,12 @@ body.playing #roll{width:84px;height:84px;border-width:8px;font-size:15px}
     <div class="px lbl">SELECT MODE</div>
     <h2 id="modeTitle">เลือกโหมด</h2>
     <p id="modeNote"></p>
-    <div id="modeGrid" class="modegrid"></div>
-    <div class="serrow"><b id="serL">ซีรีส์</b><div id="serBtns"></div></div>
-    <div class="serrow hardrow"><b id="hardL">💀</b><div><button id="hardTog" class="btn" type="button"></button><p id="hardNote" class="hardnote"></p></div></div>
-    <button id="modeGo" class="btn" type="button">เริ่มเลย ✓</button>
+    <div id="modeGrid" class="modelist"></div>
+    <details class="modemore" id="modeMore"><summary><b id="modeMoreL">⚙ ตัวเลือกเพิ่มเติม</b><span id="modeMoreV"></span></summary>
+      <div class="serrow"><b id="serL">ซีรีส์</b><div id="serBtns"></div></div>
+      <div class="serrow hardrow"><b id="hardL">💀</b><div><button id="hardTog" class="btn" type="button"></button><p id="hardNote" class="hardnote"></p></div></div>
+    </details>
+    <div class="modefoot"><button id="modeGo" class="btn" type="button">เริ่มเลย ✓</button></div>
   </div>
 </div>
 
@@ -1077,15 +1099,15 @@ function drawTools(){
   for(const c of TOOLS){const d=document.createElement("div"); d.className="ccard"; const h=document.createElement("h3"); const x=LANG==="en"?c.en:c.th; h.textContent=x[0]; const p=document.createElement("p"); p.textContent=x[1]; d.append(h,p); box.appendChild(d);}
 }
 const MODEINFO={
- starter:{n:"Starter Draft",lv:["มือใหม่","Beginner"],d:["ไม่ต้องทาย Future Sight มีคำสั่งเดียว การ์ดมีแค่ Roar กับ Trick เหมาะสอนเพื่อนเล่นครั้งแรก","No Future Sight, 1 command, only Roar and Trick. Made for teaching a friend."]},
- cursed:{n:"Cursed Draft",lv:["มาตรฐาน","Standard"],d:["สุ่มทีม 6 ช่อง แล้วสาปกันด้วยการ์ด 2 คำสั่ง เริ่มจากโหมดนี้","Draw 6 slots, then curse each other over 2 commands. Start here."]},
- safari:{n:"Safari Draft",lv:["วางแผน","Strategy"],d:["ไม่สุ่ม! ผลัดกันหยิบธาตุจากทุ่ง 14 ธาตุ ธาตุที่เหลือเป็น Knock Off","No draw! Take turns picking from 14 types. A leftover becomes Knock Off."]},
- blind:{n:"Blind Draft",lv:["ปั่น","Chaos"],d:["ทุกทีมมี 2 ช่องถูกซ่อน เล็งแบบเดาดวง เปิดเผยตอนจบคำสั่ง","2 slots per team stay hidden. Aim blind; all revealed at the end."]},
- mirror:{n:"Mirror Draft",lv:["แฟร์","Fair"],d:["สองฝ่ายเริ่มด้วยทีมเหมือนกันเป๊ะ แล้วสาปกันจนต่าง วัดกันที่ฝีมือ","Both start with the exact same team, then curse it apart. Pure skill."]},
- chaos:{n:"Wild Field",lv:["ป่วน","Wild"],d:["สนามป่วน: ทุกรอบสุ่มสนามพิเศษ 2 อย่างจาก 11 แบบ เช่น โลกกลับหัว ดวลนัดเดียว ไพ่หงาย","Two random field effects each round from 11, like Upside Down, Sudden Death or Open Hand."]},
- box:{n:"Mystery Box",lv:["ปั่นหัว","Mind games"],d:["กล่องปริศนา 50 ใบ ทุกกล่องมีธาตุ บางกล่องได้ 2–3 ธาตุ เลือกเก็บเองหรือยัดให้อีกฝ่าย ทีมครบไว","50 mystery boxes, all holding types, some 2–3 at once. Keep or force them on the other side."]},
- color:{n:"Color Draft",lv:["ธีมสี","Colors"],d:["ไม่สุ่มธาตุ สุ่มสีให้แต่ละฝ่าย ทั้งทีมต้องเป็นโปเกมอนสีนั้น แล้วสาปกันด้วยการ์ดสี","No types: each side draws a Pokédex color; the whole team must be that color."]},
- double:{n:"Double Cursed",lv:["โหด","Hard"],d:["สาปซ้อน: จบคำสั่งแล้วทุกช่องถูกยัดไอเทม + Mega Stone ห้ามเปลี่ยน","Every slot is forced to hold an item, plus a Mega Stone. No swaps."]}};
+ starter:{n:"Starter Draft",lv:0,s:["ไม่ต้องทาย การ์ดน้อย คำสั่งเดียว","No guessing, fewer cards, 1 command"],d:["ไม่ต้องทาย Future Sight มีคำสั่งเดียว การ์ดมีแค่ Roar กับ Trick เหมาะสอนเพื่อนเล่นครั้งแรก","No Future Sight, 1 command, only Roar and Trick. Made for teaching a friend."]},
+ cursed:{n:"Cursed Draft",lv:0,s:["สุ่มทีม 6 ช่อง แล้วสาปกันด้วยการ์ด","Draw 6 slots, then curse each other"],d:["สุ่มทีม 6 ช่อง แล้วสาปกันด้วยการ์ด 2 คำสั่ง โหมดหลักของเกม","Draw 6 slots, then curse each other over 2 commands. The main mode."]},
+ safari:{n:"Safari Draft",lv:1,s:["ไม่สุ่ม ผลัดกันหยิบธาตุจากทุ่ง","No draw: take turns picking types"],d:["ไม่สุ่ม! ผลัดกันหยิบธาตุจากทุ่ง 14 ธาตุ ธาตุที่เหลือเป็น Knock Off","No draw! Take turns picking from 14 types. A leftover becomes Knock Off."]},
+ blind:{n:"Blind Draft",lv:1,s:["ทีมมีช่องถูกซ่อน ต้องเล็งแบบเดาดวง","Hidden slots: aim blind"],d:["ทุกทีมมี 2 ช่องถูกซ่อน เล็งแบบเดาดวง เปิดเผยตอนจบคำสั่ง","2 slots per team stay hidden. Aim blind; all revealed at the end."]},
+ mirror:{n:"Mirror Draft",lv:0,s:["เริ่มด้วยทีมเหมือนกันเป๊ะ วัดกันที่ฝีมือ","Same team for both, pure skill"],d:["สองฝ่ายเริ่มด้วยทีมเหมือนกันเป๊ะ แล้วสาปกันจนต่าง วัดกันที่ฝีมือ","Both start with the exact same team, then curse it apart. Pure skill."]},
+ chaos:{n:"Wild Field",lv:2,s:["ทุกรอบสุ่มสนามพิเศษ 2 อย่าง","2 random field effects each round"],d:["สนามป่วน: ทุกรอบสุ่มสนามพิเศษ 2 อย่างจาก 11 แบบ เช่น โลกกลับหัว ดวลนัดเดียว ไพ่หงาย","Two random field effects each round from 11, like Upside Down, Sudden Death or Open Hand."]},
+ box:{n:"Mystery Box",lv:1,s:["เปิดกล่องปริศนา เก็บเองหรือยัดให้อีกฝ่าย","Open boxes: keep them or give them away"],d:["กล่องปริศนา 50 ใบ ทุกกล่องมีธาตุ บางกล่องได้ 2–3 ธาตุ เลือกเก็บเองหรือยัดให้อีกฝ่าย ทีมครบไว","50 mystery boxes, all holding types, some 2–3 at once. Keep or force them on the other side."]},
+ color:{n:"Color Draft",lv:1,s:["สุ่มสี ทั้งทีมต้องเป็นโปเกมอนสีนั้น","Draw a color; the whole team must match"],d:["ไม่สุ่มธาตุ สุ่มสีให้แต่ละฝ่าย ทั้งทีมต้องเป็นโปเกมอนสีนั้น แล้วสาปกันด้วยการ์ดสี","No types: each side draws a Pokédex color; the whole team must be that color."]},
+ double:{n:"Double Cursed",lv:2,s:["จบแล้วทุกช่องโดนยัดไอเทม ห้ามเปลี่ยน","Every slot ends up with a forced item"],d:["สาปซ้อน: จบคำสั่งแล้วทุกช่องถูกยัดไอเทม + Mega Stone ห้ามเปลี่ยน","Every slot is forced to hold an item, plus a Mega Stone. No swaps."]}};
 const HARDINFO={
  starter:["Starter Draft ไม่มีกติกาโหดเฉพาะโหมด","Starter Draft has no mode-specific hard rule"],
  cursed:["Curse Stack: Knock Off ของรอบก่อนติดค้างต่อ สะสมได้สูงสุด 3 ธาตุ","Curse Stack: past Knock Off types carry over, up to 3 at once"],
@@ -1096,29 +1118,35 @@ const HARDINFO={
  chaos:["สนามซ้อน: มีโอกาส 10% ที่ออก 3 สนาม","Stacked fields: a 10% chance of 3 fields"],
  box:["Mystery Box ไม่มีกติกาโหดเฉพาะโหมด","Mystery Box has no mode-specific hard rule"],
  color:["สีที่ป้องกันไว้ยังโดนสลับได้","Swaps go through even a guarded color"]};
+// The mode picker: one list from easiest to hardest. Tap a row to pick it (it opens its full description);
+// series and hard rules live in a folded "more options" section so a first-timer only has to pick and press start.
+const MODEORDER=["starter","cursed","mirror","safari","box","color","blind","chaos","double"];
+const DIFF=[["ง่าย","Easy"],["กลาง","Medium"],["ยาก","Hard"]];
+const SERNAME={bo1:["แมตช์เดียว","Single match"],bo3:["Best of 3","Best of 3"],koth:["👑 King of the Hill","👑 King of the Hill"],tour:["🏆 ทัวร์นาเมนต์","🏆 Tournament"]};
 function renderModes(){
   const can=S.phase==="idle"||S.phase==="done";
   $("modeTitle").textContent=L("เลือกโหมด","Choose a mode");
-  $("modeNote").textContent=can?L("แตะโหมดที่อยากเล่น เปลี่ยนได้ทุกครั้งที่จบรอบ","Tap a mode. You can switch whenever a round ends."):L("กำลังเล่นอยู่ เปลี่ยนโหมดได้ตอนจบรอบ","A round is in progress. Switch modes when it ends.");
+  $("modeNote").textContent=can?L("แตะ 1 โหมด แล้วกดเริ่ม","Tap a mode, then start"):L("กำลังเล่นอยู่ เปลี่ยนโหมดได้ตอนจบรอบ","A round is in progress. Switch modes when it ends.");
   const g=$("modeGrid"); g.textContent="";
-  [[["🎒 ออกเดินทาง","🎒 New Journey"],["starter","cursed"]],[["🤝 จับไม้จับมือ","🤝 Mind Games"],["safari","box","mirror"]],[["🎰 วัดดวง","🎰 Gamble"],["blind","chaos"]],[["🌪 ปั่นป่วน","🌪 Chaos"],["double","color"]]].forEach(([gt,ks])=>{
-   const h=document.createElement("h3"); h.className="modeg"; h.textContent=L(gt[0],gt[1]); g.appendChild(h);
-   ks.forEach(k=>{
-    const m=MODEINFO[k], b=document.createElement("button"); b.type="button"; b.className="modecard m-"+k+(H.mode===k?" sel":""); b.disabled=!can;
-    b.innerHTML='<i class="mball"></i><b>'+m.n+'</b><em>'+L(m.lv[0],m.lv[1])+'</em><span>'+L(m.d[0],m.d[1])+'</span>';
+  MODEORDER.forEach(k=>{
+    const m=MODEINFO[k], sel=H.mode===k, b=document.createElement("button"); b.type="button"; b.className="moderow m-"+k+(sel?" sel":""); b.disabled=!can;
+    b.setAttribute("aria-pressed",sel?"true":"false");
+    b.innerHTML='<i class="mball"></i><span class="mtx"><b>'+m.n+(k==="starter"?' <small class="mrec">⭐ '+L("แนะนำครั้งแรก","First time? Start here")+'</small>':"")+'</b>'
+      +(sel?'<span class="mfull">'+L(m.d[0],m.d[1])+'</span>':'<span>'+L(m.s[0],m.s[1])+'</span>')+'</span><em class="mdiff d'+m.lv+'">'+L(DIFF[m.lv][0],DIFF[m.lv][1])+'</em>';
     b.addEventListener("click",()=>{setMode(k); renderModes(); sfx("click");}); g.appendChild(b);
-   });
   });
   $("serL").textContent=L("ซีรีส์","Series");
   const sb=$("serBtns"); sb.textContent="";
-  [["bo1",L("แมตช์เดียว","Single match")],["bo3",L("Best of 3","Best of 3")],["koth",L("👑 King of the Hill","👑 King of the Hill")],["tour",L("🏆 ทัวร์นาเมนต์","🏆 Tournament")]].forEach(([v,t])=>{
-    const b=document.createElement("button"); b.type="button"; b.className="btn"+(H.series===v?" on":""); b.textContent=t; b.disabled=!can;
+  ["bo1","bo3","koth","tour"].forEach(v=>{
+    const b=document.createElement("button"); b.type="button"; b.className="btn"+(H.series===v?" on":""); b.textContent=L(SERNAME[v][0],SERNAME[v][1]); b.disabled=!can;
     b.addEventListener("click",()=>{setSeries(v); renderModes(); sfx("click"); if(v==="tour"&&(!H.tour||H.tour.champ)) openTour2(true);}); sb.appendChild(b);});
   $("hardL").textContent=L("💀 กติกาโหด","💀 Hard rules");
   const ht=$("hardTog"); ht.textContent=H.hard?L("เปิดอยู่","On"):L("ปิดอยู่","Off"); ht.classList.toggle("on",!!H.hard); ht.disabled=!can;
   ht.onclick=()=>{H.hard=!H.hard; store(); setMode(H.mode); renderModes(); sfx("click");};
   $("hardNote").textContent=L(HARDINFO[H.mode][0],HARDINFO[H.mode][1])+L(" · ทุกโหมด: Last Stand (แพ้ 2 รอบติดได้ Perish Song) และภาษีแชมป์ King of the Hill (จั่วน้อยลง 1 ใบ)"," · All modes: Last Stand (2 losses in a row earn Perish Song) and the King of the Hill champion's tax (1 card fewer)");
-  $("modeGo").textContent=L("เริ่มเลย ✓","Let's go ✓");
+  $("modeMoreL").textContent=L("⚙ ตัวเลือกเพิ่มเติม","⚙ More options");
+  $("modeMoreV").textContent=L(SERNAME[H.series][0],SERNAME[H.series][1])+" · "+(H.hard?L("💀 กติกาโหด","💀 Hard rules"):L("กติกาปกติ","Normal rules"));
+  $("modeGo").textContent=L("เริ่ม ","Start ")+MODEINFO[H.mode].n+" ✓";
 }
 /* ---------- First-time tour ---------- */
 const TOUR=[
@@ -3475,7 +3503,8 @@ async function hostPush(){
   const o=netSnap(), key=JSON.stringify(o); if(key===NET.last) return;
   o.T.left=T.id?Math.max(0,T.end-Date.now()):null;
   NET.pushing=true; NET.act=Date.now();
-  try{ await netApi("POST",{op:"push",c:NET.code,tok:NET.tok,d:o}); NET.last=key; netOk(); }
+  const touch=Date.now()-(NET.touchAt||0)>600000;
+  try{ await netApi("POST",{op:"push",c:NET.code,tok:NET.tok,d:o,touch}); NET.last=key; if(touch) NET.touchAt=Date.now(); netOk(); }
   catch(e){ NET.last=""; netErr(e); }
   NET.pushing=false; if(NET.again){NET.again=false; hostPush();}
 }
@@ -3488,7 +3517,9 @@ async function netAct(a){
 function netOk(){ if(NET.bad){NET.bad=0; renderLobby(); netBadge();} }
 function netErr(e){ if(e&&e.status===404) return netGone(); NET.bad=(NET.bad||0)+1; if(NET.bad===3){toast(L("สัญญาณหลุด กำลังเชื่อมต่อใหม่…","Connection lost, reconnecting…")); netBadge();} }
 function netGone(){ toast(L("ห้องนี้ปิดไปแล้ว (หมดเวลา 2 ชั่วโมง)","This room has closed (2-hour limit)")); setTimeout(()=>netLeave(),1800); NET.on=false; }
-const netDelay=()=>document.hidden?8000:Date.now()-NET.act<20000?1200:S.phase==="done"&&!T.id?5000:2500;
+// How long to wait before the next sync. Every sync costs the room's free Redis quota, so it slows down when nothing is happening:
+// fast right after a change, slower while waiting, slowest during the real battle and when the tab is hidden.
+const netDelay=()=>document.hidden?15000:NET.role==="host"&&!NET.guest?5000:Date.now()-NET.act<15000?2000:S.phase==="done"?(T.id?6000:12000):3000;
 async function netTick(){
   if(!NET.on) return;
   clearTimeout(NET.timer);
@@ -3498,7 +3529,7 @@ async function netTick(){
       if(j.q&&j.q.length){NET.act=Date.now(); j.q.forEach(applyAct);}
       netOk(); hostPush();
     }else{
-      const j=await netApi("GET",null,"c="+NET.code+"&v="+NET.v);
+      const j=await netApi("GET",null,"c="+NET.code+"&v="+encodeURIComponent(NET.v));
       if(j.d&&j.v!==NET.v){NET.v=j.v; NET.act=Date.now(); applySnap(j.d,false);}
       netOk();
     }
@@ -3611,13 +3642,13 @@ function renderLobby(){
   row.appendChild(cp);
   if(navigator.share){const sh=el("button","btn",L("📤 แชร์","📤 Share")); sh.type="button"; sh.onclick=()=>navigator.share({title:"Choice: Cursed Draft",text:L("มาแบทเทิลกัน! รหัสห้อง ","Battle me! Room code ")+NET.code,url:roomLink()}).catch(()=>{}); row.appendChild(sh);}
   body.appendChild(row);
-  body.appendChild(el("p","lbnote",L("ผู้เล่นทั้งสองเลือกคำสั่งพร้อมกันบนเครื่องตัวเอง ไม่ต้องส่งเครื่อง · ซิงก์ทุก 1–2 วินาที","Both trainers choose commands at the same time on their own device · syncs every 1–2 seconds")));
+  body.appendChild(el("p","lbnote",L("ผู้เล่นทั้งสองเลือกคำสั่งพร้อมกันบนเครื่องตัวเอง ไม่ต้องส่งเครื่อง · ซิงก์ทุก 2–3 วินาที ช่วงแบทเทิลจริงช้าลงเพื่อประหยัดโควตา","Both trainers choose commands at the same time on their own device · syncs every 2–3 seconds, slower during the real battle to save quota")));
   const lv=el("button","btn lbleave",L("🚪 ออกจากห้อง","🚪 Leave room")); lv.type="button"; lv.onclick=netLeave; body.appendChild(lv);
 }
 function openLobby(){NET.err=""; modal("lobbyVeil",true); renderLobby(); sfx("click"); const c=$("lbCode"); if(c) c.focus();}
 function netSave(){try{localStorage.setItem("choiceNet",JSON.stringify({code:NET.code,role:NET.role,tok:NET.tok}))}catch(e){}}
 function netStart(code,role,tok){
-  Object.assign(NET,{on:true,role,code,tok:tok||null,v:-1,last:"",seen:false,bad:0,act:Date.now(),guest:false,rev:null,revSeen:null});
+  Object.assign(NET,{on:true,role,code,tok:tok||null,v:"-",touchAt:0,last:"",seen:false,bad:0,act:Date.now(),guest:false,rev:null,revSeen:null});
   netSave(); try{history.replaceState(null,"","?room="+code)}catch(e){}
   document.body.classList.add("online"); document.body.classList.toggle("spec",role==="spec");
   netBadge(); renderLobby(); render(); netTick();
