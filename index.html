@@ -646,7 +646,7 @@ body.playing #roll{width:84px;height:84px;border-width:8px;font-size:15px}
         <button id="modeBtn" class="btn modebtn" type="button">🎮 Cursed Draft ▾</button>
         <button id="menuBtn" class="btn" type="button">⚙ เมนู</button>
         <button id="undo" class="btn" type="button" disabled hidden>ย้อนกลับ 1 ขั้น</button>
-        <div hidden><select id="mode"><option value="starter">Starter Draft</option><option value="cursed">Cursed Draft</option><option value="double">Double Cursed</option><option value="safari">Safari Draft</option><option value="blind">Blind Draft</option><option value="mirror">Mirror Draft</option><option value="chaos">Wild Field</option><option value="buildup">Build-up</option><option value="luck">Push Your Luck</option><option value="box">Mystery Box</option><option value="color">Color Draft</option></select>
+        <div hidden><select id="mode"><option value="starter">Starter Draft</option><option value="cursed">Cursed Draft</option><option value="double">Double Cursed</option><option value="safari">Safari Draft</option><option value="blind">Blind Draft</option><option value="mirror">Mirror Draft</option><option value="chaos">Wild Field</option><option value="box">Mystery Box</option><option value="color">Color Draft</option></select>
           <select id="series"><option value="bo1">แมตช์เดียว</option><option value="bo3">Best of 3</option><option value="koth">King of the Hill</option><option value="tour">Tournament</option></select></div>
       </div>
     </div>
@@ -1047,8 +1047,6 @@ const MODEINFO={
  blind:{n:"Blind Draft",lv:["ปั่น","Chaos"],d:["ทุกทีมมี 2 ช่องถูกซ่อน เล็งแบบเดาดวง เปิดเผยตอนจบคำสั่ง","2 slots per team stay hidden. Aim blind; all revealed at the end."]},
  mirror:{n:"Mirror Draft",lv:["แฟร์","Fair"],d:["สองฝ่ายเริ่มด้วยทีมเหมือนกันเป๊ะ แล้วสาปกันจนต่าง วัดกันที่ฝีมือ","Both start with the exact same team, then curse it apart. Pure skill."]},
  chaos:{n:"Wild Field",lv:["ป่วน","Wild"],d:["สนามป่วน: ทุกรอบสุ่มสนามพิเศษ 2 อย่างจาก 11 แบบ เช่น โลกกลับหัว ดวลนัดเดียว ไพ่หงาย","Two random field effects each round from 11, like Upside Down, Sudden Death or Open Hand."]},
- buildup:{n:"Build-up",lv:["วางแผน","Strategy"],d:["ค่อย ๆ สร้างทีม: เริ่ม 2 ช่อง ทุกคำสั่งเลือกเติม 1 ใน 2 ธาตุจนครบ 6 มี 4 คำสั่ง","Start with 2 slots; each of 4 commands, pick 1 of 2 types to add."]},
- luck:{n:"Push Your Luck",lv:["เสี่ยง","Risky"],d:["เปิดธาตุทีละช่อง หยุดเมื่อไรก็ได้ เปิดเจอ Knock Off 2 ช่องทั้งทีมโดนสุ่มใหม่ ธาตุซ้ำ 3 ได้ Terastal","Open slots one by one and stop anytime. 2 Knock Offs bust the team; a triple earns a Terastal."]},
  box:{n:"Mystery Box",lv:["ปั่นหัว","Mind games"],d:["กล่องปริศนา 12 ใบ ผลัดกันเปิด แล้วเลือกว่าจะเก็บเองหรือยัดให้อีกฝ่าย","12 mystery boxes: open one, then keep it or force it on the other side."]},
  color:{n:"Color Draft",lv:["ธีมสี","Colors"],d:["ไม่สุ่มธาตุ สุ่มสีให้แต่ละฝ่าย ทั้งทีมต้องเป็นโปเกมอนสีนั้น แล้วสาปกันด้วยการ์ดสี","No types: each side draws a Pokédex color; the whole team must be that color."]},
  double:{n:"Double Cursed",lv:["โหด","Hard"],d:["สาปซ้อน: จบคำสั่งแล้วทุกช่องถูกยัดไอเทม + Mega Stone ห้ามเปลี่ยน","Every slot is forced to hold an item, plus a Mega Stone. No swaps."]}};
@@ -1060,8 +1058,6 @@ const HARDINFO={
  blind:["ซ่อน 3 ช่องแทน 2 ช่อง","3 hidden slots instead of 2"],
  mirror:["Shadow: การ์ดเล็งศัตรูที่สำเร็จ ส่งผลกับทีมตัวเองด้วย 1 ช่อง","Shadow: every enemy-target card that lands also hits 1 slot of your own team"],
  chaos:["สนามซ้อน: มีโอกาส 10% ที่ออก 3 สนาม","Stacked fields: a 10% chance of 3 fields"],
- buildup:["ธาตุที่เสนอให้เลือกมีโอกาสเป็นธาตุที่ติด Knock Off","Offered types may include the Knock Off type"],
- luck:["เจอ Knock Off แค่ 1 ช่องก็แตก","A single Knock Off busts the team"],
  box:["Mystery Box ไม่มีกติกาโหดเฉพาะโหมด","Mystery Box has no mode-specific hard rule"],
  color:["สีที่ป้องกันไว้ยังโดนสลับได้","Swaps go through even a guarded color"]};
 function renderModes(){
@@ -1069,7 +1065,7 @@ function renderModes(){
   $("modeTitle").textContent=L("เลือกโหมด","Choose a mode");
   $("modeNote").textContent=can?L("แตะโหมดที่อยากเล่น เปลี่ยนได้ทุกครั้งที่จบรอบ","Tap a mode. You can switch whenever a round ends."):L("กำลังเล่นอยู่ เปลี่ยนโหมดได้ตอนจบรอบ","A round is in progress. Switch modes when it ends.");
   const g=$("modeGrid"); g.textContent="";
-  [[["🎒 ออกเดินทาง","🎒 New Journey"],["starter","cursed"]],[["🤝 จับไม้จับมือ","🤝 Mind Games"],["safari","box","mirror"]],[["🎰 วัดดวง","🎰 Gamble"],["luck","blind","buildup"]],[["🌪 ปั่นป่วน","🌪 Chaos"],["chaos","double","color"]]].forEach(([gt,ks])=>{
+  [[["🎒 ออกเดินทาง","🎒 New Journey"],["starter","cursed"]],[["🤝 จับไม้จับมือ","🤝 Mind Games"],["safari","box","mirror"]],[["🎰 วัดดวง","🎰 Gamble"],["blind","chaos"]],[["🌪 ปั่นป่วน","🌪 Chaos"],["double","color"]]].forEach(([gt,ks])=>{
    const h=document.createElement("h3"); h.className="modeg"; h.textContent=L(gt[0],gt[1]); g.appendChild(h);
    ks.forEach(k=>{
     const m=MODEINFO[k], b=document.createElement("button"); b.type="button"; b.className="modecard m-"+k+(H.mode===k?" sel":""); b.disabled=!can;
@@ -1191,8 +1187,6 @@ const RULES={
   ["🚫 แบนธาตุ","ในหน้าทาย Future Sight แต่ละคนแบนได้ 1 ธาตุ ธาตุนั้นจะไม่ออกตอนสุ่มทีมของอีกฝ่าย (การ์ดเปลี่ยนธาตุทีหลังยังทำให้ได้ธาตุนั้น)"],
   ["⭐ ตัวเอก (Ace)","คำสั่งแรกของรอบ แต่ละคนเลือกลับ 1 ช่องเป็นตัวเอก ถ้าการ์ดของอีกฝ่ายทำให้ธาตุช่องนั้นเปลี่ยน อีกฝ่ายได้การ์ด Terastal 1 ใบ เปิดเผยตอนจบคำสั่ง (ไม่มีใน Starter และ Color Draft)"],
   ["🏳 ยอมแพ้","ระหว่างสั่งการหรือก่อนบันทึกผล กดยอมแพ้ได้ อีกฝ่ายได้ 1 แต้ม รอบหน้าคนยอมแพ้เป็น Underdog (จั่วเพิ่ม 1 ใบ + Terastal)"],
-  ["Build-up","เริ่มด้วย 2 ช่อง อีก 4 ช่องว่างอยู่ มี 4 คำสั่ง ทุกคำสั่งเลือกเติม 1 ใน 2 ธาตุที่สุ่มให้ ช่องว่างโดนการ์ดไม่ได้ ไม่ต้องทาย Future Sight"],
-  ["Push Your Luck","ผลัดกันเปิดธาตุในทีมของตัวเองคนละช่อง (A, B, A, B…) หยุดเมื่อไรก็ได้ คนที่หยุดแล้วอีกฝ่ายเปิดต่อจนพอใจ ช่องที่ยังไม่เปิดถูกสุ่มใหม่ เปิดเจอธาตุที่ติด Knock Off 2 ช่อง (กติกาโหด 1 ช่อง) ทั้งทีมโดนสุ่มใหม่ เปิดได้ธาตุซ้ำ 3 ช่องได้ Terastal +1"],
   ["Mystery Box","กล่องปริศนา 12 ใบ ผลัดกันเปิดทีละใบ แล้วเลือกว่าจะเก็บธาตุนั้นเอง หรือยัดให้อีกฝ่าย จนได้คนละ 6 ช่อง"],
   ["Color Draft","ไม่สุ่มธาตุ แต่ละฝ่ายสุ่มได้ 1 สีจาก 10 สีของโปเกเด็กซ์ (แดง น้ำเงิน เหลือง เขียว ดำ น้ำตาล ม่วง เทา ขาว ชมพู) ทั้งทีมต้องเป็นโปเกมอนสีนั้น จากนั้นสั่งการลับ 1 ครั้ง: ป้องกันสี · สุ่มสีอีกฝ่ายใหม่ · สลับสีกัน · สุ่มสีตัวเองใหม่"],
   ["🏆 Tournament","เลือกในช่องซีรีส์ ใส่ชื่อ 4 หรือ 8 คน ระบบสุ่มจับคู่แบบแพ้คัดออก บันทึกผลแต่ละแมตช์แล้วระบบเติมชื่อคู่ถัดไปให้ แตะแถบซีรีส์เพื่อดูสาย"],
@@ -1241,8 +1235,6 @@ const RULES={
   ["🚫 Type ban","In the Future Sight pop-up each player may ban 1 type; it won't appear in the other team's draw (cards can still bring it in later)."],
   ["⭐ Ace","On command 1 each side secretly stars 1 slot. If the other side's card changes that slot's type, they earn a Terastal card. Revealed when commands end (not in Starter or Color Draft)."],
   ["🏳 Concede","During commands or before recording a result you can concede: the other side scores, and you are the Underdog next round (+1 card, +Terastal)."],
-  ["Build-up","Start with 2 slots and 4 empty ones over 4 commands; each command pick 1 of 2 offered types to fill the next slot. Empty slots can't be targeted. No Future Sight."],
-  ["Push Your Luck","Sides take turns opening one slot of their own team (A, B, A, B…) and may stop anytime; once one stops, the other carries on alone; unopened slots are redrawn. Opening 2 Knock Off slots (1 with hard rules) busts the whole team. A triple earns +1 Terastal."],
   ["Mystery Box","12 mystery boxes. Take turns opening one, then keep its type or force it on the other side, until both have 6."],
   ["Color Draft","No types: each side draws 1 of the 10 Pokédex colors (red, blue, yellow, green, black, brown, purple, gray, white, pink) and the whole team must be that color. Then one secret command: guard · reroll theirs · swap · reroll yours."],
   ["🏆 Tournament","Pick it under Series. Enter 4 or 8 names for a random knockout bracket; record each match and the next pairing fills in. Tap the series bar to see the bracket."],
@@ -1671,7 +1663,7 @@ function rollItems(auto){
   S.flash=(auto&&S.flash?S.flash+" ":"")+L("สุ่มไอเทมแล้ว! ต้องใช้ตามนี้ แลกได้แค่ที่ตลาดแลกของ","Items drawn! Use exactly these; the only way to swap is the trade market.");
   render(); P.forEach(p=>els[p].forEach(bump)); sfx("items");
 }
-const MODES={starter:"STARTER DRAFT",cursed:"CURSED DRAFT",double:"DOUBLE CURSED",safari:"SAFARI DRAFT",blind:"BLIND DRAFT",mirror:"MIRROR DRAFT",chaos:"WILD FIELD",buildup:"BUILD-UP",luck:"PUSH YOUR LUCK",box:"MYSTERY BOX",color:"COLOR DRAFT"};
+const MODES={starter:"STARTER DRAFT",cursed:"CURSED DRAFT",double:"DOUBLE CURSED",safari:"SAFARI DRAFT",blind:"BLIND DRAFT",mirror:"MIRROR DRAFT",chaos:"WILD FIELD",box:"MYSTERY BOX",color:"COLOR DRAFT"};
 function setMode(v){
   if(v==="cal") v="double";
   H.mode=MODES[v]?v:"cursed"; store();
