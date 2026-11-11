@@ -1793,8 +1793,8 @@ function openPick(p){
   S.draft={p,protect:BARE()?-1:S.lastLock[p],ci:null,type:null,mine:null,theirs:null,slot:null,tt:null,self:null,step:BARE()?"card":"protect"}; S.flash="";
   render(); sfx("click");
 }
-// The pass-the-device screen: opens on its own whenever a side is due to command.
-function handoff(p){S.draft={p,protect:BARE()?-1:S.lastLock[p],ci:null,type:null,mine:null,theirs:null,slot:null,tt:null,self:null,step:"handoff"};}
+// The command window opens on its own, straight to the first step, whenever a side is due to command.
+function handoff(p){S.draft={p,protect:BARE()?-1:S.lastLock[p],ci:null,type:null,mine:null,theirs:null,slot:null,tt:null,self:null,step:BARE()?"card":"protect"};}
 function autoHand(){if(S.phase==="cmd"&&S.picker&&!S.draft&&!anyVeil()){handoff(S.picker); render();}}
 function chooseCard(p,k){
   const d=S.draft; if(!d||d.p!==p) return;
