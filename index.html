@@ -550,7 +550,14 @@ body.mode-chaos h1 em{color:#fff}
 .surr .btn{font-size:13px;padding:6px 10px}
 #clBox[data-p="A"]{--pc:var(--red)} #clBox[data-p="B"]{--pc:var(--blue)}
 body.mode-color #curse,body.mode-color [data-l="ko"],body.mode-color .mid>.note,body.mode-color #koTag,body.mode-color #verdict,body.mode-color .lane .row,body.mode-color .hand,body.mode-color #hlShot{display:none!important}
-.boxgrid{grid-template-columns:repeat(3,minmax(0,1fr))}
+.boxgrid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;width:100%}
+.bx{aspect-ratio:1;font-size:17px;border:3px solid var(--ink);border-radius:8px;background:#fff7e0;cursor:pointer;padding:0;box-shadow:0 3px 0 var(--ink)}
+.bx.taken{opacity:.35;box-shadow:none}.bx.open{background:var(--yellow);transform:scale(1.08)}
+.bx:disabled{cursor:default}
+.boxopen{display:flex;flex-direction:column;gap:8px;align-items:center;padding:10px;border:3px solid var(--ink);border-radius:12px;background:#fff;width:100%}
+.boxopen b{font-family:var(--display);font-size:17px}
+.boxtypes{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}.boxtypes .pill{font-size:16px;padding:4px 12px}
+.boxopts{display:flex;flex-direction:column;gap:6px;width:100%}.boxopts .btn{font-size:14px;padding:9px 8px}.boxopts .btn.go{background:var(--yellow)}
 .buildg .tbtn{font-size:22px;padding:22px 6px}
 .t2names{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;width:100%;margin-top:8px}
 .t2m{display:flex;gap:6px;align-items:center;justify-content:center;padding:6px;border-bottom:2px dotted var(--edge);font-size:15px}
@@ -1047,7 +1054,7 @@ const MODEINFO={
  blind:{n:"Blind Draft",lv:["ปั่น","Chaos"],d:["ทุกทีมมี 2 ช่องถูกซ่อน เล็งแบบเดาดวง เปิดเผยตอนจบคำสั่ง","2 slots per team stay hidden. Aim blind; all revealed at the end."]},
  mirror:{n:"Mirror Draft",lv:["แฟร์","Fair"],d:["สองฝ่ายเริ่มด้วยทีมเหมือนกันเป๊ะ แล้วสาปกันจนต่าง วัดกันที่ฝีมือ","Both start with the exact same team, then curse it apart. Pure skill."]},
  chaos:{n:"Wild Field",lv:["ป่วน","Wild"],d:["สนามป่วน: ทุกรอบสุ่มสนามพิเศษ 2 อย่างจาก 11 แบบ เช่น โลกกลับหัว ดวลนัดเดียว ไพ่หงาย","Two random field effects each round from 11, like Upside Down, Sudden Death or Open Hand."]},
- box:{n:"Mystery Box",lv:["ปั่นหัว","Mind games"],d:["กล่องปริศนา 12 ใบ ผลัดกันเปิด แล้วเลือกว่าจะเก็บเองหรือยัดให้อีกฝ่าย","12 mystery boxes: open one, then keep it or force it on the other side."]},
+ box:{n:"Mystery Box",lv:["ปั่นหัว","Mind games"],d:["กล่องปริศนา 50 ใบ ทุกกล่องมีธาตุ บางกล่องได้ 2–3 ธาตุ เลือกเก็บเองหรือยัดให้อีกฝ่าย ทีมครบไว","50 mystery boxes, all holding types, some 2–3 at once. Keep or force them on the other side."]},
  color:{n:"Color Draft",lv:["ธีมสี","Colors"],d:["ไม่สุ่มธาตุ สุ่มสีให้แต่ละฝ่าย ทั้งทีมต้องเป็นโปเกมอนสีนั้น แล้วสาปกันด้วยการ์ดสี","No types: each side draws a Pokédex color; the whole team must be that color."]},
  double:{n:"Double Cursed",lv:["โหด","Hard"],d:["สาปซ้อน: จบคำสั่งแล้วทุกช่องถูกยัดไอเทม + Mega Stone ห้ามเปลี่ยน","Every slot is forced to hold an item, plus a Mega Stone. No swaps."]}};
 const HARDINFO={
@@ -1187,7 +1194,7 @@ const RULES={
   ["🚫 แบนธาตุ","ในหน้าทาย Future Sight แต่ละคนแบนได้ 1 ธาตุ ธาตุนั้นจะไม่ออกตอนสุ่มทีมของอีกฝ่าย (การ์ดเปลี่ยนธาตุทีหลังยังทำให้ได้ธาตุนั้น)"],
   ["⭐ ตัวเอก (Ace)","คำสั่งแรกของรอบ แต่ละคนเลือกลับ 1 ช่องเป็นตัวเอก ถ้าการ์ดของอีกฝ่ายทำให้ธาตุช่องนั้นเปลี่ยน อีกฝ่ายได้การ์ด Terastal 1 ใบ เปิดเผยตอนจบคำสั่ง (ไม่มีใน Starter และ Color Draft)"],
   ["🏳 ยอมแพ้","ระหว่างสั่งการหรือก่อนบันทึกผล กดยอมแพ้ได้ อีกฝ่ายได้ 1 แต้ม รอบหน้าคนยอมแพ้เป็น Underdog (จั่วเพิ่ม 1 ใบ + Terastal)"],
-  ["Mystery Box","กล่องปริศนา 12 ใบ ผลัดกันเปิดทีละใบ แล้วเลือกว่าจะเก็บธาตุนั้นเอง หรือยัดให้อีกฝ่าย จนได้คนละ 6 ช่อง"],
+  ["Mystery Box","กล่อง 50 ใบ ทุกกล่องมีธาตุ ผลัดกันเปิดจนทั้งสองทีมครบ 6 ช่อง: 📦 เดี่ยว (เก็บเองหรือยัดให้) · 🤝 แบ่งกัน (2 ธาตุ เก็บ 1 อีกธาตุไปหาอีกฝ่าย) · 👯 แฝด (ธาตุเดียวกัน 2 ช่อง เก็บหรือยัดทั้งคู่) · 🎉 แจกทั้งคู่ (ทั้งสองทีมได้ธาตุนั้นคนละช่อง) · 🎊 สามธาตุ (ส่ง 1 ให้อีกฝ่าย เก็บ 2) ถ้าทีมไหนเต็มแล้ว ธาตุจะไปอีกทีมแทน"],
   ["Color Draft","ไม่สุ่มธาตุ แต่ละฝ่ายสุ่มได้ 1 สีจาก 10 สีของโปเกเด็กซ์ (แดง น้ำเงิน เหลือง เขียว ดำ น้ำตาล ม่วง เทา ขาว ชมพู) ทั้งทีมต้องเป็นโปเกมอนสีนั้น จากนั้นสั่งการลับ 1 ครั้ง: ป้องกันสี · สุ่มสีอีกฝ่ายใหม่ · สลับสีกัน · สุ่มสีตัวเองใหม่"],
   ["🏆 Tournament","เลือกในช่องซีรีส์ ใส่ชื่อ 4 หรือ 8 คน ระบบสุ่มจับคู่แบบแพ้คัดออก บันทึกผลแต่ละแมตช์แล้วระบบเติมชื่อคู่ถัดไปให้ แตะแถบซีรีส์เพื่อดูสาย"],
   ["Mirror Draft","สองฝ่ายเริ่มด้วยทีมเหมือนกันทุกช่อง แล้วสาปกันจนต่าง สนามแสดงว่าทีมต่างกันกี่ช่อง ถ้าจบคำสั่งแล้วยังเหมือนกันเป๊ะ รอบหน้าทั้งคู่ได้ Terastal +1 (Mirror Bonus)"],
@@ -1235,7 +1242,7 @@ const RULES={
   ["🚫 Type ban","In the Future Sight pop-up each player may ban 1 type; it won't appear in the other team's draw (cards can still bring it in later)."],
   ["⭐ Ace","On command 1 each side secretly stars 1 slot. If the other side's card changes that slot's type, they earn a Terastal card. Revealed when commands end (not in Starter or Color Draft)."],
   ["🏳 Concede","During commands or before recording a result you can concede: the other side scores, and you are the Underdog next round (+1 card, +Terastal)."],
-  ["Mystery Box","12 mystery boxes. Take turns opening one, then keep its type or force it on the other side, until both have 6."],
+  ["Mystery Box","50 boxes, every one holds types. Take turns until both teams have 6: 📦 single (keep or give) · 🤝 share (2 types, keep 1, the other goes to them) · 👯 twins (2 of a type, keep or give both) · 🎉 for both (each team gets one) · 🎊 triple (send 1, keep 2). If a team is full, the type goes to the other."],
   ["Color Draft","No types: each side draws 1 of the 10 Pokédex colors (red, blue, yellow, green, black, brown, purple, gray, white, pink) and the whole team must be that color. Then one secret command: guard · reroll theirs · swap · reroll yours."],
   ["🏆 Tournament","Pick it under Series. Enter 4 or 8 names for a random knockout bracket; record each match and the next pairing fills in. Tap the series bar to see the bracket."],
   ["Mirror Draft","Both sides start with the exact same team, then curse it apart. The field shows how many slots differ; still identical after the commands means +1 Terastal each next round (Mirror Bonus)."],
@@ -1974,7 +1981,7 @@ function render(){
     :L("ทั้งสองฝ่ายต้องใช้ Future Sight ทายว่าในทีมตัวเองจะมีกี่ธาตุก่อน แล้วกดปุ่มกลางลูกบอลเพื่อสุ่ม","Both sides must use Future Sight to guess how many types their team will have. Then press the button in the middle of the ball to draw.");
   else if(rolling) s=L("ลูกบอลกำลังสั่น...","The ball is shaking...");
   else if(S.phase==="luck") s=L("Push Your Luck: ตาของ "+pname(S.lk.turn)+" กดเปิดช่องถัดไป หรือพอแล้ว","Push Your Luck: "+pname(S.lk.turn)+", open the next slot or stop");
-  else if(S.phase==="box") s=S.bopen!=null?L(pname(S.bturn)+" เปิดได้ธาตุ"+tn(S.pool[S.bopen])+" จะเก็บเอง หรือยัดให้ "+pname(other(S.bturn))+"?",pname(S.bturn)+" found "+tn(S.pool[S.bopen])+". Keep it, or force it on "+pname(other(S.bturn))+"?"):L("Mystery Box: ตาของ "+pname(S.bturn)+" แตะกล่อง 1 ใบ","Mystery Box: "+pname(S.bturn)+", tap a box");
+  else if(S.phase==="box") s=S.bopen!=null?L(pname(S.bturn)+" เปิดได้"+BOXK[S.pool[S.bopen].k][1]+": "+S.pool[S.bopen].t.map(tn).join(", ")+" เลือกว่าจะเอายังไง",pname(S.bturn)+" opened a "+BOXK[S.pool[S.bopen].k][2]+" box: "+S.pool[S.bopen].t.map(tn).join(", ")+". Choose what to do"):L("Mystery Box: ตาของ "+pname(S.bturn)+" แตะกล่อง 1 ใบ","Mystery Box: "+pname(S.bturn)+", tap a box");
   else if(S.phase==="ccmd") s=L("Color Draft: "+pname(S.picker)+" เลือกคำสั่งสีแบบลับ","Color Draft: "+pname(S.picker)+" picks a color command in secret");
   else if(S.phase==="safari") s=L("Safari Draft: ตาของ "+pname(S.sOrder[S.spick])+" แตะธาตุ 1 อันในกล่องกลาง (หยิบแล้ว "+S.spick+"/12) ธาตุที่เหลือจะกลายเป็น Knock Off","Safari Draft: "+pname(S.sOrder[S.spick])+", tap 1 type in the middle panel ("+S.spick+"/12 picked). A leftover becomes the Knock Off type.");
   else if(S.phase==="cmd"&&d) s=L(pname(d.p)+" กำลังสั่งการ (คำสั่ง "+S.cmdN+"/"+S.maxCmd+"): ",pname(d.p)+" is choosing (command "+S.cmdN+"/"+S.maxCmd+"): ")+draftHint();
@@ -2182,7 +2189,7 @@ function renderFab(){
   if(ph==="rolling") return fabSet(L("กำลังสุ่ม…","Drawing…"));
   if(ph==="idle") return SAFARI()?fabSet(L("🌿 เปิด Safari","🌿 Open the Safari"),roll):NOFS()?fabSet(L("🎲 สุ่มทีม","🎲 Draw"),roll):fabSet(L("🔮 Future Sight แล้วสุ่ม","🔮 Future Sight & draw"),openFS);
   if(ph==="luck") return fabSet(L("🎲 "+pname(S.lk.turn)+": เปิดช่องถัดไป","🎲 "+pname(S.lk.turn)+": open next"),luckOpen,L("✋ พอแล้ว","✋ Stop"),luckStop);
-  if(ph==="box") return S.bopen!=null?fabSet(L("📦 เก็บเอง","📦 Keep it"),()=>boxGive(true),L("🎯 ยัดให้ ","🎯 Give to ")+pname(other(S.bturn)),()=>boxGive(false)):fabSet(L("🎁 "+pname(S.bturn)+": แตะกล่อง","🎁 "+pname(S.bturn)+": tap a box"),()=>$("pool").scrollIntoView({behavior:"smooth",block:"center"}));
+  if(ph==="box"){ if(S.bopen!=null){const o=boxOpts(); return fabSet(o[0][0],()=>boxPick(0),o[1]?o[1][0]:null,o[1]?()=>boxPick(1):null);} return fabSet(L("🎁 "+pname(S.bturn)+": แตะกล่อง","🎁 "+pname(S.bturn)+": tap a box"),()=>$("pool").scrollIntoView({behavior:"smooth",block:"center"})); }
   if(ph==="ccmd") return fabSet(L("🎨 สั่งการสี: ","🎨 Color command: ")+pname(S.picker),()=>openColorCmd(S.picker));
   if(ph==="safari") return fabSet(L("🌿 ตาของ "+pname(S.sOrder[S.spick])+": แตะธาตุ","🌿 "+pname(S.sOrder[S.spick])+": tap a type"),()=>$("pool").scrollIntoView({behavior:"smooth",block:"center"}));
   if(ph==="cmd") return fabSet(L("🎴 สั่งการ: "+pname(S.picker)+" ("+S.cmdN+"/"+S.maxCmd+")","🎴 Command: "+pname(S.picker)+" ("+S.cmdN+"/"+S.maxCmd+")"),()=>openPick(S.picker));
@@ -2500,8 +2507,8 @@ function roll(){
     const dr=()=>{let r=pick(100), k=0; while(r>=TYPE_ODDS[k]){r-=TYPE_ODDS[k]; k++;} k++; const ts=shuffle([...Array(TYPES.length).keys()]).slice(0,k), a=ts.slice(); while(a.length<N) a.push(ts[pick(k)]); return shuffle(a);};
     if(LUCK()){S.lkTeam={A:dr(),B:dr()}; S.lk={turn:P[pick(2)],open:{A:0,B:0},ko:{A:0,B:0},done:{A:false,B:false}}; S.lkBonus={A:0,B:0}; S.phase="luck";
       S.flash=L("Push Your Luck! Knock Off รอบนี้คือธาตุ"+tn(S.curse)+" "+pname(S.lk.turn)+" เริ่มก่อน","Push Your Luck! This round's Knock Off is "+tn(S.curse)+". "+pname(S.lk.turn)+" goes first");}
-    else{S.pool=Array.from({length:12},()=>pick()); S.poolTaken=Array(12).fill(null); S.bturn=P[pick(2)]; S.bopen=null; S.phase="box";
-      S.flash=L("กล่องปริศนา 12 ใบ! Knock Off รอบนี้คือธาตุ"+tn(S.curse)+" "+pname(S.bturn)+" เปิดก่อน","12 mystery boxes! This round's Knock Off is "+tn(S.curse)+". "+pname(S.bturn)+" opens first");}
+    else{S.pool=makeBoxes(); S.poolTaken=Array(S.pool.length).fill(null); S.bturn=P[pick(2)]; S.bopen=null; S.phase="box";
+      S.flash=L("กล่องปริศนา 50 ใบ! ทุกกล่องมีธาตุ Knock Off รอบนี้คือธาตุ"+tn(S.curse)+" "+pname(S.bturn)+" เปิดก่อน","50 mystery boxes, every one holds types! This round's Knock Off is "+tn(S.curse)+". "+pname(S.bturn)+" opens first");}
     render(); return;
   }
   if(SAFARI()){
@@ -2632,31 +2639,50 @@ function renderLuck(pool){
   const b=document.createElement("button"); b.type="button"; b.className="btn"; b.textContent=L("✋ พอแล้ว","✋ Stop"); b.disabled=!S.lk.open[p]; b.addEventListener("click",luckStop);
   g.append(a,b); pool.appendChild(g);
 }
-// ---------- Mystery Box ----------
-function boxOpen(k){ if(S.phase!=="box"||S.bopen!=null||S.poolTaken[k]) return; saveUndo(); S.bopen=k; render(); sfx("present"); }
-function boxGive(self){
-  if(S.phase!=="box"||S.bopen==null) return; saveUndo();
-  const p=S.bturn, k=S.bopen, t=S.pool[k]; let to=self?p:other(p); if(S.team[to].indexOf(null)<0) to=other(to);
-  const i=S.team[to].indexOf(null); S.team[to][i]=t; S.poolTaken[k]=to; S.bopen=null;
-  addLog(p,L(to===p?"กล่อง: เก็บธาตุ"+tn(t)+"ไว้เอง":"กล่อง: ยัดธาตุ"+tn(t)+"ให้ "+pname(to),to===p?"Box: kept "+tn(t):"Box: forced "+tn(t)+" on "+pname(to)));
-  S.flash=L(to===p?pname(p)+" เก็บธาตุ"+tn(t)+"ไว้เอง":pname(p)+" ยัดธาตุ"+tn(t)+"ให้ "+pname(to)+"!",to===p?pname(p)+" kept "+tn(t):pname(p)+" forced "+tn(t)+" on "+pname(to)+"!");
-  bump(els[to][i]); sfx(to===p?"click":"trick");
-  if(P.every(q=>S.team[q].every(x=>x!=null))){ settle({A:"",B:""}); render(); P.forEach(q=>els[q].forEach(bump)); sfx("land"); checkChosen(); return; }
-  S.bturn=other(p); render();
+// ---------- Mystery Box: 50 boxes, every one fills slots ----------
+// single: 1 type, keep or give · share: 2 types, keep one and the other goes to them · twin: 2 of a type, keep both or give both
+// both: 1 type for each team · triple: 3 types, give 1 and keep 2
+const BOXK={single:["📦","กล่องเดี่ยว","Single"],share:["🤝","กล่องแบ่งกัน","Share"],twin:["👯","กล่องแฝด","Twins"],both:["🎉","กล่องแจกทั้งคู่","For both"],triple:["🎊","กล่องสามธาตุ","Triple"]};
+function makeBoxes(){
+  const bag=[].concat(Array(24).fill("single"),Array(10).fill("share"),Array(7).fill("twin"),Array(5).fill("both"),Array(4).fill("triple"));
+  return shuffle(bag).map(k=>{const t=pick(); return {k,t:k==="single"||k==="both"?[t]:k==="twin"?[t,t]:k==="share"?[t,pick()]:[t,pick(),pick()]};});
 }
+function boxPlace(q,t){ let to=q; if(S.team[to].indexOf(null)<0) to=other(q); const i=S.team[to].indexOf(null); if(i<0) return null; S.team[to][i]=t; bump(els[to][i]); return to; }
+function boxOpts(){
+  const p=S.bturn, o=other(p), b=S.pool[S.bopen], [a,c,d]=b.t;
+  if(b.k==="single") return [[L("📦 เก็บเอง","📦 Keep it"),[[p,a]]],[L("🎯 ยัดให้ ","🎯 Give to ")+pname(o),[[o,a]]]];
+  if(b.k==="twin") return [[L("📦 เก็บทั้งคู่","📦 Keep both"),[[p,a],[p,a]]],[L("🎯 ยัดทั้งคู่ให้ ","🎯 Give both to ")+pname(o),[[o,a],[o,a]]]];
+  if(b.k==="share") return [[L("เก็บ"+tn(a)+" ส่ง"+tn(c),"Keep "+tn(a)+", send "+tn(c)),[[p,a],[o,c]]],[L("เก็บ"+tn(c)+" ส่ง"+tn(a),"Keep "+tn(c)+", send "+tn(a)),[[p,c],[o,a]]]];
+  if(b.k==="both") return [[L("🎉 ได้ทั้งสองทีม","🎉 One each"),[[p,a],[o,a]]]];
+  return [[L("ส่ง"+tn(a)+"ให้อีกฝ่าย","Send "+tn(a)),[[o,a],[p,c],[p,d]]],[L("ส่ง"+tn(c)+"ให้อีกฝ่าย","Send "+tn(c)),[[o,c],[p,a],[p,d]]],[L("ส่ง"+tn(d)+"ให้อีกฝ่าย","Send "+tn(d)),[[o,d],[p,a],[p,c]]]];
+}
+function boxOpen(k){ if(S.phase!=="box"||S.bopen!=null||S.poolTaken[k]) return; saveUndo(); S.bopen=k; sfx("present"); render(); }
+function boxPick(n){
+  if(S.phase!=="box"||S.bopen==null) return; saveUndo();
+  const p=S.bturn, k=S.bopen, opt=boxOpts()[n]; if(!opt) return;
+  const got=[]; for(const [q,t] of opt[1]){const to=boxPlace(q,t); if(to) got.push(pname(to)+" "+tn(t));}
+  S.poolTaken[k]=p; S.bopen=null;
+  const kn=L(BOXK[S.pool[k].k][1],BOXK[S.pool[k].k][2]);
+  addLog(p,BOXK[S.pool[k].k][0]+" "+kn+": "+got.join(", ")); S.flash=BOXK[S.pool[k].k][0]+" "+pname(p)+" · "+kn+": "+(got.join(" · ")||L("ทีมเต็มแล้ว","teams full"));
+  sfx(got.length>1?"items":"click");
+  if(P.every(q=>S.team[q].every(x=>x!=null))){ settle({A:"",B:""}); render(); P.forEach(q=>els[q].forEach(bump)); sfx("land"); checkChosen(); return; }
+  S.bturn=other(p); if(S.team[S.bturn].indexOf(null)<0&&S.team[p].indexOf(null)>=0) S.bturn=p; render();
+}
+function boxGive(self){ boxPick(self?0:1); }
 function renderBox(pool){
   const h=document.createElement("div"); h.className="px lbl"; h.textContent=L("กล่องปริศนา · ตาของ ","MYSTERY BOX · ")+pname(S.bturn); pool.appendChild(h);
   const k=document.createElement("p"); k.className="fsko"; k.innerHTML="Knock Off: "; k.appendChild(pill(S.curse)); pool.appendChild(k);
-  const g=document.createElement("div"); g.className="poolgrid boxgrid";
-  S.pool.forEach((t,j)=>{const b=document.createElement("button"); b.type="button"; b.className="tbtn"+(S.poolTaken[j]?" taken":"");
-    if(S.poolTaken[j]||S.bopen===j){b.style.background=TYPES[t][2]; b.style.color=TYPES[t][3]?"#fff":"#1f2638"; b.textContent=tn(t)+(S.poolTaken[j]?" → "+S.poolTaken[j]:" ❔");}
-    else{b.textContent="🎁 "+(j+1); b.style.background="#f6f3e4";}
-    b.disabled=!!S.poolTaken[j]||(S.bopen!=null&&S.bopen!==j); b.addEventListener("click",()=>boxOpen(j)); g.appendChild(b);});
+  if(S.bopen!=null){const b=S.pool[S.bopen], box=document.createElement("div"); box.className="boxopen";
+    const t=document.createElement("b"); t.textContent=BOXK[b.k][0]+" "+L(BOXK[b.k][1],BOXK[b.k][2]); box.appendChild(t);
+    const row=document.createElement("div"); row.className="boxtypes"; b.t.forEach(x=>row.appendChild(pill(x))); box.appendChild(row);
+    const r=document.createElement("div"); r.className="boxopts";
+    boxOpts().forEach((o,n)=>{const btn=document.createElement("button"); btn.type="button"; btn.className="btn"+(n===0?" go":""); btn.textContent=o[0]; btn.addEventListener("click",()=>boxPick(n)); r.appendChild(btn);});
+    box.appendChild(r); pool.appendChild(box);}
+  const g=document.createElement("div"); g.className="boxgrid";
+  S.pool.forEach((b,j)=>{const btn=document.createElement("button"); btn.type="button"; btn.className="bx"+(S.poolTaken[j]?" taken":"")+(S.bopen===j?" open":"");
+    btn.textContent=S.poolTaken[j]?BOXK[b.k][0]:"🎁"; btn.setAttribute("aria-label",L("กล่อง ","Box ")+(j+1));
+    btn.disabled=!!S.poolTaken[j]||(S.bopen!=null&&S.bopen!==j); btn.addEventListener("click",()=>boxOpen(j)); g.appendChild(btn);});
   pool.appendChild(g);
-  if(S.bopen!=null){const r=document.createElement("div"); r.className="stools";
-    const a=document.createElement("button"); a.type="button"; a.className="btn"; a.textContent=L("📦 เก็บเอง","📦 Keep it"); a.disabled=S.team[S.bturn].indexOf(null)<0; a.addEventListener("click",()=>boxGive(true));
-    const b=document.createElement("button"); b.type="button"; b.className="btn"; b.textContent=L("🎯 ยัดให้ ","🎯 Give to ")+pname(other(S.bturn)); b.disabled=S.team[other(S.bturn)].indexOf(null)<0; b.addEventListener("click",()=>boxGive(false));
-    r.append(a,b); pool.appendChild(r);}
 }
 function safariPick(k){
   if(S.phase!=="safari"||S.poolTaken[k]) return;
