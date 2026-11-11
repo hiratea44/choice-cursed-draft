@@ -245,6 +245,33 @@ body.mode-blind{background:#0d0f17 radial-gradient(#1c2030 1.2px,transparent 1.6
 body.mode-blind .ball-top{background:linear-gradient(180deg,#3b3f5c,#272a3f 55%,#15172a)}
 body.mode-blind h1 em{color:#ffb35c}
 body.mode-blind .steps .st.cur{background:#ffcf9a}
+/* Command wizard, Future Sight pop-up and floating button */
+.wrap{padding-bottom:120px}
+.cw{max-width:560px;gap:10px}
+.cwbody{width:100%;display:flex;flex-direction:column;gap:10px}
+.cwsub{margin:4px 0 0;font-family:var(--display);font-weight:600;font-size:15px;text-align:left}
+.sgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.sbtn{position:relative;cursor:pointer;min-height:64px;display:flex;flex-direction:column;align-items:center;justify-content:center;border:3px solid var(--ink);border-radius:10px;background:var(--screen2);box-shadow:0 3px 0 var(--ink);font-family:var(--display);font-weight:600;font-size:18px}
+.sbtn small{position:absolute;top:3px;left:6px;font-family:var(--px);font-size:8px;opacity:.7}
+.sbtn em{font-style:normal;font-family:var(--body);font-size:10px;font-weight:600;background:#1f2638;color:#fff;border-radius:99px;padding:0 6px}
+.sbtn.hidd{background:repeating-linear-gradient(135deg,#2a2f45 0 10px,#232838 10px 20px);color:#cfd5e6}
+.sbtn.sel,.tbtn.sel{outline:4px solid var(--yellow);outline-offset:1px;transform:translateY(-3px)}
+.sbtn:disabled{opacity:.3;cursor:not-allowed}
+.cwhand{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.cwsum{margin:0;padding:12px;border:3px dashed var(--edge);border-radius:10px;font-family:var(--display);font-weight:600;font-size:17px}
+.cwnav{display:flex;gap:10px;width:100%}
+.cwnav .btn{flex:1;font-size:17px;padding:12px}
+#cwNext.go,#fsGo{background:var(--yellow)}
+.fsrows{display:flex;flex-direction:column;gap:12px;width:100%}
+.fsrow{display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:center}
+.fsrow b{width:100%;font-family:var(--display)}
+.fsrow .btn{min-width:46px;font-size:18px}
+.fsrow .btn.on{background:var(--yellow)}
+.fab{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:9;display:flex;gap:8px;width:max-content;max-width:calc(100% - 24px)}
+.fab .btn{box-shadow:0 4px 0 var(--ink),0 8px 24px rgba(0,0,0,.45)}
+#fabMain{font-size:18px;padding:13px 22px;background:var(--yellow);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#fabAlt{font-size:16px;padding:13px 16px}
+#fabUndo{font-size:20px;padding:10px 14px}
 .fan{margin:0;text-align:center;font-size:12px;color:#8e97b5}
 @media (prefers-reduced-motion:reduce){body.rolling #roll,body.rolling .plate,.dialog::after,.slot.land,.say,.card,.badge-stage::before,.badge-stage svg{animation:none}}
 </style>
@@ -349,6 +376,7 @@ body.mode-blind .steps .st.cur{background:#ffcf9a}
     <h2 class="ch2">THE CURSE HAND</h2>
     <div id="tools" class="curses"></div>
   </div>
+  <div class="fab" id="fab"><button id="fabUndo" class="btn" type="button" aria-label="Undo">↶</button><button id="fabMain" class="btn" type="button"></button><button id="fabAlt" class="btn" type="button" hidden></button></div>
   <p class="fan">กติกาแฟนเมดสำหรับเล่นกับเพื่อน ไม่เกี่ยวข้องกับเจ้าของลิขสิทธิ์เกม</p>
 </div>
 
@@ -359,6 +387,27 @@ body.mode-blind .steps .st.cur{background:#ffcf9a}
     <h2 id="chTitle">ได้รับเข็มกลัดหัวหน้ายิม!</h2>
     <p id="chText"></p>
     <button id="chOk" class="btn" type="button">รับเข็มกลัด</button>
+  </div>
+</div>
+
+<div class="veil" id="cmdVeil" hidden role="dialog" aria-modal="true" aria-labelledby="cwTitle">
+  <div class="box card cw">
+    <div class="px lbl" id="cwStep"></div>
+    <h2 id="cwTitle"></h2>
+    <p id="cwText"></p>
+    <div id="cwBody" class="cwbody"></div>
+    <div class="cwnav"><button id="cwBack" class="btn" type="button">ย้อน</button><button id="cwNext" class="btn" type="button">ต่อไป</button></div>
+  </div>
+</div>
+
+<div class="veil" id="fsVeil" hidden role="dialog" aria-modal="true" aria-labelledby="fsTitle">
+  <div class="box card">
+    <div class="px lbl">FUTURE SIGHT</div>
+    <h2 id="fsTitle"></h2>
+    <p id="fsText"></p>
+    <div id="fsRows" class="fsrows"></div>
+    <button id="fsGo" class="btn" type="button">สุ่มทีม</button>
+    <button id="fsClose" class="btn" type="button">ปิด</button>
   </div>
 </div>
 
@@ -875,7 +924,7 @@ const fresh=round=>({phase:"idle",round,flash:"",koi:pick(KO_TH.length),items:{A
   lock:{A:null,B:null},sub:{A:[],B:[]},taken:{A:[],B:[]},gift:{A:Array(N).fill(null),B:Array(N).fill(null)},
   winner:null,id:0,noBan:{A:false,B:false},mono:{A:null,B:null},teraN:{A:0,B:0},teraT:{A:0,B:0},teraMark:{A:[],B:[]},uniq0:{A:0,B:0},betHit:{A:false,B:false},
   hand:{A:[],B:[]},used:{A:[],B:[]},cmdN:0,picker:null,plan:{A:null,B:null},draft:null,coin:pick(2),hid:{A:[],B:[]},
-  pool:[],poolTaken:[],sOrder:[],spick:0,under:null,pendItems:false});
+  pool:[],poolTaken:[],sOrder:[],spick:0,under:null,pendItems:false,lastLock:{A:null,B:null}});
 let S=fresh(0);
 const els={A:[],B:[]};
 for(const p of P) for(let i=0;i<N;i++){
@@ -1076,7 +1125,131 @@ function render(){
   $("win").hidden=S.phase!=="done";
   for(const p of P){const b=$("win"+p); b.textContent=L(pname(p)+" ชนะ",pname(p)+" won"); b.classList.toggle("on",S.winner===p);}
   $("scA").textContent=H.score.A; $("scB").textContent=H.score.B;
-  renderSteps();
+  renderSteps(); renderWizard(); renderFab();
+}
+
+/* ---------- Command wizard: one big step at a time ---------- */
+const anyVeil=()=>["veil","teraVeil","chartVeil","imgVeil","fsVeil","cmdVeil"].some(id=>$(id)&&!$(id).hidden);
+function slotBtn(q,i,sel,dis,fn){
+  const b=document.createElement("button"); b.type="button"; b.className="sbtn"+(sel?" sel":"");
+  const t=S.team[q][i], hid=isHid(q,i);
+  if(hid||t==null){b.classList.add("hidd"); b.innerHTML="<small>"+(i+1)+"</small>?";}
+  else{b.style.background=TYPES[t][2]; b.style.color=TYPES[t][3]?"#fff":"#1f2638"; b.innerHTML="<small>"+(i+1)+"</small>"+tn(t);}
+  if(S.sub[q].includes(i)) b.innerHTML+="<em>"+L("ตัวแทน","Sub")+"</em>";
+  if(S.taken[q].includes(i)) b.innerHTML+="<em>"+L("ของกลาง","Stolen")+"</em>";
+  b.disabled=!!dis; b.addEventListener("click",()=>{fn(); sfx("click");}); return b;
+}
+function grid(cls){const g=document.createElement("div"); g.className=cls; return g;}
+function sub(text){const h=document.createElement("p"); h.className="cwsub"; h.textContent=text; return h;}
+function slotName(q,i){return L("ช่อง "+(i+1),"slot "+(i+1))+(isHid(q,i)?"":" ("+tn(S.team[q][i])+")");}
+function describeDraft(d){
+  const o=other(d.p), a=["Protect "+slotName(d.p,d.protect)];
+  if(d.ci==="pass") a.push(L("ไม่ใช้การ์ด","No card"));
+  else if(d.ci!=null){const c=S.hand[d.p][d.ci], n=CARDS[c].n;
+    a.push(c==="roar"||c==="present"?n+" → "+L("ธาตุ","")+tn(d.type)+L(" ของ "+pname(o)," of "+pname(o))
+      :c==="trick"?n+": "+L("ให้ ","give ")+slotName(d.p,d.mine)+L(" แลก ",", take ")+slotName(o,d.theirs)
+      :c==="tera"?n+": "+slotName(o,d.slot)+" → "+tn(d.tt)
+      :c==="sub"||c==="conv"?n+" → "+slotName(d.p,d.self):n);}
+  return a.join(" · ");
+}
+function afterCard(d){
+  if(d.ci==="pass") return "confirm";
+  const need=CARDS[S.hand[d.p][d.ci]].need; return need?"target":"confirm";
+}
+function renderWizard(){
+  const v=$("cmdVeil"), d=S.draft, on=!!(d&&S.phase==="cmd");
+  v.hidden=!on; $("wrap").inert=anyVeil();
+  if(!on) return;
+  const p=d.p, o=other(p), st=d.step||"protect", body=$("cwBody"); body.textContent="";
+  const order4=["protect","card","target","confirm"];
+  $("cwStep").textContent=pname(p)+" · COMMAND "+S.cmdN+"/2 · "+L("ขั้น ","STEP ")+(order4.indexOf(st)+1)+"/4";
+  const next=$("cwNext"), back=$("cwBack"); next.classList.remove("go");
+  back.textContent=st==="protect"?L("ปิด","Close"):L("‹ ย้อน","‹ Back");
+  if(st==="protect"){
+    $("cwTitle").textContent=L("เลือกช่องที่จะ Protect","Choose a slot to Protect");
+    $("cwText").textContent=L("การ์ดของอีกฝ่ายที่เล็งช่องนี้ หรือเล็งธาตุของช่องนี้ จะล้มเหลว","Opponent cards aimed at this slot, or at its type, will fail.")+(S.lastLock[p]!=null?L(" (เลือกช่องเดิมไว้ให้แล้ว)"," (Your last pick is preselected.)"):"");
+    const g=grid("sgrid"); for(let i=0;i<N;i++) g.appendChild(slotBtn(p,i,d.protect===i,false,()=>{d.protect=i; if(d.self===i) d.self=null; d.step="card"; render();}));
+    body.appendChild(g);
+    next.textContent=L("ต่อไป ›","Next ›"); next.disabled=d.protect==null; next.onclick=()=>{d.step="card"; render();};
+  }else if(st==="card"){
+    $("cwTitle").textContent=L("เลือกการ์ด 1 ใบ","Choose 1 card");
+    $("cwText").textContent=L("การ์ดที่ใช้ไม่ได้ตอนนี้จะเป็นสีจาง","Cards you can't play right now are faded.");
+    const g=grid("hand cwhand");
+    S.hand[p].forEach((cd,k)=>{const b=document.createElement("button"); b.type="button"; b.className="cardbtn c-"+cd+(d.ci===k?" sel":"");
+      b.innerHTML="<b>"+CARDS[cd].n+"</b><span>"+L(CARDS[cd].th,CARDS[cd].en)+"</span>"; b.disabled=!canPlay(p,cd);
+      b.addEventListener("click",()=>{chooseCard(p,k); d.step=afterCard(d); render();}); g.appendChild(b);});
+    const ps=document.createElement("button"); ps.type="button"; ps.className="cardbtn"+(d.ci==="pass"?" sel":""); ps.innerHTML="<b>"+L("ไม่ใช้การ์ด","No card")+"</b><span>"+L("เก็บไพ่ไว้ ใช้ Protect อย่างเดียว","Keep your cards, Protect only")+"</span>";
+    ps.addEventListener("click",()=>{Object.assign(d,{ci:"pass",type:null,mine:null,theirs:null,slot:null,tt:null,self:null}); d.step="confirm"; render(); sfx("click");});
+    g.appendChild(ps); body.appendChild(g);
+    next.textContent=L("ต่อไป ›","Next ›"); next.disabled=d.ci==null; next.onclick=()=>{d.step=afterCard(d); render();};
+  }else if(st==="target"){
+    const c=S.hand[p][d.ci], need=CARDS[c].need, done=()=>{if(draftDone()){d.step="confirm";} render();};
+    $("cwTitle").textContent=CARDS[c].n+L(": เลือกเป้าหมาย",": choose a target");
+    $("cwText").textContent=L(CARDS[c].th,CARDS[c].en);
+    if(need==="type"){
+      body.appendChild(sub(L("ธาตุของ "+pname(o),pname(o)+"'s types")));
+      const g=grid("tgrid"); typeOpts(p,c).forEach(t=>{const b=document.createElement("button"); b.type="button"; b.className="tbtn"+(d.type===t?" sel":"");
+        b.style.background=TYPES[t][2]; b.style.color=TYPES[t][3]?"#fff":"#1f2638"; b.textContent=tn(t);
+        b.addEventListener("click",()=>{d.type=t; sfx("click"); done();}); g.appendChild(b);}); body.appendChild(g);
+    }else if(need==="swap"){
+      body.appendChild(sub(L("① ช่องของคุณที่จะให้ไป","① Your slot to give")));
+      const g1=grid("sgrid"); for(let i=0;i<N;i++) g1.appendChild(slotBtn(p,i,d.mine===i,false,()=>{d.mine=i; done();})); body.appendChild(g1);
+      body.appendChild(sub(L("② ช่องของ "+pname(o)+" ที่จะเอามา","② "+pname(o)+"'s slot to take")));
+      const g2=grid("sgrid"); for(let i=0;i<N;i++) g2.appendChild(slotBtn(o,i,d.theirs===i,S.sub[o].includes(i)||S.taken[o].includes(i),()=>{d.theirs=i; done();})); body.appendChild(g2);
+    }else if(need==="tera"){
+      body.appendChild(sub(L("① ช่องของ "+pname(o),"① "+pname(o)+"'s slot")));
+      const g1=grid("sgrid"); for(let i=0;i<N;i++) g1.appendChild(slotBtn(o,i,d.slot===i,S.sub[o].includes(i),()=>{d.slot=i; done();})); body.appendChild(g1);
+      body.appendChild(sub(L("② ธาตุใหม่","② New type")));
+      const g2=grid("tgrid"); TYPES.forEach((_,t)=>{const b=document.createElement("button"); b.type="button"; b.className="tbtn"+(d.tt===t?" sel":"");
+        b.style.background=TYPES[t][2]; b.style.color=TYPES[t][3]?"#fff":"#1f2638"; b.textContent=tn(t);
+        b.addEventListener("click",()=>{d.tt=t; sfx("click"); done();}); g2.appendChild(b);}); body.appendChild(g2);
+    }else if(need==="self"){
+      body.appendChild(sub(L("ช่องของคุณ (ไม่ใช่ช่อง Protect)","Your slot (not the Protect slot)")));
+      const g=grid("sgrid"); for(let i=0;i<N;i++) g.appendChild(slotBtn(p,i,d.self===i,i===d.protect,()=>{d.self=i; done();})); body.appendChild(g);
+    }
+    next.textContent=L("ต่อไป ›","Next ›"); next.disabled=!draftDone(); next.onclick=()=>{d.step="confirm"; render();};
+  }else{
+    $("cwTitle").textContent=L("ยืนยันคำสั่ง","Confirm your command");
+    $("cwText").textContent=L("กดยืนยันแล้วคำสั่งจะถูกซ่อน จากนั้นส่งเครื่องให้อีกฝ่าย","Once confirmed it's hidden. Then pass the device over.");
+    const s=document.createElement("p"); s.className="cwsum"; s.textContent=describeDraft(d); body.appendChild(s);
+    next.textContent=L("ยืนยัน ✓","Confirm ✓"); next.classList.add("go"); next.disabled=!draftDone(); next.onclick=()=>confirmCmd(p);
+  }
+  back.onclick=()=>{
+    if(st==="protect"){S.draft=null; render(); return;}
+    d.step=st==="card"?"protect":st==="target"?"card":(d.ci==null||d.ci==="pass"||!CARDS[S.hand[p][d.ci]].need)?"card":"target"; render();
+  };
+}
+/* ---------- Floating action button: the next thing to press, always in reach ---------- */
+function fabSet(main,act,alt,altAct){
+  const m=$("fabMain"), a=$("fabAlt");
+  m.textContent=main; m.disabled=!act; m.onclick=act||null;
+  a.hidden=!alt; if(alt){a.textContent=alt; a.onclick=altAct;}
+}
+function renderFab(){
+  if(typeof S==="undefined") return;
+  $("fabUndo").disabled=!U||S.phase==="rolling";
+  const ph=S.phase;
+  if(ph==="rolling") return fabSet(L("กำลังสุ่ม…","Drawing…"));
+  if(ph==="idle") return SAFARI()?fabSet(L("🌿 เปิด Safari","🌿 Open the Safari"),roll):fabSet(L("🔮 Future Sight แล้วสุ่ม","🔮 Future Sight & draw"),openFS);
+  if(ph==="safari") return fabSet(L("🌿 ตาของ "+pname(S.sOrder[S.spick])+": แตะธาตุ","🌿 "+pname(S.sOrder[S.spick])+": tap a type"),()=>$("pool").scrollIntoView({behavior:"smooth",block:"center"}));
+  if(ph==="cmd") return fabSet(L("🎴 สั่งการ: "+pname(S.picker)+" ("+S.cmdN+"/2)","🎴 Command: "+pname(S.picker)+" ("+S.cmdN+"/2)"),()=>openPick(S.picker));
+  if(S.winner) return fabSet(L("🎲 รอบต่อไป","🎲 Next round"),SAFARI()?roll:openFS);
+  if(T.id) return fabSet("⏱ "+$("clock").textContent+L(" · ยกเลิก"," · Cancel"),()=>$("tbtn").click());
+  if(T.over) return fabSet(L(pname("A")+" ชนะ",pname("A")+" won"),()=>setWinner("A"),L(pname("B")+" ชนะ",pname("B")+" won"),()=>setWinner("B"));
+  return fabSet(L("⏱ เริ่มจับเวลาจัดทีม","⏱ Start the team timer"),()=>$("tbtn").click(),L("ข้ามไปบันทึกผล","Skip to result"),()=>{T.over=true; render();});
+}
+/* ---------- Future Sight pop-up ---------- */
+function openFS(){ modal("fsVeil",true); renderFS(); }
+function renderFS(){
+  $("fsTitle").textContent=L("ทายว่าในทีมจะมีกี่ธาตุ","How many types will your team have?");
+  $("fsText").textContent=L("ทายถูกได้การ์ด Terastal 1 ใบ ธาตุที่ซ้ำกันนับเป็นธาตุเดียว","Guess right for a Terastal card. Repeats count once.");
+  const rows=$("fsRows"); rows.textContent="";
+  for(const p of P){const r=document.createElement("div"); r.className="fsrow"; const n=document.createElement("b"); n.textContent=pname(p); r.appendChild(n);
+    for(let k=1;k<=6;k++){const b=document.createElement("button"); b.type="button"; b.className="btn"+($("bet"+p).value===String(k)?" on":""); b.textContent=k;
+      b.addEventListener("click",()=>{$("bet"+p).value=String(k); renderFS(); renderSteps(); sfx("click");}); r.appendChild(b);}
+    rows.appendChild(r);}
+  $("fsGo").disabled=!($("betA").value&&$("betB").value);
+  $("fsGo").textContent=L("🎲 สุ่มทีม","🎲 Draw"); $("fsClose").textContent=L("ปิด","Close");
 }
 
 /* ---------- Team Preview timer, drawn as an HP bar ---------- */
@@ -1086,10 +1259,12 @@ function showClock(ms){
   const s=Math.ceil(ms/1000), f=ms/TEAM_MS;
   $("clock").textContent=Math.floor(s/60)+":"+String(s%60).padStart(2,"0");
   const h=$("hpfill"); h.style.width=(f*100)+"%"; h.className=f<=.2?"low":f<=.5?"mid2":"";
+  if(T.id) renderFab();
 }
 function timerText(){
   $("tbtn").textContent=T.id?L("ยกเลิก","Cancel"):T.over?L("จับเวลาใหม่","Restart timer"):L("เริ่มจับเวลา","Start timer");
   renderSteps();
+  renderFab();
   $("tnote").textContent=T.id?L("กำลังนับถอยหลัง "+mins()+" นาที","Counting down "+mins()+" min"):T.over?L("หมดเวลาจัดทีม เริ่มแบทเทิลได้","Time's up. Start the battle."):"";
 }
 function stopTimer(){
@@ -1282,12 +1457,12 @@ function safariPick(k){
 /* ---------- Commands: both sides choose in secret, then everything is revealed at once ---------- */
 function startCmd(){S.cmdN=1; beginCmd();}
 function beginCmd(){
-  S.phase="cmd"; S.plan={A:null,B:null}; S.draft=null; S.lock={A:null,B:null};
+  S.phase="cmd"; S.plan={A:null,B:null}; S.draft=null; if(S.cmdN>1) S.lastLock={A:S.lock.A,B:S.lock.B}; S.lock={A:null,B:null};
   S.picker=order()[0];
 }
 function openPick(p){
   if(S.phase!=="cmd"||S.picker!==p||S.draft) return;
-  S.draft={p,protect:null,ci:null,type:null,mine:null,theirs:null,slot:null,tt:null,self:null}; S.flash="";
+  S.draft={p,protect:S.lastLock[p],ci:null,type:null,mine:null,theirs:null,slot:null,tt:null,self:null,step:"protect"}; S.flash="";
   render(); sfx("click");
 }
 function chooseCard(p,k){
@@ -1473,6 +1648,9 @@ for(const p of P){
   $("tsel"+p).addEventListener("change",()=>{if(S.draft&&S.draft.p===p){S.draft.type=+$("tsel"+p).value; render();}});
 }
 $("undo").addEventListener("click",undo);
+$("fabUndo").addEventListener("click",undo);
+$("fsGo").addEventListener("click",()=>{if(!($("betA").value&&$("betB").value)) return; modal("fsVeil",false); roll();});
+$("fsClose").addEventListener("click",()=>modal("fsVeil",false));
 $("betA").addEventListener("change",()=>renderSteps()); $("betB").addEventListener("change",()=>renderSteps());
 $("shot").addEventListener("click",saveImage);
 $("imClose").addEventListener("click",()=>modal("imgVeil",false));
