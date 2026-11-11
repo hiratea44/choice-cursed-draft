@@ -421,6 +421,7 @@ body.mode-blind .steps .st.cur{background:#ffcf9a}
 .menugrid .trow{grid-column:1/-1;justify-content:center}
 .modes{max-width:620px}
 .modegrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;width:100%}
+.modeg{grid-column:1/-1;margin:8px 0 -2px;text-align:left;font-family:var(--display);font-weight:600;font-size:16px;color:var(--muted)}
 .modes{max-height:100%;overflow:auto}
 .modecard{cursor:pointer;display:flex;flex-direction:column;align-items:flex-start;gap:4px;text-align:left;padding:12px;border:3px solid var(--ink);border-radius:12px;background:#fff;color:var(--ink);box-shadow:0 4px 0 var(--ink);font-family:var(--body);font-size:13px;line-height:1.4}
 .modecard b{font-family:var(--display);font-weight:600;font-size:18px}
@@ -531,6 +532,10 @@ body.mode-color #curse,body.mode-color [data-l="ko"],body.mode-color .mid>.note,
 .t2m b.w{color:#1f8a46}.t2m b.w::after{content:" ✓"}.t2m b.l{color:var(--muted);text-decoration:line-through}
 #serLine{cursor:pointer}
 body.nofs .lane .row:has(> label[for^="bet"]){display:none}
+.lkst{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}
+.lkst .lk{font-size:13px;font-weight:600;padding:4px 10px;border-radius:99px;border:2px solid var(--edge);background:#fff}
+.lkst .lk.on{border-color:var(--ink);background:var(--yellow)}
+.lkst .lk.done{opacity:.55}
 .fsname{width:100%;text-align:center;font-family:var(--display);font-weight:600;font-size:16px;padding:6px;border:3px dashed var(--edge);border-radius:8px;background:#fff}
 .fsname.next{border-color:var(--red);background:#fff0f0}
 .fan{margin:0;text-align:center;font-size:12px;color:#8e97b5}
@@ -1015,7 +1020,7 @@ const MODEINFO={
  safari:{n:"Safari Draft",lv:["วางแผน","Strategy"],d:["ไม่สุ่ม! ผลัดกันหยิบธาตุจากทุ่ง 14 ธาตุ ธาตุที่เหลือเป็น Knock Off","No draw! Take turns picking from 14 types. A leftover becomes Knock Off."]},
  blind:{n:"Blind Draft",lv:["ปั่น","Chaos"],d:["ทุกทีมมี 2 ช่องถูกซ่อน เล็งแบบเดาดวง เปิดเผยตอนจบคำสั่ง","2 slots per team stay hidden. Aim blind; all revealed at the end."]},
  mirror:{n:"Mirror Draft",lv:["แฟร์","Fair"],d:["สองฝ่ายเริ่มด้วยทีมเหมือนกันเป๊ะ แล้วสาปกันจนต่าง วัดกันที่ฝีมือ","Both start with the exact same team, then curse it apart. Pure skill."]},
- chaos:{n:"Wild Field",lv:["ป่วน","Wild"],d:["สนามป่วน: ทุกรอบสุ่มสนามพิเศษ 2 อย่างจาก 13 แบบ เช่น โลกกลับหัว ดวลนัดเดียว ไพ่หงาย","Two random field effects each round from 13, like Upside Down, Sudden Death or Open Hand."]},
+ chaos:{n:"Wild Field",lv:["ป่วน","Wild"],d:["สนามป่วน: ทุกรอบสุ่มสนามพิเศษ 2 อย่างจาก 11 แบบ เช่น โลกกลับหัว ดวลนัดเดียว ไพ่หงาย","Two random field effects each round from 11, like Upside Down, Sudden Death or Open Hand."]},
  buildup:{n:"Build-up",lv:["วางแผน","Strategy"],d:["ค่อย ๆ สร้างทีม: เริ่ม 2 ช่อง ทุกคำสั่งเลือกเติม 1 ใน 2 ธาตุจนครบ 6 มี 4 คำสั่ง","Start with 2 slots; each of 4 commands, pick 1 of 2 types to add."]},
  luck:{n:"Push Your Luck",lv:["เสี่ยง","Risky"],d:["เปิดธาตุทีละช่อง หยุดเมื่อไรก็ได้ เปิดเจอ Knock Off 2 ช่องทั้งทีมโดนสุ่มใหม่ ธาตุซ้ำ 3 ได้ Terastal","Open slots one by one and stop anytime. 2 Knock Offs bust the team; a triple earns a Terastal."]},
  box:{n:"Mystery Box",lv:["ปั่นหัว","Mind games"],d:["กล่องปริศนา 12 ใบ ผลัดกันเปิด แล้วเลือกว่าจะเก็บเองหรือยัดให้อีกฝ่าย","12 mystery boxes: open one, then keep it or force it on the other side."]},
@@ -1038,10 +1043,13 @@ function renderModes(){
   $("modeTitle").textContent=L("เลือกโหมด","Choose a mode");
   $("modeNote").textContent=can?L("แตะโหมดที่อยากเล่น เปลี่ยนได้ทุกครั้งที่จบรอบ","Tap a mode. You can switch whenever a round ends."):L("กำลังเล่นอยู่ เปลี่ยนโหมดได้ตอนจบรอบ","A round is in progress. Switch modes when it ends.");
   const g=$("modeGrid"); g.textContent="";
-  ["starter","cursed","safari","blind","double","mirror","chaos","buildup","luck","box","color"].forEach(k=>{
+  [[["🌱 เริ่มต้น","🌱 Start here"],["starter","cursed"]],[["🧠 เลือกเองได้","🧠 You choose"],["safari","buildup","box"]],[["🎲 ลุ้นดวง","🎲 Luck"],["luck","blind","chaos"]],[["✨ พิเศษ","✨ Special"],["double","mirror","color"]]].forEach(([gt,ks])=>{
+   const h=document.createElement("h3"); h.className="modeg"; h.textContent=L(gt[0],gt[1]); g.appendChild(h);
+   ks.forEach(k=>{
     const m=MODEINFO[k], b=document.createElement("button"); b.type="button"; b.className="modecard m-"+k+(H.mode===k?" sel":""); b.disabled=!can;
     b.innerHTML='<i class="mball"></i><b>'+m.n+'</b><em>'+L(m.lv[0],m.lv[1])+'</em><span>'+L(m.d[0],m.d[1])+'</span>';
     b.addEventListener("click",()=>{setMode(k); renderModes(); sfx("click");}); g.appendChild(b);
+   });
   });
   $("serL").textContent=L("ซีรีส์","Series");
   const sb=$("serBtns"); sb.textContent="";
@@ -1158,7 +1166,7 @@ const RULES={
   ["⭐ ตัวเอก (Ace)","คำสั่งแรกของรอบ แต่ละคนเลือกลับ 1 ช่องเป็นตัวเอก ถ้าการ์ดของอีกฝ่ายทำให้ธาตุช่องนั้นเปลี่ยน อีกฝ่ายได้การ์ด Terastal 1 ใบ เปิดเผยตอนจบคำสั่ง (ไม่มีใน Starter และ Color Draft)"],
   ["🏳 ยอมแพ้","ระหว่างสั่งการหรือก่อนบันทึกผล กดยอมแพ้ได้ อีกฝ่ายได้ 1 แต้ม รอบหน้าคนยอมแพ้เป็น Underdog (จั่วเพิ่ม 1 ใบ + Terastal)"],
   ["Build-up","เริ่มด้วย 2 ช่อง อีก 4 ช่องว่างอยู่ มี 4 คำสั่ง ทุกคำสั่งเลือกเติม 1 ใน 2 ธาตุที่สุ่มให้ ช่องว่างโดนการ์ดไม่ได้ ไม่ต้องทาย Future Sight"],
-  ["Push Your Luck","ผลัดกันทีละคน เปิดธาตุในทีมทีละช่อง หยุดเมื่อไรก็ได้ ช่องที่ยังไม่เปิดถูกสุ่มใหม่ เปิดเจอธาตุที่ติด Knock Off 2 ช่อง (กติกาโหด 1 ช่อง) ทั้งทีมโดนสุ่มใหม่ เปิดได้ธาตุซ้ำ 3 ช่องได้ Terastal +1"],
+  ["Push Your Luck","ผลัดกันเปิดธาตุในทีมของตัวเองคนละช่อง (A, B, A, B…) หยุดเมื่อไรก็ได้ คนที่หยุดแล้วอีกฝ่ายเปิดต่อจนพอใจ ช่องที่ยังไม่เปิดถูกสุ่มใหม่ เปิดเจอธาตุที่ติด Knock Off 2 ช่อง (กติกาโหด 1 ช่อง) ทั้งทีมโดนสุ่มใหม่ เปิดได้ธาตุซ้ำ 3 ช่องได้ Terastal +1"],
   ["Mystery Box","กล่องปริศนา 12 ใบ ผลัดกันเปิดทีละใบ แล้วเลือกว่าจะเก็บธาตุนั้นเอง หรือยัดให้อีกฝ่าย จนได้คนละ 6 ช่อง"],
   ["Color Draft","ไม่สุ่มธาตุ แต่ละฝ่ายสุ่มได้ 1 สีจาก 10 สีของโปเกเด็กซ์ (แดง น้ำเงิน เหลือง เขียว ดำ น้ำตาล ม่วง เทา ขาว ชมพู) ทั้งทีมต้องเป็นโปเกมอนสีนั้น จากนั้นสั่งการลับ 1 ครั้ง: ป้องกันสี · สุ่มสีอีกฝ่ายใหม่ · สลับสีกัน · สุ่มสีตัวเองใหม่"],
   ["🏆 Tournament","เลือกในช่องซีรีส์ ใส่ชื่อ 4 หรือ 8 คน ระบบสุ่มจับคู่แบบแพ้คัดออก บันทึกผลแต่ละแมตช์แล้วระบบเติมชื่อคู่ถัดไปให้ แตะแถบซีรีส์เพื่อดูสาย"],
@@ -1172,7 +1180,7 @@ const RULES={
   ["💀 กติกาโหด","เปิดในหน้าเลือกโหมด · Cursed: Knock Off สะสมจาก 2 รอบก่อน (Curse Stack) · Double: ไอเทมไร้ประโยชน์ 2 ช่อง เช่น Iron Ball · Safari: หยิบแล้วโอกาส 15% ธาตุหนี · Blind: ซ่อน 3 ช่อง · Mirror: Shadow การ์ดที่สำเร็จโดนทีมตัวเอง 1 ช่องด้วย · Wild Field: โอกาส 10% ออก 3 สนาม · ทุกโหมด: แพ้ 2 รอบติดได้ Perish Song (Last Stand) และแชมป์ King of the Hill จั่วไพ่น้อยลง 1 ใบ"],
   ["ไฮไลต์และทำเนียบ","จบคำสั่งแล้วมีสรุปช็อตเด็ดของรอบ บันทึกเป็นรูปแชร์ได้ ⚙ เมนู → 🏆 ทำเนียบ ดูสถิติชนะ หัวหน้ายิม แชมป์ Bo3 และสายสาปของแต่ละชื่อ"],
   ["🎲 สุ่มคำสั่งให้","ในหน้าสั่งการกดปุ่มนี้ ระบบเลือก Protect การ์ด และเป้าหมายให้ทั้งหมด"],
-  ["Wild Field","สนามป่วน: ทุกรอบสุ่มสนามพิเศษ 2 อย่าง (คู่ที่ขัดกันจะไม่ออกพร้อมกัน): โลกกลับหัว (ฝ่ายที่มีธาตุมากกว่าได้ทำก่อน) · ต่อเวลา (รอบนี้มี 3 คำสั่ง) · ดวลนัดเดียว (รอบนี้มีคำสั่งเดียว) · ม่านหมอก (ทุกทีมถูกซ่อน 1 ช่องจนจบคำสั่ง) · ไพ่หงาย (ไพ่ในมือทุกคนเปิดหงายให้เห็นกัน) · กระจกแตก (ห้ามใช้ Mirror Coat) · ฝนไพ่ (ทุกคนจั่วการ์ดเพิ่ม 1 ใบ) · สนามเปลือย (ไม่มี Protect และใช้ Substitute ไม่ได้ ทุกการ์ดโดนเต็ม ๆ) · แลกมือ (สลับไพ่ในมือกันก่อนคำสั่งแรก ยกเว้นการ์ด Terastal) · ผลึกบาน (ทุกคนได้การ์ด Terastal ฟรี 1 ใบ) · ฤดูเปิดยิม (ธาตุเดียวกัน 3 ช่องก็เป็นหัวหน้ายิมได้) · มือเปล่าคูณสอง (Knock Off 2 ธาตุ) · อาฟเตอร์ช็อก (จบคำสั่งแล้ว ทุกทีมยกเว้นหัวหน้ายิมโดนสุ่มธาตุใหม่ 1 ช่อง ทะลุ Protect)"],
+  ["Wild Field","สนามป่วน: ทุกรอบสุ่มสนามพิเศษ 2 อย่าง (คู่ที่ขัดกันจะไม่ออกพร้อมกัน): โลกกลับหัว (ฝ่ายที่มีธาตุมากกว่าได้ทำก่อน) · ต่อเวลา (รอบนี้มี 3 คำสั่ง) · ดวลนัดเดียว (รอบนี้มีคำสั่งเดียว) · ม่านหมอก (ทุกทีมถูกซ่อน 1 ช่องจนจบคำสั่ง) · ไพ่หงาย (ไพ่ในมือทุกคนเปิดหงายให้เห็นกัน) · กระจกแตก (ห้ามใช้ Mirror Coat) · สนามเปลือย (ไม่มี Protect และใช้ Substitute ไม่ได้ ทุกการ์ดโดนเต็ม ๆ) · แลกมือ (สลับไพ่ในมือกันก่อนคำสั่งแรก ยกเว้นการ์ด Terastal) · ฤดูเปิดยิม (ธาตุเดียวกัน 3 ช่องก็เป็นหัวหน้ายิมได้) · มือเปล่าคูณสอง (Knock Off 2 ธาตุ) · อาฟเตอร์ช็อก (จบคำสั่งแล้ว ทุกทีมยกเว้นหัวหน้ายิมโดนสุ่มธาตุใหม่ 1 ช่อง ทะลุ Protect)"],
   ["King of the Hill","เลือกในช่องซีรีส์ เล่นได้หลายคน ผู้ชนะอยู่ต่อ ผู้ท้าชิงคนใหม่ใส่ชื่อแทนคนแพ้ นับสถิติชนะติดต่อกัน"],
   ["Double Cursed (สาปซ้อน)","โหมดที่โหดกว่า จบคำสั่งแล้วทุกช่องได้ไอเทมสุ่มจาก Pokémon Champions ตามธาตุอัตโนมัติ ไม่ซ้ำกันในทีม ช่อง Knock Off ไม่ได้ ไอเทมจาก Present คงอยู่ และทุกทีมได้ Mega Stone 1 ช่อง พร้อมไอเทมสำรอง ห้ามเปลี่ยน"],
   ["Safari Draft","เปิดทุ่ง 14 ธาตุ ผลัดกันหยิบแบบงู (A B B A A B B A …) จนได้คนละ 6 ช่อง ธาตุที่เหลือ 2 อัน สุ่ม 1 อันเป็น Knock Off"],
@@ -1208,7 +1216,7 @@ const RULES={
   ["⭐ Ace","On command 1 each side secretly stars 1 slot. If the other side's card changes that slot's type, they earn a Terastal card. Revealed when commands end (not in Starter or Color Draft)."],
   ["🏳 Concede","During commands or before recording a result you can concede: the other side scores, and you are the Underdog next round (+1 card, +Terastal)."],
   ["Build-up","Start with 2 slots and 4 empty ones over 4 commands; each command pick 1 of 2 offered types to fill the next slot. Empty slots can't be targeted. No Future Sight."],
-  ["Push Your Luck","One side at a time opens their team slot by slot and may stop anytime; unopened slots are redrawn. Opening 2 Knock Off slots (1 with hard rules) busts the whole team. A triple earns +1 Terastal."],
+  ["Push Your Luck","Sides take turns opening one slot of their own team (A, B, A, B…) and may stop anytime; once one stops, the other carries on alone; unopened slots are redrawn. Opening 2 Knock Off slots (1 with hard rules) busts the whole team. A triple earns +1 Terastal."],
   ["Mystery Box","12 mystery boxes. Take turns opening one, then keep its type or force it on the other side, until both have 6."],
   ["Color Draft","No types: each side draws 1 of the 10 Pokédex colors (red, blue, yellow, green, black, brown, purple, gray, white, pink) and the whole team must be that color. Then one secret command: guard · reroll theirs · swap · reroll yours."],
   ["🏆 Tournament","Pick it under Series. Enter 4 or 8 names for a random knockout bracket; record each match and the next pairing fills in. Tap the series bar to see the bracket."],
@@ -1222,7 +1230,7 @@ const RULES={
   ["💀 Hard rules","Toggle in the mode picker · Cursed: Knock Off carries over from the last 2 rounds (Curse Stack) · Double: 2 dead-weight items such as Iron Ball · Safari: 15% of picks run away · Blind: 3 hidden slots · Mirror: Shadow, a card that lands hits 1 of your own slots too · Wild Field: 10% chance of 3 fields · All modes: 2 losses in a row earn Perish Song (Last Stand), and the King of the Hill champion draws 1 card fewer."],
   ["Highlights and Hall of Fame","After the commands, the round's best moments are listed and can be saved as an image. ⚙ Menu → 🏆 Hall of Fame tracks wins, Gym badges, Bo3 titles and the most cursed name."],
   ["🎲 Randomize","In the command window this button picks your Protect, card and target for you."],
-  ["Wild Field","Two random field effects each round (clashing pairs never come together): Upside Down (The side with more types goes first) · Overtime (3 commands this round) · Sudden Death (Only 1 command this round) · Mist Veil (1 slot per team stays hidden until the commands end) · Open Hand (Every hand is played face-up) · Shattered Mirror (Mirror Coat can't be played) · Card Rain (Everyone draws 1 extra card) · Bare Field (No Protect and no Substitute. Every card lands) · Swap Meet (hands swap before command 1; Terastal cards stay put) · Crystal Bloom (Everyone gets a free Terastal card) · Gym Season (3 slots of one type make a Gym Leader) · Double Knock (Two Knock Off types) · Aftershock (After the commands, each team except a Gym Leader has 1 random slot redrawn, Protect or not)."],
+  ["Wild Field","Two random field effects each round (clashing pairs never come together): Upside Down (The side with more types goes first) · Overtime (3 commands this round) · Sudden Death (Only 1 command this round) · Mist Veil (1 slot per team stays hidden until the commands end) · Open Hand (Every hand is played face-up) · Shattered Mirror (Mirror Coat can't be played) · Bare Field (No Protect and no Substitute. Every card lands) · Swap Meet (hands swap before command 1; Terastal cards stay put) · Gym Season (3 slots of one type make a Gym Leader) · Double Knock (Two Knock Off types) · Aftershock (After the commands, each team except a Gym Leader has 1 random slot redrawn, Protect or not)."],
   ["King of the Hill","Pick it under Series. Any number of players: the winner stays, a new challenger takes the loser's seat. Win streaks are tracked."],
   ["Double Cursed","The harsher mode. After the commands every slot automatically gets a type-matched item from the Pokémon Champions pool, no duplicates within a team. Knock Off slots get nothing, Present items stay, and each team gets one Mega Stone slot with a backup item. No swaps."],
   ["Safari Draft","14 types appear on the field. Take turns picking in snake order (A B B A A B B A …) until both have 6. One of the 2 leftovers becomes the Knock Off type."],
@@ -1738,10 +1746,8 @@ const FIELDS={
  mist:{n:"Mist Veil",th:"ทุกทีมถูกซ่อน 1 ช่องจนจบคำสั่ง",en:"1 slot per team stays hidden until the commands end",tn:"ม่านหมอก"},
  open:{n:"Open Hand",th:"ไพ่ในมือทุกคนเปิดหงายให้เห็นกัน",en:"Every hand is played face-up",tn:"ไพ่หงาย"},
  shatter:{n:"Shattered Mirror",th:"ห้ามใช้ Mirror Coat",en:"Mirror Coat can't be played",tn:"กระจกแตก"},
- rain:{n:"Card Rain",th:"ทุกคนจั่วการ์ดเพิ่ม 1 ใบ",en:"Everyone draws 1 extra card",tn:"ฝนไพ่"},
  bare:{n:"Bare Field",th:"ไม่มี Protect และใช้ Substitute ไม่ได้ ทุกการ์ดโดนเต็ม ๆ",en:"No Protect and no Substitute. Every card lands",tn:"สนามเปลือย"},
  swap:{n:"Swap Meet",th:"สลับไพ่ในมือกันก่อนคำสั่งแรก (การ์ด Terastal อยู่กับเจ้าของ)",en:"Hands are swapped before command 1 (Terastal cards stay with their owner)",tn:"แลกมือ"},
- bloom:{n:"Crystal Bloom",th:"ทุกคนได้การ์ด Terastal ฟรี 1 ใบ",en:"Everyone gets a free Terastal card",tn:"ผลึกบาน"},
  season:{n:"Gym Season",th:"ธาตุเดียวกัน 3 ช่องก็เป็นหัวหน้ายิมได้",en:"3 slots of one type make a Gym Leader",tn:"ฤดูเปิดยิม"},
  dknock:{n:"Double Knock",th:"Knock Off 2 ธาตุ",en:"Two Knock Off types",tn:"มือเปล่าคูณสอง"},
  king:{n:"Royal Court",th:"สนามหายาก 1%: ทั้งสองทีมเป็นหัวหน้ายิมทันที เปิดฉาก Gym Battle!",en:"1% rare field: both teams become Gym Leaders at once. Gym Battle!",tn:"ราชันย์"},
@@ -2566,8 +2572,10 @@ function resolveColor(){
 function luckEnd(p){
   S.lk.done[p]=true;
   if(P.every(q=>S.lk.done[q])){ settle({A:"",B:""}); render(); P.forEach(q=>els[q].forEach(bump)); sfx("land"); checkChosen(); return; }
-  S.lk.turn=other(p); render(); swipe(S.lk.turn);
+  luckNext(p);
 }
+// Turns alternate after every open; a side that has stopped or busted is skipped.
+function luckNext(p){ const o=other(p); if(!S.lk.done[o]) S.lk.turn=o; render(); }
 function luckOpen(){
   if(S.phase!=="luck") return; saveUndo();
   const p=S.lk.turn, i=S.lk.open[p], t=S.lkTeam[p][i];
@@ -2583,7 +2591,7 @@ function luckOpen(){
   if(!S.lkBonus[p]&&Object.values(c).some(n=>n>=3)){S.lkBonus[p]=1; S.flash=L("✨ "+pname(p)+" เปิดได้ธาตุซ้ำ 3 ช่อง! ได้ Terastal +1","✨ "+pname(p)+" opened a triple! +1 Terastal"); addLog(p,L("ธาตุซ้ำ 3 ช่อง: Terastal +1","Triple: +1 Terastal")); sfx("teraOn");}
   else S.flash=L(pname(p)+" เปิดช่อง "+(i+1)+": ธาตุ"+tn(t)+(isKO(t)?" (ติด Knock Off!)":""),pname(p)+" opened slot "+(i+1)+": "+tn(t)+(isKO(t)?" (Knock Off!)":""));
   if(S.lk.open[p]>=N) return luckEnd(p);
-  render();
+  luckNext(p);
 }
 function luckStop(){
   if(S.phase!=="luck") return; saveUndo();
@@ -2593,9 +2601,13 @@ function luckStop(){
   addLog(p,L("หยุดที่ "+S.lk.open[p]+" ช่อง","Stopped at "+S.lk.open[p]+" slots")); luckEnd(p);
 }
 function renderLuck(pool){
+  const st=document.createElement("div"); st.className="lkst";
+  for(const q of P){const e=document.createElement("span"); e.className="lk"+(q===S.lk.turn?" on":"")+(S.lk.done[q]?" done":"");
+    e.textContent=pname(q)+": "+(S.lk.done[q]?L("จบแล้ว","done"):L("เปิด ","opened ")+S.lk.open[q]+"/6 · KO "+S.lk.ko[q]); st.appendChild(e);}
+  pool.appendChild(st);
   const p=S.lk.turn, h=document.createElement("div"); h.className="px lbl"; h.textContent=L("เสี่ยงต่อ · ตาของ ","PUSH YOUR LUCK · ")+pname(p); pool.appendChild(h);
   const info=document.createElement("p"); info.className="ctag"; info.style.margin="0";
-  info.textContent=L("เปิดแล้ว "+S.lk.open[p]+"/6 · เจอ Knock Off "+S.lk.ko[p]+"/"+(HARD()?1:2)+" · ธาตุซ้ำ 3 ช่องได้ Terastal","Opened "+S.lk.open[p]+"/6 · Knock Off "+S.lk.ko[p]+"/"+(HARD()?1:2)+" · a triple earns a Terastal"); pool.appendChild(info);
+  info.textContent=L("ผลัดกันเปิดทีละช่อง · เจอ Knock Off "+(HARD()?1:2)+" ช่องแตก · ธาตุซ้ำ 3 ช่องได้ Terastal · โอกาสช่องถัดไปเป็น Knock Off ราว 6%","Take turns opening · "+(HARD()?1:2)+" Knock Off slots bust · a triple earns a Terastal · about a 6% chance the next slot is Knock Off"); pool.appendChild(info);
   const k=document.createElement("p"); k.className="fsko"; k.innerHTML="Knock Off: "; k.appendChild(pill(S.curse)); pool.appendChild(k);
   const g=document.createElement("div"); g.className="stools";
   const a=document.createElement("button"); a.type="button"; a.className="btn"; a.textContent=L("🎲 เปิดช่องถัดไป","🎲 Open next"); a.addEventListener("click",luckOpen);
