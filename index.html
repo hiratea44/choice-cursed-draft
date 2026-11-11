@@ -750,7 +750,7 @@ function renderModes(){
 /* ---------- First-time tour ---------- */
 const TOUR=[
  ["🎲",["ยินดีต้อนรับสู่ Choice!","Welcome to Choice!"],["ที่นี่ดวงเป็นคนเลือกทีมให้คุณ เล่น 2 คนบนเครื่องเดียว สุ่มและสาปกันให้เสร็จ แล้วไปจัดทีมสู้จริงใน Pokémon Champions","Here, luck picks your team. Two players, one device: draw and curse each other here, then build and battle for real in Pokémon Champions."]],
- ["🔮",["Future Sight","Future Sight"],["ก่อนสุ่ม ทายว่าทีมจะมีกี่ธาตุ ทาย 4–6 ถูกได้ Terastal ทาย 1–3 ทีมจะดึงธาตุซ้ำแรงขึ้น ถ้าถูกได้ League Contract ไว้เป็นหัวหน้ายิม มีตารางโอกาสให้ดูตอนทาย","Before the draw, guess how many types your team will have. A correct 4–6 earns Terastal; guess 1–3 and your team pulls repeats harder; if right, you earn a League Contract to become Gym Leader. The odds are shown when you guess."]],
+ ["🔮",["Future Sight","Future Sight"],["ก่อนสุ่ม ทายว่าทีมจะมีกี่ธาตุ ทาย 4–6 ถูกได้ Terastal ทาย 1–3 ถูก (ยากกว่า) ได้ League Contract ไว้เป็นหัวหน้ายิม มีตารางโอกาสให้ดูตอนทาย","Before the draw, guess how many types your team will have. A correct 4–6 earns Terastal; a correct 1–3 (harder) earns a League Contract to become Gym Leader. The odds are shown when you guess."]],
  ["⚪",["สุ่มทีม 6 ช่อง","Draw 6 slots"],["แต่ละช่องคือโปเกมอน 1 ตัวที่มีธาตุนั้น สุ่ม 1 ธาตุเป็น Knock Off (ห้ามถือไอเทม) ได้ธาตุเดียวกัน 4 ช่องขึ้นไปเป็นหัวหน้ายิมทันที","Each slot is one Pokémon of that type. One type is Knock Off (no items). Get 4+ of one type and you're a Gym Leader."]],
  ["🎴",["สั่งการแบบลับ 2 ครั้ง","2 secret commands"],["ทุกคำสั่ง เลือก Protect 1 ช่อง + การ์ด 1 ใบ จากไพ่ในมือ ส่งเครื่องให้กันโดยให้อีกฝ่ายหันหน้าหนี ระบบจะพาเลือกทีละขั้น","Each command: Protect 1 slot + play 1 card from your hand. Pass the device while the other looks away. The game walks you through it step by step."]],
  ["🃏",["เปิดไพ่พร้อมกัน","Reveal together"],["ไพ่ทั้งสองฝ่ายพลิกพร้อมกัน แล้วดูทีละฉากว่าเกิดอะไรขึ้น ถ้าเดา Protect ถูก การ์ดของอีกฝ่ายจะล้มเหลว ส่วน Mirror Coat ทำให้การ์ดเด้งกลับ","Both cards flip at once, then each effect plays out scene by scene. Guess the right Protect and their card fails; a Mirror Coat bounces it back."]],
@@ -812,8 +812,8 @@ function drawCursesOld(){
 const RULES={
  th:[
   ["โหมด","Cursed Draft สุ่มทีมปกติ · Double Cursed สุ่มไอเทมให้ทุกช่องด้วย · Safari Draft ผลัดกันหยิบธาตุเอง · Blind Draft ทีมถูกซ่อนไว้ฝ่ายละ 2 ช่อง เลือกได้ที่ช่องโหมด และเปิดซีรีส์ Best of 3 ได้ทุกโหมด"],
-  ["Future Sight (มองอนาคต)","ก่อนสุ่ม ทั้งสองฝ่ายทายว่าในทีมตัวเองจะมีกี่ธาตุ 1 ถึง 6 (ธาตุซ้ำนับเป็นธาตุเดียว) รางวัล 2 ระดับ: ทาย 4–6 ถูกได้การ์ด Terastal · ทาย 1–3 ถูกได้การ์ด League Contract ใครทาย 1–3 ทีมของคนนั้นดึงดูดธาตุซ้ำ 30% (ทาย 4–6 ดึงดูด 15%) โอกาสทายถูก: 1 ธาตุ 0.5% · 2 ธาตุ 5% · 3 ธาตุ 22% · 4 ธาตุ 31% · 5 ธาตุ 41% · 6 ธาตุ 18% (Safari Draft ไม่ต้องทาย)"],
-  ["สุ่มทีม","แต่ละฝ่ายได้ธาตุ 6 ช่องจาก 18 ธาตุ ซ้ำกันได้ ธาตุเดียวกันออกได้สูงสุด 6 ช่อง มีธาตุดึงดูด: แต่ละช่องมีโอกาส 15% ที่จะออกซ้ำกับธาตุที่ทีมมีอยู่แล้ว (30% ถ้าทาย Future Sight 1–3) 1 ช่องคือโปเกมอน 1 ตัวที่มีธาตุนั้น"],
+  ["Future Sight (มองอนาคต)","ก่อนสุ่ม ทั้งสองฝ่ายทายว่าในทีมตัวเองจะมีกี่ธาตุ 1 ถึง 6 (ธาตุซ้ำนับเป็นธาตุเดียว) รางวัล 2 ระดับ: ทาย 4–6 ถูกได้การ์ด Terastal · ทาย 1–3 ถูกได้การ์ด League Contract เรทจำนวนธาตุของทีม (= โอกาสทายถูก): 1 ธาตุ 1% · 2 ธาตุ 5% · 3 ธาตุ 15% · 4 ธาตุ 30% · 5 ธาตุ 32% · 6 ธาตุ 17% (Safari Draft ไม่ต้องทาย)"],
+  ["สุ่มทีม","แต่ละฝ่ายได้ธาตุ 6 ช่องจาก 18 ธาตุ ซ้ำกันได้ ธาตุเดียวกันออกได้สูงสุด 6 ช่อง จำนวนธาตุของทีมสุ่มตามเรทที่กำหนด (ดูใน Future Sight) 1 ช่องคือโปเกมอน 1 ตัวที่มีธาตุนั้น"],
   ["Knock Off","สุ่ม 1 ธาตุกลางต่อรอบ ช่องที่เป็นธาตุนั้นห้ามถือไอเทม"],
   ["Gym Leader (หัวหน้ายิม)","ได้ธาตุเดียวกัน 4 ช่องขึ้นไปเมื่อไร ต้องรับเข็มกลัดทันที ทั้งทีมกลายเป็นธาตุนั้น ไม่ติด Knock Off ไม่รับ Present และอีกฝ่ายใช้ Roar ไม่ได้"],
   ["ไพ่คำสาป (Curse Hand)","หลังสุ่ม แต่ละฝ่ายจั่วการ์ด 3 ใบจากกอง Roar ×2, Trick ×2, Present ×2, Mirror Coat, Substitute, Conversion บวกการ์ด Terastal ที่ได้ (สูงสุด 2 ใบ) ไพ่ในมือคว่ำไว้ อีกฝ่ายมองไม่เห็น"],
@@ -834,8 +834,8 @@ const RULES={
   ["Team Preview","จบคำสั่งแล้ว กดเริ่มจับเวลา จัดทีมตามเวลาที่ตั้งไว้ จบแบทเทิลแล้วกดบันทึกว่าใครชนะ"]],
  en:[
   ["Modes","Cursed Draft: the classic draw · Double Cursed: every slot also gets an item · Safari Draft: take turns picking types · Blind Draft: 2 slots per team stay hidden. Best of 3 can be switched on in any mode."],
-  ["Future Sight","Before the draw, both sides guess how many different types their team will have, 1 to 6 (repeats count once). Two reward tiers: a correct 4–6 guess earns a Terastal card; a correct 1–3 guess earns a League Contract. Guessing 1–3 makes your team pull repeats at 30% (4–6: 15%). Chance the guess comes true: 1 type 0.5% · 2: 5% · 3: 22% · 4: 31% · 5: 41% · 6: 18%. (Not used in Safari Draft.)"],
-  ["The draw","Each side gets 6 slots drawn from the 18 types. Repeats are allowed, up to all 6 slots of the same type. Type attraction: each slot has a 15% chance to repeat a type the team already has (30% if you guessed 1–3). One slot is one Pokémon that has that type."],
+  ["Future Sight","Before the draw, both sides guess how many different types their team will have, 1 to 6 (repeats count once). Two reward tiers: a correct 4–6 guess earns a Terastal card; a correct 1–3 guess earns a League Contract. Odds for how many types a team gets (= chance the guess comes true): 1 type 1% · 2: 5% · 3: 15% · 4: 30% · 5: 32% · 6: 17%. (Not used in Safari Draft.)"],
+  ["The draw","Each side gets 6 slots drawn from the 18 types. Repeats are allowed, up to all 6 slots of the same type. How many types a team gets follows set odds (see Future Sight). One slot is one Pokémon that has that type."],
   ["Knock Off","One type is drawn for the round. Slots of that type can't hold an item."],
   ["Gym Leader","Get 4 or more slots of the same type and the badge is yours, no refusals. The whole team becomes that type, ignores Knock Off, refuses Present, and can't be roared at."],
   ["Curse Hand","After the draw each side draws 3 cards from a deck of Roar ×2, Trick ×2, Present ×2, Mirror Coat, Substitute and Conversion, plus any Terastal cards earned (up to 2). Hands stay face-down."],
@@ -1177,9 +1177,9 @@ const CARDS={
 CARDS.contract={n:"League Contract",need:"own",atk:0,th:"เซ็นสัญญาเป็นหัวหน้ายิมของธาตุที่มี 2 ช่องขึ้นไป ทำงานเป็นอย่างสุดท้าย",en:"Sign on as Gym Leader of a type you hold 2+ of. Resolves last"};
 const DECK=["roar","roar","trick","trick","present","present","mirror","sub","conv"];
 // Future Sight odds with the 15% type attraction (simulated), and the reward for each guess.
-// Guess 1–3 draws with 30% attraction, 4–6 with 15%; each cell is the chance for that guess to come true.
-const FS_ODDS=["0.5%","5%","22%","31%","41%","18%"];
-const ATTR=g=>(+g>=1&&+g<=3)?30:15;
+// Set odds for how many different types a team ends up with (1..6). Also the chance each Future Sight guess comes true.
+const TYPE_ODDS=[1,5,15,30,32,17];
+const FS_ODDS=TYPE_ODDS.map(x=>x+"%");
 const CAL=()=>H.mode==="double", SAFARI=()=>H.mode==="safari", BLIND=()=>H.mode==="blind";
 const isHid=(p,i)=>S.hid[p].includes(i)&&S.phase!=="done";
 const guarded=(p,i)=>i===S.lock[p]||S.sub[p].includes(i);
@@ -1474,7 +1474,7 @@ function renderFS(){
   const og=document.createElement("div"); og.className="fsgrid";
   FS_ODDS.forEach((pc,k)=>{const c=document.createElement("div"); c.className="fsc"+(k<3?" hi":""); c.innerHTML="<b>"+(k+1)+"</b><span>"+pc+"</span><i>"+(k<3?"📜 Contract":"💎 Terastal")+"</i>"; og.appendChild(c);});
   od.appendChild(og);
-  const nt=document.createElement("p"); nt.textContent=L("ทาย 1–3 ทีมคุณจะดึงดูดธาตุซ้ำแรงขึ้น (30%) ถูกแล้วได้ League Contract · ทาย 4–6 ดึงดูดปกติ (15%) ถูกแล้วได้ Terastal","Guess 1–3 and your team pulls repeats harder (30%); right = League Contract · Guess 4–6: normal pull (15%); right = Terastal"); od.appendChild(nt);
+  const nt=document.createElement("p"); nt.textContent=L("ทาย 1–3 ถูก = League Contract (เป็นหัวหน้ายิมได้) · ทาย 4–6 ถูก = Terastal · ทายต่ำเสี่ยงกว่า แต่รางวัลใหญ่กว่า","Guess 1–3 right = League Contract (become a Gym Leader) · 4–6 right = Terastal · Lower is riskier, but pays more"); od.appendChild(nt);
   rows.appendChild(od);
   for(const p of P){const r=document.createElement("div"); r.className="fsrow"; const n=document.createElement("b"); n.textContent=pname(p); r.appendChild(n);
     for(let k=1;k<=6;k++){const b=document.createElement("button"); b.type="button"; b.className="btn"+($("bet"+p).value===String(k)?" on":""); b.textContent=k;
@@ -1662,8 +1662,10 @@ function roll(){
   }
   S.phase="rolling";
   // Type attraction: each slot after the first has a 15% chance to repeat a type the team already has.
-  const draw=r=>{const a=[]; while(a.length<N) a.push(a.length&&pick(100)<r?a[pick(a.length)]:pick()); return a;};
-  const team={A:draw(ATTR(bets.A)),B:draw(ATTR(bets.B))}, curse=pick();
+  // Roll how many types the team gets from TYPE_ODDS, pick that many different types, then fill the rest of the slots from them.
+  const draw=()=>{let r=pick(100), k=0; while(r>=TYPE_ODDS[k]){r-=TYPE_ODDS[k]; k++;} k++;
+    const ts=shuffle([...Array(TYPES.length).keys()]).slice(0,k), a=ts.slice(); while(a.length<N) a.push(ts[pick(k)]); return shuffle(a);};
+  const team={A:draw(),B:draw()}, curse=pick();
   render();
   const done=()=>{
     S.team=team; S.curse=curse;
