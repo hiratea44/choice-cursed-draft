@@ -1069,7 +1069,7 @@ function renderModes(){
   $("modeTitle").textContent=L("เลือกโหมด","Choose a mode");
   $("modeNote").textContent=can?L("แตะโหมดที่อยากเล่น เปลี่ยนได้ทุกครั้งที่จบรอบ","Tap a mode. You can switch whenever a round ends."):L("กำลังเล่นอยู่ เปลี่ยนโหมดได้ตอนจบรอบ","A round is in progress. Switch modes when it ends.");
   const g=$("modeGrid"); g.textContent="";
-  [[["🌱 เริ่มต้น","🌱 Start here"],["starter","cursed"]],[["🧠 เลือกเองได้","🧠 You choose"],["safari","buildup","box"]],[["🎲 ลุ้นดวง","🎲 Luck"],["luck","blind","chaos"]],[["✨ พิเศษ","✨ Special"],["double","mirror","color"]]].forEach(([gt,ks])=>{
+  [[["🎒 ออกเดินทาง","🎒 New Journey"],["starter","cursed"]],[["🤝 จับไม้จับมือ","🤝 Mind Games"],["safari","box","mirror"]],[["🎰 วัดดวง","🎰 Gamble"],["luck","blind","buildup"]],[["🌪 ปั่นป่วน","🌪 Chaos"],["chaos","double","color"]]].forEach(([gt,ks])=>{
    const h=document.createElement("h3"); h.className="modeg"; h.textContent=L(gt[0],gt[1]); g.appendChild(h);
    ks.forEach(k=>{
     const m=MODEINFO[k], b=document.createElement("button"); b.type="button"; b.className="modecard m-"+k+(H.mode===k?" sel":""); b.disabled=!can;
