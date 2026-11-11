@@ -226,6 +226,7 @@ body.mode-double .steps .st.cur{background:#f6a8d2}
 .hand{display:flex;flex-wrap:wrap;gap:8px}
 .cardbtn{flex:1 1 120px;min-width:0;cursor:pointer;display:flex;flex-direction:column;gap:2px;text-align:left;padding:8px 10px;border:3px solid var(--ink);border-radius:10px;background:#fff;color:var(--ink);box-shadow:0 3px 0 var(--ink);font-family:var(--body);font-size:12px;line-height:1.35}
 .cardbtn .etag{align-self:flex-start;font-style:normal;font-family:var(--display);font-weight:600;font-size:11px;line-height:1;padding:3px 6px;border-radius:999px;background:var(--ink);color:#fff}
+.cardbtn .etag.k-field{background:#2f7d5b}.cardbtn .etag.k-ahead{background:#6b4bb5}.cardbtn .etag.k-support{background:#6a7390}
 .cardbtn b{font-family:var(--display);font-weight:600;font-size:16px}
 .cardbtn{transition:transform .15s,box-shadow .15s}
 .cardbtn.sel{background:var(--yellow);transform:translateY(-7px) rotate(-1deg);box-shadow:0 10px 0 rgba(0,0,0,.25)}
@@ -356,6 +357,21 @@ body.mode-blind .steps .st.cur{background:#ffcf9a}
 .fxbeam{position:absolute;left:-30%;top:48%;width:160%;height:16px;background:linear-gradient(90deg,transparent,#fff,#9be7ff 45%,#fff 55%,transparent);box-shadow:0 0 18px 6px rgba(155,231,255,.8);transform:rotate(-18deg) scaleX(0);animation:beam .8s ease-out forwards}
 @keyframes beam{40%{transform:rotate(-18deg) scaleX(1);opacity:1}100%{transform:rotate(-18deg) scaleX(1);opacity:0}}
 .fxeye{position:absolute;left:50%;top:42%;font-size:64px;transform:translate(-50%,-50%);animation:bigpop 1.2s ease-out forwards}
+.fxdrop{position:absolute;top:-30px;left:var(--x);width:3px;height:22px;border-radius:3px;background:linear-gradient(#bfe3ff,#4a8be0);animation:drop .6s linear var(--d) both}
+@keyframes drop{to{transform:translateY(560px)}}
+.fxsand{position:absolute;left:-12%;top:var(--y);width:40px;height:3px;border-radius:3px;background:#d9b46a;box-shadow:0 0 6px #c9a24a;animation:sand .7s linear var(--d) both}
+@keyframes sand{to{transform:translateX(900px)}}
+.fxdust{position:absolute;inset:0;background:linear-gradient(100deg,transparent,rgba(217,180,106,.45),transparent);animation:dust 1.2s ease-out both}
+@keyframes dust{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
+.fxin{position:absolute;left:50%;top:50%;font-size:24px;font-style:normal;animation:conv .9s ease-in var(--d,0s) both}
+@keyframes conv{from{transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy)));opacity:0}70%{opacity:1}to{transform:translate(-50%,-50%) scale(.4);opacity:0}}
+.fxbig{position:absolute;left:50%;top:44%;font-size:70px;font-style:normal;transform:translate(-50%,-50%);animation:bigpop 1.3s ease-out forwards}
+.fxcomet{position:absolute;left:85%;top:-60px;font-size:56px;font-style:normal;animation:comet .55s ease-in forwards}
+@keyframes comet{to{left:45%;top:40%;transform:scale(1.4)}}
+.fxflash{position:absolute;inset:0;background:#fff;animation:flash .5s .5s ease-out both}
+@keyframes flash{from{opacity:.9}to{opacity:0}}
+.fxspin{position:absolute;left:50%;top:40%;font-size:34px;font-style:normal;animation:spin2 1.2s linear both}
+@keyframes spin2{from{transform:translate(-50%,-50%) rotate(0) translateX(70px) rotate(0)}to{transform:translate(-50%,-50%) rotate(720deg) translateX(70px) rotate(-720deg);opacity:0}}
 .rvscene.quake{animation:quake .55s}
 @keyframes quake{15%{transform:translate(-8px,3px)}30%{transform:translate(7px,-4px)}45%{transform:translate(-6px,2px)}60%{transform:translate(5px,-2px)}75%{transform:translate(-3px,1px)}}
 .mt.swapfly{animation:swapfly .7s cubic-bezier(.2,1.4,.4,1)}
@@ -452,7 +468,10 @@ details.rules[open]>summary h2{margin-bottom:12px}
 #tourNext.go{background:var(--yellow)}
 .fields{width:100%;display:flex;flex-direction:column;gap:4px;padding:8px;border:3px dashed #e05aa0;border-radius:10px;background:#fff0f7;font-size:13px;text-align:left}
 .fields b{font-family:var(--display);font-weight:600;font-size:15px;color:#a3245f}
-.cardbtn.c-detect{border-left:10px solid #35b565}.cardbtn.c-safeguard{border-left:10px solid #7fd6c9}.cardbtn.c-camo{border-left:10px solid #6b8e4e}.cardbtn.c-recycle{border-left:10px solid #4aa3df}.fb.front.c-detect{border-top-color:#35b565}.fb.front.c-safeguard{border-top-color:#7fd6c9}.fb.front.c-camo{border-top-color:#6b8e4e}.fb.front.c-recycle{border-top-color:#4aa3df}.schead.c-detect{border-left-color:#35b565}.schead.c-safeguard{border-left-color:#7fd6c9}.schead.c-camo{border-left-color:#6b8e4e}.schead.c-recycle{border-left-color:#4aa3df}.dcard.c-detect{border-left-color:#35b565}.dcard.c-safeguard{border-left-color:#7fd6c9}.dcard.c-camo{border-left-color:#6b8e4e}.dcard.c-recycle{border-left-color:#4aa3df}
+.cardbtn.c-raindance{border-left:10px solid #4a8be0}.cardbtn.c-sandstorm{border-left:10px solid #c9a24a}.cardbtn.c-entrain{border-left:10px solid #e07ab8}.cardbtn.c-sketch{border-left:10px solid #e8b04a}.cardbtn.c-doom{border-left:10px solid #8a3fd1}.cardbtn.c-destiny{border-left:10px solid #4b3a6e}.cardbtn.c-swagger{border-left:10px solid #ff7a3d}.cardbtn.c-roleplay{border-left:10px solid #2fb5a5}
+.fb.front.c-raindance{border-top-color:#4a8be0}.fb.front.c-sandstorm{border-top-color:#c9a24a}.fb.front.c-entrain{border-top-color:#e07ab8}.fb.front.c-sketch{border-top-color:#e8b04a}.fb.front.c-doom{border-top-color:#8a3fd1}.fb.front.c-destiny{border-top-color:#4b3a6e}.fb.front.c-swagger{border-top-color:#ff7a3d}.fb.front.c-roleplay{border-top-color:#2fb5a5}
+.schead.c-raindance{border-left-color:#4a8be0}.schead.c-sandstorm{border-left-color:#c9a24a}.schead.c-entrain{border-left-color:#e07ab8}.schead.c-sketch{border-left-color:#e8b04a}.schead.c-doom{border-left-color:#8a3fd1}.schead.c-destiny{border-left-color:#4b3a6e}.schead.c-swagger{border-left-color:#ff7a3d}.schead.c-roleplay{border-left-color:#2fb5a5}
+.dcard.c-raindance{border-left-color:#4a8be0}.dcard.c-sandstorm{border-left-color:#c9a24a}.dcard.c-entrain{border-left-color:#e07ab8}.dcard.c-sketch{border-left-color:#e8b04a}.dcard.c-doom{border-left-color:#8a3fd1}.dcard.c-destiny{border-left-color:#4b3a6e}.dcard.c-swagger{border-left-color:#ff7a3d}.dcard.c-roleplay{border-left-color:#2fb5a5}
 .cardbtn.c-perish{border-left:10px solid #3b2a4a}.cardbtn.c-fore{border-left:10px solid #3fb0c9}.fb.front.c-perish{border-top-color:#3b2a4a}.fb.front.c-fore{border-top-color:#3fb0c9}.schead.c-perish{border-left-color:#3b2a4a}.schead.c-fore{border-left-color:#3fb0c9}.dcard.c-perish{border-left-color:#3b2a4a}.dcard.c-fore{border-left-color:#3fb0c9}
 .cardbtn.c-copycat{border-left:10px solid #8e7cc3}.cardbtn.c-wish{border-left:10px solid #ffb3d1}
 .fb.front.c-copycat{border-top-color:#8e7cc3}.fb.front.c-wish{border-top-color:#ffb3d1}
@@ -1000,11 +1019,18 @@ const DECKINFO=[
    ["copycat","Copycat",["ทำตามเจ้า แต่ไม่รู้จะไปโดนใคร","Same move as yours, aimed who-knows-where."],["ใช้การ์ดเดียวกับที่อีกฝ่ายเปิดในคำสั่งนี้ เป้าหมายสุ่ม","Copy the opponent's card this command, random target."],"×1"],
    ["fore","Foresight",["สิ่งที่ซ่อนอยู่ จะไม่ซ่อนอีกต่อไป","What hides will hide no more."],["เฉพาะ Blind Draft: เปิดดูช่องที่ซ่อนของอีกฝ่าย 1 ช่อง","Blind Draft only: reveal 1 of the opponent's hidden slots."],"×2"],
    ["perish","Perish Song",["เพลงสุดท้าย ของคนที่ไม่ยอมแพ้","The last song of someone who won't give up."],["กติกาโหด: แพ้ 2 รอบติดได้ใบนี้ ทั้งสองทีมสุ่มใหม่ 2 ช่อง ทะลุ Protect","Hard rules: 2 losses in a row earn it. Both teams redraw 2 slots, Protect or not."],"★"],
-   ["detect","Detect",["ระวังสองทาง","Watching two ways."],["Protect เพิ่มอีก 1 ช่องในคำสั่งนี้","Protect 1 more slot this command."],"×1"],
-   ["safeguard","Safeguard",["ม่านคุ้มกันทั้งทีม","A veil over the whole team."],["คำสั่งนี้ Roar และ Present ที่เล็งทีมเราล้มเหลว","Roar and Present aimed at you fail this command."],"×1"],
-   ["camo","Camouflage",["กลมกลืนไปกับฝูง","Blend in with the crowd."],["เปลี่ยนช่องของตัวเอง 1 ช่องเป็นธาตุที่ทีมมีมากที่สุด ใช้ไต่ไปเป็นหัวหน้ายิม","Turn 1 own slot into your most common type. A step toward Gym Leader."],"×1"],
-   ["recycle","Recycle",["ของเก่ายังใช้ได้","Old tricks still work."],["คำสั่งถัดไป จั่วการ์ดจากกองเพิ่ม 2 ใบ","Next command, draw 2 more cards from the deck."],"×1"],
    ["wish","Wish",["รอหน่อย ของดีกำลังมา","Wait a little. Something good is coming."],["คำสั่งนี้ไม่ทำอะไร คำสั่งถัดไปได้การ์ด Terastal (ใช้ในคำสั่งสุดท้ายไม่ได้)","Nothing now; a Terastal card next command (not on the last command)."],"×1"]]],
+ [["การ์ดทั้งสนาม","Whole-field cards"],[
+   ["raindance","Rain Dance",["ฝนชะคำสาปเก่า","The rain washes the old curse away."],["สุ่ม Knock Off ของรอบนี้ใหม่ โดนทั้งสองฝ่าย","Redraw this round's Knock Off for both sides."],"×1"],
+   ["sandstorm","Sandstorm",["ยิ่งรวมกลุ่ม ยิ่งโดนพัด","The bigger the flock, the harder it's blown."],["ทั้งสองทีม ธาตุที่ซ้ำมากที่สุดโดนสุ่มใหม่ 1 ช่อง","Both teams redraw 1 slot of their most repeated type."],"×1"],
+   ["entrain","Entrainment",["เข้าแถวให้เหมือนกัน","Fall in line."],["ทั้งสองทีม ช่องธาตุที่ไม่ซ้ำ 1 ช่องกลายเป็นธาตุหลักของทีม","Both teams: 1 one-of-a-kind slot becomes the main type."],"×1"]]],
+ [["การ์ดล่วงหน้า","Delayed cards"],[
+   ["sketch","Sketch",["ขอยืมไอเดียหน่อย","Mind if I borrow that?"],["คัดลอกการ์ดของอีกฝ่ายในคำสั่งนี้เข้ามือ ไว้ใช้คำสั่งถัดไป","Copy the opponent's card this command for later."],"×1"],
+   ["doom","Doom Desire",["มันมาแน่ แค่ไม่รู้ว่าตรงไหน","It's coming. You just don't know where."],["คำสั่งถัดไป ช่องสุ่มของอีกฝ่ายโดนสุ่มใหม่ ทะลุ Protect","Next command a random opponent slot is redrawn, Protect or not."],"×1"],
+   ["swagger","Swagger",["ของขวัญที่มาพร้อมอาการเวียนหัว","A gift with a side of dizziness."],["อีกฝ่ายได้ Terastal แต่คำสั่งถัดไปสับสน อาจโดนตัวเอง","They get a Terastal, then get confused and may hit themselves."],"×1"]]],
+ [["การ์ดปั่นหัว","Mind games"],[
+   ["destiny","Destiny Bond",["ถ้าฉันโดน เธอก็ต้องโดน","If I go down, you come with me."],["ถ้าอีกฝ่ายโจมตีสำเร็จ ทีมอีกฝ่ายโดนผลเดียวกัน","If they land an attack, their team gets it too."],"×1"],
+   ["roleplay","Role Play",["ลองเป็นเธอดูบ้าง","Let me try being you."],["ช่องของเรา 1 ช่องกลายเป็นธาตุหลักของอีกฝ่าย","1 own slot becomes the opponent's main type."],"×1"]]],
  [["กติกาพิเศษ","Special rule"],[
    ["gym","Gym Leader",["ไม่มีปุ่มปฏิเสธ","There is no decline button."],["ได้ธาตุเดียวกัน 4 ช่องขึ้นไป ทั้งทีมเป็นธาตุนั้น ไม่โดน Roar, Present, Knock Off แต่แบทเทิลจริงมีจุดอ่อนเดียว","4+ of one type: the whole team turns into it. Immune to Roar, Present, Knock Off, but one weakness in battle."],""]]]];
 function drawCurses(){
@@ -1040,7 +1066,7 @@ const RULES={
   ["สุ่มทีม","แต่ละฝ่ายได้ธาตุ 6 ช่องจาก 18 ธาตุ ซ้ำกันได้ ธาตุเดียวกันออกได้สูงสุด 6 ช่อง จำนวนธาตุของทีมสุ่มตามเรทที่กำหนด (ดูใน Future Sight) 1 ช่องคือโปเกมอน 1 ตัวที่มีธาตุนั้น"],
   ["Knock Off","สุ่ม 1 ธาตุกลางต่อรอบ ช่องที่เป็นธาตุนั้นห้ามถือไอเทม"],
   ["Gym Leader (หัวหน้ายิม)","ได้ธาตุเดียวกัน 4 ช่องขึ้นไปเมื่อไร ต้องรับเข็มกลัดทันที ทั้งทีมกลายเป็นธาตุนั้น ไม่ติด Knock Off ไม่รับ Present และอีกฝ่ายใช้ Roar ไม่ได้"],
-  ["ไพ่คำสาป (Curse Hand)","หลังสุ่ม แต่ละฝ่ายจั่วการ์ด 3 ใบจากกอง Roar ×2, Trick ×2, Present ×2, Mirror Coat, Substitute, Conversion, Copycat, Wish, Detect, Safeguard, Camouflage, Recycle บวกการ์ด Terastal ที่ได้ (สูงสุด 2 ใบ) ไพ่ในมือคว่ำไว้ อีกฝ่ายมองไม่เห็น"],
+  ["ไพ่คำสาป (Curse Hand)","หลังสุ่ม แต่ละฝ่ายจั่วการ์ด 4 ใบ (Starter Draft 3 ใบ) จากกอง 19 ใบ: Roar ×2, Trick ×2, Present ×2, Mirror Coat, Substitute, Conversion, Copycat, Wish, Rain Dance, Sandstorm, Entrainment, Sketch, Doom Desire, Destiny Bond, Swagger, Role Play บวกการ์ด Terastal ที่ได้ (สูงสุด 2 ใบ) ไพ่ในมือคว่ำไว้ อีกฝ่ายมองไม่เห็น"],
   ["เฟสสั่งการ","มี 2 คำสั่ง ทุกคำสั่งทั้งสองฝ่ายเลือกแบบลับทีละคน (อีกฝ่ายหันหน้าหนี): Protect 1 ช่อง + การ์ด 1 ใบ (หรือไม่ใช้) + เป้าหมาย แล้วเปิดพร้อมกัน การ์ดฝั่งตัวเอง (Substitute, Conversion, Mirror Coat) ทำงานก่อน ตามด้วยการ์ดเล็งศัตรู ฝ่ายที่มีธาตุน้อยกว่าทำงานก่อน"],
   ["Protect (ป้องกัน)","เลือกใหม่ทุกคำสั่ง การ์ดที่เล็งช่อง (Trick, Terastal) ถ้าโดนช่องที่ Protect ไว้จะล้มเหลว การ์ดที่เล็งธาตุ (Roar, Present) ถ้าธาตุนั้นมีช่องที่ Protect ไว้ จะล้มเหลวทั้งใบ อ่านใจให้ถูก"],
   ["Roar (คำราม)","เลือกธาตุของอีกฝ่าย ทุกช่องที่เป็นธาตุนั้นถูกไล่ออกแล้วสุ่มใหม่ ไม่ออกธาตุเดิม"],
@@ -1051,11 +1077,16 @@ const RULES={
   ["Substitute","เลือกช่องของตัวเอง ช่องนั้นถูกป้องกันถาวรจนจบรอบ"],
   ["Conversion","สุ่มธาตุใหม่ให้ช่องของตัวเอง 1 ช่อง"],
   ["Copycat","ใช้การ์ดเดียวกับที่อีกฝ่ายเปิดในคำสั่งเดียวกัน ระบบสุ่มเป้าหมายให้ ถ้าอีกฝ่ายใช้ Mirror Coat หรือไม่ใช้การ์ด Copycat จะเสียเปล่า"],
-  ["Detect","Protect เพิ่มอีก 1 ช่องในคำสั่งนี้ ใช้ไม่ได้ในสนามเปลือย"],
-  ["Safeguard","คำสั่งนี้ การ์ดที่เล็งธาตุ (Roar, Present) ใส่ทีมเราล้มเหลวทั้งหมด"],
-  ["Camouflage","เปลี่ยนช่องของตัวเอง 1 ช่องเป็นธาตุที่ทีมมีมากที่สุด (ถ้าเท่ากันสุ่มเลือก)"],
-  ["Recycle","คำสั่งถัดไป จั่วการ์ดจากกองเพิ่ม 2 ใบ ใช้ในคำสั่งสุดท้ายไม่ได้"],
   ["Wish","คำสั่งนี้ไม่ทำอะไร แต่คำสั่งถัดไปได้การ์ด Terastal 1 ใบ ใช้ในคำสั่งสุดท้ายไม่ได้"],
+  ["ป้ายประเภทการ์ด","เล็งศัตรู = เลือกเป้าที่ทีมอีกฝ่าย · ทั้งสนาม = โดนทั้งสองทีม · ล่วงหน้า = ผลเกิดคำสั่งถัดไป · ตัวช่วย = ส่งผลกับทีมตัวเองหรือปั่นหัวอีกฝ่าย"],
+  ["Rain Dance","สุ่ม Knock Off ของรอบนี้ใหม่ทันที โดนทั้งสองฝ่าย"],
+  ["Sandstorm","ทั้งสองทีม (ยกเว้นหัวหน้ายิม) ธาตุที่ซ้ำมากที่สุดโดนสุ่มใหม่ 1 ช่อง ทีมที่ไม่มีธาตุซ้ำไม่โดน"],
+  ["Entrainment","ทั้งสองทีม (ยกเว้นหัวหน้ายิม) ช่องธาตุที่ไม่ซ้ำใคร 1 ช่องกลายเป็นธาตุที่ทีมนั้นมีมากที่สุด ช่วยให้เป็นหัวหน้ายิมไวขึ้น"],
+  ["Sketch","คัดลอกการ์ดที่อีกฝ่ายใช้ในคำสั่งนี้เข้ามือ ใช้ได้ตั้งแต่คำสั่งถัดไป ใช้ในคำสั่งสุดท้ายไม่ได้"],
+  ["Doom Desire","คำสั่งถัดไป ช่องสุ่ม 1 ช่องของอีกฝ่ายโดนสุ่มธาตุใหม่ ทะลุ Protect ถ้าใช้ในคำสั่งสุดท้าย จะตกลงมาตอนจบคำสั่ง หัวหน้ายิมไม่โดน"],
+  ["Destiny Bond","ถ้าอีกฝ่ายใช้การ์ดเล็งศัตรูสำเร็จในคำสั่งนี้ ทีมของอีกฝ่ายโดนผลเดียวกันด้วย"],
+  ["Swagger","ให้อีกฝ่ายได้การ์ด Terastal 1 ใบ แต่คำสั่งถัดไปเขาสับสน การ์ดเล็งศัตรูที่ใช้จะถูกสุ่มเป้า มีโอกาส 50% โดนทีมตัวเอง ใช้ในคำสั่งสุดท้ายไม่ได้"],
+  ["Role Play","ช่องของเรา 1 ช่องกลายเป็นธาตุที่อีกฝ่ายมีมากที่สุด (นับเฉพาะช่องที่มองเห็น)"],
   ["Mirror Draft","สองฝ่ายเริ่มด้วยทีมเหมือนกันทุกช่อง แล้วสาปกันจนต่าง สนามแสดงว่าทีมต่างกันกี่ช่อง ถ้าจบคำสั่งแล้วยังเหมือนกันเป๊ะ รอบหน้าทั้งคู่ได้ Terastal +1 (Mirror Bonus)"],
   ["Starter Draft","โหมดมือใหม่: ไม่ต้องทาย Future Sight มีคำสั่งเดียว การ์ดมีแค่ Roar กับ Trick ไม่มี Terastal"],
   ["Knock Off ล่วงหน้า","ทุกโหมดยกเว้น Safari จะเห็น Knock Off ของรอบตั้งแต่ก่อนทาย Future Sight"],
@@ -1080,7 +1111,7 @@ const RULES={
   ["The draw","Each side gets 6 slots drawn from the 18 types. Repeats are allowed, up to all 6 slots of the same type. How many types a team gets follows set odds (see Future Sight). One slot is one Pokémon that has that type."],
   ["Knock Off","One type is drawn for the round. Slots of that type can't hold an item."],
   ["Gym Leader","Get 4 or more slots of the same type and the badge is yours, no refusals. The whole team becomes that type, ignores Knock Off, refuses Present, and can't be roared at."],
-  ["Curse Hand","After the draw each side draws 3 cards from a deck of Roar ×2, Trick ×2, Present ×2, Mirror Coat, Substitute, Conversion, Copycat, Wish, Detect, Safeguard, Camouflage and Recycle, plus any Terastal cards earned (up to 2). Hands stay face-down."],
+  ["Curse Hand","After the draw each side draws 4 cards (3 in Starter Draft) from a 19-card deck: Roar ×2, Trick ×2, Present ×2, Mirror Coat, Substitute, Conversion, Copycat, Wish, Rain Dance, Sandstorm, Entrainment, Sketch, Doom Desire, Destiny Bond, Swagger and Role Play, plus any Terastal cards earned (up to 2). Hands stay face-down."],
   ["Commands","There are 2 commands. In each, both sides choose in secret one at a time (the other looks away): Protect 1 slot + 1 card (or none) + its target. Then everything is revealed at once. Own-side cards (Substitute, Conversion, Mirror Coat) resolve first, then enemy-target cards; the side with fewer types goes first."],
   ["Protect","Chosen again every command. A card aimed at a slot (Trick, Terastal) fails on a protected slot. A card aimed at a type (Roar, Present) fails completely if any slot of that type is protected. Read your opponent."],
   ["Roar","Pick one of the opponent's types: every slot of that type is redrawn, never as the same type."],
@@ -1091,11 +1122,16 @@ const RULES={
   ["Substitute","Pick one of your own slots: it stays protected for the rest of the round."],
   ["Conversion","Redraw the type of one of your own slots."],
   ["Copycat","Copy the card the opponent reveals in the same command, with a random target. Wasted against Mirror Coat or no card."],
-  ["Detect","Protect 1 more slot this command. Not playable on Bare Field."],
-  ["Safeguard","This command, cards aimed at a type (Roar, Present) fail against your team."],
-  ["Camouflage","Turn 1 of your own slots into your team's most common type (ties are random)."],
-  ["Recycle","Next command, draw 2 more cards from the deck. Not playable on the last command."],
   ["Wish","Nothing this command, but a Terastal card arrives next command. Can't be played on the last command."],
+  ["Card tags","Enemy-target = aimed at the other team · Whole field = hits both teams · Delayed = takes effect next command · Support = your own team, or messing with the opponent"],
+  ["Rain Dance","Redraw this round's Knock Off type at once, for both sides."],
+  ["Sandstorm","Both teams (Gym Leaders aside) lose 1 slot of their most repeated type to a redraw. Teams with no repeats are untouched."],
+  ["Entrainment","Both teams (Gym Leaders aside): 1 one-of-a-kind slot becomes the team's most common type. A faster road to Gym Leader."],
+  ["Sketch","Copy the card the opponent plays this command into your hand, playable from next command. Not on the last command."],
+  ["Doom Desire","Next command, 1 random opponent slot is redrawn, Protect or not. Played on the last command, it lands as the command ends. Gym Leaders are immune."],
+  ["Destiny Bond","If the opponent lands an enemy-target card this command, their own team gets the same effect."],
+  ["Swagger","The opponent gets a Terastal card, but next command they're confused: their enemy-target card gets random targets, with a 50% chance of hitting their own team. Not on the last command."],
+  ["Role Play","1 of your slots becomes the opponent's most common visible type."],
   ["Mirror Draft","Both sides start with the exact same team, then curse it apart. The field shows how many slots differ; still identical after the commands means +1 Terastal each next round (Mirror Bonus)."],
   ["Starter Draft","Beginner mode: no Future Sight, 1 command, only Roar and Trick, no Terastal."],
   ["Knock Off preview","In every mode except Safari, the round's Knock Off is shown before Future Sight."],
@@ -1488,7 +1524,7 @@ const fresh=round=>({phase:"idle",round,flash:"",koi:pick(KO_TH.length),items:{A
   lock:{A:null,B:null},sub:{A:[],B:[]},taken:{A:[],B:[]},gift:{A:Array(N).fill(null),B:Array(N).fill(null)},
   winner:null,id:0,noBan:{A:false,B:false},mono:{A:null,B:null},teraN:{A:0,B:0},teraT:{A:0,B:0},teraMark:{A:[],B:[]},uniq0:{A:0,B:0},betHit:{A:false,B:false},
   hand:{A:[],B:[]},used:{A:[],B:[]},cmdN:0,picker:null,plan:{A:null,B:null},draft:null,coin:pick(2),hid:{A:[],B:[]},
-  pool:[],poolTaken:[],sOrder:[],spick:0,under:null,pendItems:false,lastLock:{A:null,B:null},gb:false,maxCmd:2,fields:[],curse2:null,wish:{A:false,B:false},det:{A:null,B:null},safe:{A:false,B:false},recyc:{A:false,B:false},
+  pool:[],poolTaken:[],sOrder:[],spick:0,under:null,pendItems:false,lastLock:{A:null,B:null},gb:false,maxCmd:2,fields:[],curse2:null,wish:{A:false,B:false},doom:{A:0,B:0},conf:{A:0,B:0},bond:{A:false,B:false},
   hl:{A:{read:0,lost:0,refl:0,stole:0},B:{read:0,lost:0,refl:0,stole:0}},ditto:{A:null,B:null},dittoQ:[],koX:[],traded:{A:false,B:false},cursedIt:{A:[],B:[]},
   sUsed:{A:{rock:false,bait:false},B:{rock:false,bait:false}},sTool:null,bait:null,hint:{A:[0,0,0,0,0,0],B:[0,0,0,0,0,0]},nextKO:null,lastStand:{A:false,B:false}});
 let S=fresh(0);
@@ -1539,12 +1575,19 @@ function lastStand(p){
   if(!HARD()||H.rounds.length<2) return false;
   return H.rounds.slice(0,2).every(r=>r.winner&&r.names[r.winner==="A"?"B":"A"]===pname(p));
 }
-CARDS.detect={n:"Detect",need:"self",atk:0,th:"Protect เพิ่มอีก 1 ช่องในคำสั่งนี้",en:"Protect 1 more slot this command"};
-CARDS.safeguard={n:"Safeguard",need:null,atk:0,th:"คำสั่งนี้ การ์ดที่เล็งธาตุ (Roar, Present) ใส่ทีมเราล้มเหลวทั้งหมด",en:"This command, cards aimed at a type (Roar, Present) fail against your team"};
-CARDS.camo={n:"Camouflage",need:"self",atk:0,th:"เปลี่ยนช่องของตัวเอง 1 ช่องเป็นธาตุที่ทีมมีมากที่สุด",en:"Turn 1 of your slots into your team's most common type"};
-CARDS.recycle={n:"Recycle",need:null,atk:0,th:"คำสั่งถัดไป จั่วการ์ดจากกองเพิ่ม 2 ใบ",en:"Next command, draw 2 more cards from the deck"};
-const DECK=["roar","roar","trick","trick","present","present","mirror","sub","conv","copycat","wish","detect","safeguard","camo","recycle"];
-const recyclable=()=>DECK.filter(c=>c!=="recycle");
+CARDS.raindance={n:"Rain Dance",need:null,atk:0,th:"สุ่ม Knock Off ของรอบนี้ใหม่ทันที โดนทั้งสองฝ่าย",en:"Redraw this round's Knock Off type at once, for both sides"};
+CARDS.sandstorm={n:"Sandstorm",need:null,atk:0,th:"ทั้งสองทีม ธาตุที่ซ้ำมากที่สุดโดนสุ่มใหม่ 1 ช่อง",en:"Both teams: 1 slot of their most repeated type is redrawn"};
+CARDS.entrain={n:"Entrainment",need:null,atk:0,th:"ทั้งสองทีม ช่องธาตุที่ไม่ซ้ำใคร 1 ช่องกลายเป็นธาตุที่ทีมนั้นมีมากที่สุด",en:"Both teams: 1 one-of-a-kind slot becomes the team's most common type"};
+CARDS.sketch={n:"Sketch",need:null,atk:0,th:"คัดลอกการ์ดที่อีกฝ่ายใช้ในคำสั่งนี้เข้ามือเรา ไว้ใช้คำสั่งถัดไป",en:"Copy the card the opponent plays this command into your hand for later"};
+CARDS.doom={n:"Doom Desire",need:null,atk:0,th:"คำสั่งถัดไป ช่องสุ่ม 1 ช่องของอีกฝ่ายโดนสุ่มธาตุใหม่ ทะลุ Protect",en:"Next command, 1 random opponent slot is redrawn, Protect or not"};
+CARDS.destiny={n:"Destiny Bond",need:null,atk:0,th:"ถ้าอีกฝ่ายใช้การ์ดเล็งศัตรูสำเร็จในคำสั่งนี้ ทีมของอีกฝ่ายโดนผลเดียวกันด้วย",en:"If the opponent lands an enemy-target card this command, their team gets the same effect"};
+CARDS.swagger={n:"Swagger",need:null,atk:0,th:"ให้อีกฝ่ายได้การ์ด Terastal 1 ใบ แต่คำสั่งถัดไปเขาสับสน เป้าการ์ดถูกสุ่ม อาจโดนทีมตัวเอง",en:"Give the opponent a Terastal card, but next command they're confused: random targets, maybe their own team"};
+CARDS.roleplay={n:"Role Play",need:"self",atk:0,th:"ช่องของเรา 1 ช่องกลายเป็นธาตุที่อีกฝ่ายมีมากที่สุด",en:"1 of your slots becomes the opponent's most common type"};
+// What kind of card each one is, shown as a tag on the card.
+const CARDKIND={raindance:"field",sandstorm:"field",entrain:"field",perish:"field",sketch:"ahead",doom:"ahead",wish:"ahead",swagger:"ahead"};
+const kindOf=c=>CARDS[c]&&CARDS[c].atk?"atk":CARDKIND[c]||"support";
+const KINDNAME={atk:["เล็งศัตรู","Enemy-target"],field:["ทั้งสนาม","Whole field"],ahead:["ล่วงหน้า","Delayed"],support:["ตัวช่วย","Support"]};
+const DECK=["roar","roar","trick","trick","present","present","mirror","sub","conv","copycat","wish","raindance","sandstorm","entrain","sketch","doom","destiny","swagger","roleplay"];
 /* ---------- Wild Field: two field effects each round ---------- */
 const FIELDS={
  flip:{n:"Upside Down",th:"ฝ่ายที่มีธาตุมากกว่าได้ทำก่อน",en:"The side with more types goes first",tn:"โลกกลับหัว"},
@@ -1580,13 +1623,13 @@ const FS_ODDS=TYPE_ODDS.map(x=>x+"%");
 const STARTER=()=>H.mode==="starter", HARD=()=>!!H.hard;
 const CAL=()=>H.mode==="double", SAFARI=()=>H.mode==="safari", BLIND=()=>H.mode==="blind", MIRROR=()=>H.mode==="mirror", CHAOS=()=>H.mode==="chaos";
 const isHid=(p,i)=>S.hid[p].includes(i)&&S.phase!=="done";
-const guarded=(p,i)=>i===S.lock[p]||S.sub[p].includes(i)||(S.det&&S.det[p]===i);
+const guarded=(p,i)=>i===S.lock[p]||S.sub[p].includes(i);
 const visTypes=p=>[...new Set(S.team[p].filter((t,i)=>t!=null&&!isHid(p,i)))];
 const typeOpts=(p,card)=>{const o=other(p); if(card==="roar") return S.noBan[p]?[]:visTypes(o); if(card==="present") return S.mono[o]!=null?[]:visTypes(o).filter(t=>!isKO(t)); return [];};
-const canPlay=(p,card)=>{ if(card==="recycle"&&S.cmdN>=S.maxCmd) return false; if(card==="detect"&&BARE()) return false; if(card==="fore"&&!S.hid[other(p)].some(i=>isHid(other(p),i))) return false; if(card==="wish"&&S.cmdN>=S.maxCmd) return false; if(card==="mirror"&&hasF("shatter")) return false; if(card==="sub"&&BARE()) return false; return (CARDS[card].need!=="type"&&CARDS[card].need!=="own")||typeOpts(p,card).length>0; };
+const canPlay=(p,card)=>{ if((card==="sketch"||card==="swagger")&&S.cmdN>=S.maxCmd) return false; if(card==="fore"&&!S.hid[other(p)].some(i=>isHid(other(p),i))) return false; if(card==="wish"&&S.cmdN>=S.maxCmd) return false; if(card==="mirror"&&hasF("shatter")) return false; if(card==="sub"&&BARE()) return false; return (CARDS[card].need!=="type"&&CARDS[card].need!=="own")||typeOpts(p,card).length>0; };
 // The item a slot holds: Double Cursed items once drawn, otherwise a Present gift (Knock Off still strips it).
 const itemAt=(p,i)=>{if(S.items&&S.items[p]) return S.items[p][i]; const g=S.gift&&S.gift[p]?S.gift[p][i]:null; if(!g) return null; if(isKO(S.team[p][i])&&S.mono[p]==null) return null; return g;};
-const cardHead=c=>"<b>"+CARDS[c].n+"</b>"+(CARDS[c].atk?'<i class="etag">'+L("เล็งศัตรู","Enemy-target")+"</i>":"");
+const cardHead=c=>{const k=kindOf(c); return "<b>"+CARDS[c].n+"</b>"+'<i class="etag k-'+k+'">'+L(KINDNAME[k][0],KINDNAME[k][1])+"</i>";};
 const cardName=c=>c==="pass"?L("ไม่ใช้การ์ด","No card"):CARDS[c].n;
 const AND=()=>L(" และ "," and ");
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=pick(i+1); [a[i],a[j]]=[a[j],a[i]];} return a;}
@@ -1717,6 +1760,7 @@ function render(){
      il.hidden=!rows; il.innerHTML=rows?"<b class=\"px\" style=\"font-size:9px\">ITEMS</b>"+rows:"";}
     const nh=S.hid[p].filter(i=>isHid(p,i)).length;
     $("stat"+p).textContent=live?(nh?L("มองเห็น "+visTypes(p).length+" ธาตุ · ซ่อน "+nh+" ช่อง",visTypes(p).length+" types visible · "+nh+" hidden"):summary(S.team[p]).text)+(S.mono[p]!=null?L(" · หัวหน้ายิมธาตุ"+tn(S.mono[p])," · "+tn(S.mono[p])+" Gym Leader"):""):"";
+    if(live){const ex=[]; if(S.phase==="cmd"&&S.conf[p]===S.cmdN) ex.push(L("😵 สับสน (Swagger)","😵 Confused (Swagger)")); if(S.doom[other(p)]) ex.push(L("☄️ Doom Desire กำลังตกลงมา","☄️ Doom Desire incoming")); if(ex.length) $("stat"+p).textContent+=" · "+ex.join(" · ");}
     const myPick=S.phase==="cmd"&&S.picker===p;
     $("lane"+p).classList.toggle("turn",myPick);
     const used=S.used[p].length?L(" · ใช้แล้ว: "," · Used: ")+S.used[p].map(cardName).join(", "):"";
@@ -1794,7 +1838,7 @@ function describeDraft(d){
     a.push(c==="roar"||c==="present"?n+" → "+L("ธาตุ","")+tn(d.type)+L(" ของ "+pname(o)," of "+pname(o))
       :c==="trick"?n+": "+L("ให้ ","give ")+slotName(d.p,d.mine)+L(" แลก ",", take ")+slotName(o,d.theirs)
       :c==="tera"?n+": "+slotName(o,d.slot)+" → "+tn(d.tt)
-      :c==="sub"||c==="conv"||c==="detect"||c==="camo"?n+" → "+slotName(d.p,d.self)
+      :c==="sub"||c==="conv"||c==="roleplay"?n+" → "+slotName(d.p,d.self)
       :c==="fore"?n+": "+L("ช่อง ","slot ")+(d.slot+1)+L(" ของ "+pname(o)," of "+pname(o)):n);}
   return a.join(" · ");
 }
@@ -1991,6 +2035,16 @@ function vib(f,at,dur,type,vol,f2,rate,depth){
   }catch(e){}
 }
 const SFX_EXTRA={
+  rain:()=>{noise(0,1.4,.12,2500,1800,.6,"highpass"); [1568,1319,1047].forEach((f,i)=>tone(f,.2+i*.18,.25,"sine",.05))},
+  sand:()=>{noise(0,1.2,.26,300,1200,.6,"bandpass"); noise(.2,1,.14,900,300,.8)},
+  entrain:()=>{[262,330,392,523,659].forEach((f,i)=>tone(f,i*.08,.3,"triangle",.06)); tone(1047,.45,.5,"sine",.06)},
+  sketch:()=>{for(let i=0;i<6;i++) noise(i*.07,.06,.16,3000,4500,3)},
+  doomSet:()=>{tone(880,0,.6,"sine",.05,440); tone(55,0,.8,"sawtooth",.04)},
+  doomHit:()=>{noise(0,.5,.22,4000,800,1); tone(200,.5,.4,"square",.09,50); noise(.5,.6,.35,800,100,.7,"lowpass")},
+  bondSet:()=>{vib(220,0,.9,"sine",.07,180,6,12); vib(233,0,.9,"sine",.05,190,5,10)},
+  bond:()=>{vib(180,0,.7,"sawtooth",.06,90,8,20); noise(.1,.4,.12,1200,300,1)},
+  swagger:()=>{for(let i=0;i<8;i++) tone(500+Math.sin(i)*200,i*.08,.08,"square",.05); tone(1200,.7,.3,"sine",.05,600)},
+  role:()=>{tone(392,0,.12,"triangle",.07); tone(523,.12,.12,"triangle",.07); tone(784,.24,.25,"sine",.07)},
   catch:()=>{[0,.5,1].forEach(t=>{tone(1200,t,.05,"square",.06); noise(t,.08,.08,3000,1500,2)}); tone(700,1.45,.06,"square",.07); tone(1400,1.5,.12,"square",.06)},
   swoosh:()=>{noise(0,.35,.22,400,3800,1.4); noise(.4,.3,.14,3800,500,1.4)},
   card:()=>{noise(0,.12,.16,2500,6000,2); tone(1046,.04,.05,"triangle",.05)},
@@ -2092,7 +2146,18 @@ function sceneFx(box,ev,tiles,hitKey){
   else if(c==="trick"&&ev.ok){box.querySelectorAll(".mt.chg").forEach(e=>e.classList.add("swapfly"));}
   else if(c==="perish"){spray(["♪","♫","♬","♩"],12,70,140); sfx("perish");}
   else if(c==="fore"){const e=document.createElement("i"); e.className="fxeye"; e.textContent="👁"; e.style.fontStyle="normal"; l.appendChild(e);}
-  if(ev.refl){const bm=document.createElement("i"); bm.className="fxbeam"; l.appendChild(bm);}
+  const big=(t,cls)=>{const e=document.createElement("i"); e.className=cls||"fxbig"; e.textContent=t; l.appendChild(e); return e;};
+  if(c==="raindance"){for(let k=0;k<40;k++){const d=document.createElement("i"); d.className="fxdrop"; d.style.setProperty("--x",Math.random()*100+"%"); d.style.setProperty("--d",(Math.random()*.8)+"s"); l.appendChild(d);} big("☔");}
+  else if(c==="sandstorm"){const du=document.createElement("i"); du.className="fxdust"; l.appendChild(du); for(let k=0;k<30;k++){const d=document.createElement("i"); d.className="fxsand"; d.style.setProperty("--y",Math.random()*100+"%"); d.style.setProperty("--d",(Math.random()*.9)+"s"); l.appendChild(d);} box.classList.remove("quake"); void box.offsetWidth; box.classList.add("quake");}
+  else if(c==="entrain"){for(let k=0;k<14;k++){const a=k/14*Math.PI*2, e=document.createElement("i"); e.className="fxin"; e.textContent=k%2?"✨":"🔗"; e.style.cssText+="--dx:"+Math.cos(a)*220+"px;--dy:"+Math.sin(a)*160+"px;--d:"+(k*.03)+"s"; l.appendChild(e);}}
+  else if(c==="sketch"){big("🎨"); spray(["✏️","🖌","✨"],10,45,140,.2);}
+  else if(c==="doom"){ if(ev.hit.length){const cm=big("☄️","fxcomet"); const f=document.createElement("i"); f.className="fxflash"; l.appendChild(f); setTimeout(()=>{spray(["💥","🔥","✦"],14,42,170); box.classList.remove("quake"); void box.offsetWidth; box.classList.add("quake"); buzz(220);},520);} else big("⏳"); }
+  else if(c==="destiny"){big("👻"); spray(["⛓","🔗"],8,45,120,.3);}
+  else if(c==="swagger"){["💫","⭐","💫","😵"].forEach((t,k)=>{const e=big(t,"fxspin"); e.style.animationDelay=(k*.12)+"s";});}
+  else if(c==="roleplay"){big("🎭"); spray(["✨","🎭"],8,45,120,.3);}
+  if(ev.via==="bond"){big("👻"); spray(["⛓"],6,45,130);}
+  else if(ev.via==="conf"){["💫","😵"].forEach((t,k)=>{const e=big(t,"fxspin"); e.style.animationDelay=(k*.15)+"s";});}
+  else if(ev.refl){const bm=document.createElement("i"); bm.className="fxbeam"; l.appendChild(bm);}
 }
 function sfx(n){if(MUTE||!audio()) return; const f=SFX[n]||SFX_EXTRA[n]; f&&f();}
 function tick(){
@@ -2151,7 +2216,7 @@ function seriesStart(){
 function deal(p){
   const deck=STARTER()?["roar","roar","trick","trick"]:BLIND()?DECK.concat(["fore","fore"]):DECK;
   const tax=HARD()&&H.series==="koth"&&H.koth.champ&&H.koth.champ===pname(p)?1:0;
-  const n=3+(S.under===p?1:0)+(hasF("rain")?1:0)-tax, h=shuffle(deck.slice()).slice(0,n);
+  const n=(STARTER()?3:4)+(S.under===p?1:0)+(hasF("rain")?1:0)-tax, h=shuffle(deck.slice()).slice(0,n);
   if(tax) addLog(p,L("ภาษีแชมป์: แชมป์จั่วไพ่น้อยลง 1 ใบ","Champion's tax: the champion draws 1 card fewer"));
   if(lastStand(p)){h.push("perish"); S.lastStand[p]=true; addLog(p,L("LAST STAND: แพ้ 2 รอบติด ได้การ์ด Perish Song","LAST STAND: 2 losses in a row, a Perish Song card"));}
   for(let k=0;k<S.teraN[p];k++) h.push("tera");
@@ -2264,8 +2329,7 @@ function safariPick(k){
 function startCmd(){S.cmdN=1; beginCmd();}
 function beginCmd(){
   S.phase="cmd"; S.plan={A:null,B:null}; S.draft=null; if(S.cmdN>1) S.lastLock={A:S.lock.A,B:S.lock.B}; S.lock={A:null,B:null};
-  S.det={A:null,B:null}; S.safe={A:false,B:false};
-  for(const p of P) if(S.recyc&&S.recyc[p]){S.recyc[p]=false; const got=shuffle(recyclable()).slice(0,2); S.hand[p].push(...got); addLog(p,L("Recycle: จั่วเพิ่ม "+got.map(c=>CARDS[c].n).join(", "),"Recycle: drew "+got.map(c=>CARDS[c].n).join(", ")));}
+  S.bond={A:false,B:false};
   for(const p of P) if(S.wish[p]){S.wish[p]=false; S.hand[p].push("tera"); S.teraT[p]++; addLog(p,L("Wish เป็นจริง! ได้การ์ด Terastal","Wish came true! A Terastal card"));}
   S.picker=order()[0];
 }
@@ -2315,16 +2379,18 @@ const snap=()=>{const o={}; for(const q of P) o[q]=S.team[q].map((t,i)=>({t,h:is
 const sl=(q,i)=>L("ช่อง "+(i+1),"slot "+(i+1))+(isHid(q,i)?"":" ("+tn(S.team[q][i])+")");
 // Card effects. p = who played it, v = whose team it lands on (the opponent, or p itself when reflected).
 function effect(p,v,pl,refl,out){
-  const c=pl.card, nm=CARDS[c].n, who=refl?L("สะท้อนใส่ "+pname(v)+" เอง! ","reflected onto "+pname(v)+"! "):"";
-  const ev={p,v,card:c,refl,copy:!!pl.copy,rows:c==="trick"?[p,v]:[v],before:snap(),hit:[],block:[],ok:true,why:""};
+  const c=pl.card, nm=CARDS[c].n, via=refl==="bond"||refl==="conf"?refl:refl?"mirror":null;
+  const who=via==="bond"?L("Destiny Bond พาโดน "+pname(v)+" ด้วย! ","Destiny Bond drags "+pname(v)+" in too! "):via==="conf"?L("สับสนจนโดนทีมตัวเอง! ","confused into hitting their own team! "):refl?L("สะท้อนใส่ "+pname(v)+" เอง! ","reflected onto "+pname(v)+"! "):"";
+  const ev={p,v,card:c,refl:!!refl,via,copy:!!pl.copy,rows:c==="trick"?[p,v]:[v],before:snap(),hit:[],block:[],ok:true,why:""};
   out.ev.push(ev);
-  const pre=refl?L(pname(other(p))+" ตั้ง Mirror Coat ไว้ "+nm+" จึงเด้งกลับไปโดนทีมของ "+pname(v)+" เอง แล้ว: ",pname(other(p))+" had a Mirror Coat up, so "+nm+" bounced back onto "+pname(v)+"'s own team: "):"";
+  const pre=via==="bond"?L(pname(other(p))+" ผูกชะตาด้วย Destiny Bond "+nm+" จึงโดนทีมของ "+pname(v)+" ด้วย: ",pname(other(p))+" had Destiny Bond, so "+nm+" hit "+pname(v)+"'s team too: ")
+    :via==="conf"?L(pname(p)+" สับสนจาก Swagger "+nm+" เล็งมั่วไปโดนทีมตัวเอง: ",pname(p)+" was confused by Swagger, and "+nm+" hit their own team: ")
+    :refl?L(pname(other(p))+" ตั้ง Mirror Coat ไว้ "+nm+" จึงเด้งกลับไปโดนทีมของ "+pname(v)+" เอง แล้ว: ",pname(other(p))+" had a Mirror Coat up, so "+nm+" bounced back onto "+pname(v)+"'s own team: "):"";
   const fail=(why,short,block)=>{if(!refl&&block&&block.length) S.hl[v].read++; ev.ok=false; ev.why=pre+why; ev.block=block||[]; ev.after=ev.before;
     out.lines.push(nm+" ("+pname(p)+"): "+who+short); addLog(p,L("คำสั่ง "+S.cmdN+": ","Command "+S.cmdN+": ")+nm+" → "+who+short); out.sfx.push("fail"); out.res[p]="fail";};
   if(c==="roar"||c==="present"){
     const t=pl.type;
     if(c==="roar"&&S.mono[v]!=null) return fail(L(pname(v)+" เป็นหัวหน้ายิม ห้ามใช้ Roar ใส่ผู้บริหาร Roar จึงล้มเหลว",pname(v)+" is a Gym Leader, and Roar can't be used on management. Roar failed."),L("หัวหน้ายิมไม่สะทกสะท้าน "+failLine(),"The Gym Leader doesn't flinch. "+failLine()));
-    if(S.safe&&S.safe[v]) return fail(L(pname(v)+" กาง Safeguard ไว้ "+nm+" ที่เล็งธาตุจึงล้มเหลว",pname(v)+" had Safeguard up, so "+nm+" (aimed at a type) failed."),L("โดน Safeguard กันไว้! ","Stopped by Safeguard! ")+failLine());
     if(c==="present"&&S.mono[v]!=null) return fail(L(pname(v)+" เป็นหัวหน้ายิม ไม่รับของขวัญ Present จึงล้มเหลว",pname(v)+" is a Gym Leader and refuses gifts. Present failed."),failLine());
     if(c==="present"&&isKO(t)) return fail(L("ธาตุ"+tn(t)+"ติด Knock Off ถือไอเทมไม่ได้ Present จึงล้มเหลว",tn(t)+" has Knock Off and can't hold items. Present failed."),failLine());
     const blk=S.team[v].map((x,i)=>x===t&&guarded(v,i)?i:-1).filter(i=>i>=0);
@@ -2385,6 +2451,7 @@ function effect(p,v,pl,refl,out){
   }
   if(HARD()&&MIRROR()&&!refl&&ev.ok&&c!=="trick"&&S.mono[p]==null) shadowHit(p,c,pl,out,ev);
   ev.after=snap();
+  return ev.ok;
 }
 // Hard rules for Mirror Draft: a card that lands also hits 1 slot of the user's own team.
 function shadowHit(p,c,pl,out,ev){
@@ -2410,6 +2477,7 @@ function reveal(){
   }
   if(!BARE()){const s0=snap(); out.ev.push({kind:"protect",rows:["A","B"],before:s0,after:s0,hit:P.map(p=>[p,S.lock[p]]),ok:true,
     why:L(P.map(p=>pname(p)+" ป้องกัน"+sl(p,S.lock[p])).join(" · ")+" — การ์ดที่เล็งช่องนี้ หรือเล็งธาตุของช่องนี้ จะล้มเหลว",P.map(p=>pname(p)+" protects "+sl(p,S.lock[p])).join(" · ")+". Cards aimed at that slot, or at its type, will fail.")});}
+  for(const p of ord) if(S.doom[p]===n){S.doom[p]=0; doomHit(p,out,false);}
   // Own-side cards first, in turn order
   for(const p of ord){
     const x=pl[p], b0=snap();
@@ -2422,17 +2490,6 @@ function reveal(){
       sev(L(pname(p)+" สุ่มธาตุใหม่ให้ช่อง "+(i+1)+" ของตัวเอง: "+(isHid(p,i)?"(ซ่อนอยู่)":tn(was)+" → "+tn(n)),pname(p)+" redrew slot "+(i+1)+" of their own team: "+(isHid(p,i)?"(hidden)":tn(was)+" → "+tn(n))),[[p,i]]); }
     if(x.card==="mirror"){ out.lines.push(L(pname(p)+" ตั้ง Mirror Coat!",pname(p)+" raised a Mirror Coat!"));
       sev(L(pname(p)+" ตั้ง Mirror Coat: ถ้า "+pname(other(p))+" ใช้การ์ดเล็งศัตรูในคำสั่งนี้ จะเด้งกลับไปโดนเจ้าของ",pname(p)+" raised a Mirror Coat: if "+pname(other(p))+" attacks this command, it bounces back.")); }
-    if(x.card==="detect"){ S.det[p]=x.self; out.lines.push(L(pname(p)+" ใช้ Detect! กันเพิ่มช่อง "+(x.self+1),pname(p)+" used Detect! Slot "+(x.self+1)+" is guarded too")); out.sfx.push("protect");
-      sev(L(pname(p)+" ใช้ Detect: "+sl(p,x.self)+" ถูกป้องกันเพิ่มในคำสั่งนี้ (รวมกับ Protect เป็น 2 ช่อง)",pname(p)+" used Detect: "+sl(p,x.self)+" is also protected this command (2 slots with Protect)"),[[p,x.self]]); }
-    if(x.card==="safeguard"){ S.safe[p]=true; out.lines.push(L(pname(p)+" กาง Safeguard!",pname(p)+" raised Safeguard!")); out.sfx.push("sub");
-      sev(L(pname(p)+" กาง Safeguard: คำสั่งนี้ Roar และ Present ที่เล็งทีมนี้จะล้มเหลว",pname(p)+" raised Safeguard: Roar and Present aimed at this team fail this command")); }
-    if(x.card==="camo"){ const i=x.self, was=S.team[p][i], c=counts(S.team[p].filter((t,k)=>k!==i&&t!=null)), mx=Math.max(...Object.values(c)), tops=Object.keys(c).filter(k=>c[k]===mx).map(Number), t=tops[pick(tops.length)];
-      if(t!==was){S.team[p][i]=t; dittoOff(p,i); S.teraMark[p]=S.teraMark[p].filter(y=>y!==i); out.bump.push([p,i]);}
-      out.lines.push(L(pname(p)+" ใช้ Camouflage! ช่อง "+(i+1)+" กลมกลืนกับทีม",pname(p)+" used Camouflage! Slot "+(i+1)+" blends in")); out.sfx.push("conv");
-      addLog(p,L("Camouflage ช่อง "+(i+1)+": "+tn(was)+" → "+tn(t),"Camouflage slot "+(i+1)+": "+tn(was)+" → "+tn(t)));
-      sev(t!==was?L(pname(p)+" พรางตัว: ช่อง "+(i+1)+" "+tn(was)+" → "+tn(t)+" (ธาตุที่ทีมมีมากที่สุด)",pname(p)+" blended in: slot "+(i+1)+" "+tn(was)+" → "+tn(t)+" (the team's most common type)"):L("ช่อง "+(i+1)+" เป็นธาตุ"+tn(t)+"อยู่แล้ว จึงไม่มีอะไรเปลี่ยน","Slot "+(i+1)+" was already "+tn(t)+", so nothing changed."),[[p,i]]); }
-    if(x.card==="recycle"){ S.recyc[p]=true; out.lines.push(L(pname(p)+" ใช้ Recycle!",pname(p)+" used Recycle!")); out.sfx.push("conv");
-      sev(L(pname(p)+" ใช้ Recycle: คำสั่งถัดไปจะจั่วการ์ดจากกองเพิ่ม 2 ใบ",pname(p)+" used Recycle: 2 more cards from the deck next command.")); }
     if(x.card==="wish"){ S.wish[p]=true; out.lines.push(L(pname(p)+" อธิษฐาน! คำสั่งถัดไปได้ Terastal",pname(p)+" made a Wish! A Terastal arrives next command"));
       sev(L(pname(p)+" ใช้ Wish: คำสั่งนี้ไม่ทำอะไร แต่คำสั่งถัดไปจะได้การ์ด Terastal 1 ใบ",pname(p)+" used Wish: nothing now, but a Terastal card arrives next command.")); out.sfx.push("conv"); }
     if(x.card==="perish"){ const b1=snap(), hit=[];
@@ -2444,6 +2501,8 @@ function reveal(){
       S.hid[o]=S.hid[o].filter(y=>y!==i); out.bump.push([o,i]); out.sfx.push("conv");
       out.lines.push(L(pname(p)+" ใช้ Foresight! เห็นช่อง "+(i+1)+" ของ "+pname(o)+" แล้ว",pname(p)+" used Foresight! Slot "+(i+1)+" of "+pname(o)+" is revealed"));
       out.ev.push({p,v:o,card:"fore",rows:[o],before:b1,after:snap(),hit:[[o,i]],ok:true,why:L("ช่อง "+(i+1)+" ของ "+pname(o)+" ที่ซ่อนอยู่ เปิดเผยแล้ว: ธาตุ"+tn(S.team[o][i]),"Hidden slot "+(i+1)+" of "+pname(o)+" is revealed: "+tn(S.team[o][i]))}); }
+    if(["raindance","sandstorm","entrain","doom","destiny","swagger","roleplay"].includes(x.card)) supportCard(p,x.card,x,out,false);
+    if(x.card==="sketch") out.lines.push(L(pname(p)+" กาง Sketch รอคัดลอก",pname(p)+" readies Sketch"));
     if(x.card==="pass"){ out.lines.push(L(pname(p)+": ",pname(p)+": ")+Q(QT.run));
       sev(L(pname(p)+" ไม่ใช้การ์ด เก็บไพ่ไว้ ใช้แค่ Protect",pname(p)+" played no card and kept their hand, Protect only.")); }
   }
@@ -2452,11 +2511,20 @@ function reveal(){
     let x=pl[p]; const o=other(p);
     if(x.card==="copycat"){ x=copyPlan(p,pl[o].card,out); if(!x) continue; }
     if(!CARDS[x.card]||!CARDS[x.card].atk) continue;
+    if(S.conf[p]===n){ const v=pick(2)?p:o, cx=confPlan(p,v,x.card);
+      out.lines.push(L("😵 "+pname(p)+" สับสน! "+CARDS[x.card].n+" เล็งมั่ว","😵 "+pname(p)+" is confused! "+CARDS[x.card].n+" flies anywhere"));
+      if(!cx){ const s1=snap(); out.ev.push({p,v,card:x.card,rows:[v],before:s1,after:s1,hit:[],block:[],ok:false,why:L(pname(p)+" สับสน การ์ดเล็งมั่วจนไม่โดนอะไรเลย","Confused, the card hit nothing at all.")}); out.res[p]="fail"; out.sfx.push("fail"); continue;}
+      if(v===p){ effect(p,p,cx,"conf",out); out.res[p]="fail"; continue; }
+      x=cx; }
     if(pl[o].card==="mirror"){
       out.sfx.push("mirror"); S.hl[o].refl++; effect(p,p,Object.assign({},x,x.card==="tera"?{}:{}),true,out); continue;
     }
-    effect(p,o,x,false,out);
+    const ok=effect(p,o,x,false,out);
+    if(ok&&S.bond[o]){ out.sfx.push("bond"); effect(p,p,x,"bond",out); out.res[p]="hit"; }
   }
+  // Sketch copies the other side's card; Doom Desire set on the last command lands right away.
+  for(const p of ord) if(pl[p].card==="sketch") doSketch(p,pl[other(p)].card,out);
+  if(n===S.maxCmd) for(const p of ord) if(S.doom[p]===n+1){S.doom[p]=0; doomHit(p,out,true);}
   S.flash=out.lines.join(" ");
   gymBattle();
   S.cmdN++;
@@ -2522,7 +2590,7 @@ function playScene(ev,k,total){
   const head=document.createElement("div"); head.className="schead"+(ev.card?" c-"+ev.card:"");
   head.innerHTML="<small>"+(k+1)+"/"+total+"</small> ";
   const ht=document.createElement("b");
-  ht.textContent=ev.kind==="protect"?L("เปิด Protect ทั้งสองฝ่าย","Both Protects revealed"):pname(ev.p)+" · "+(ev.copy?"Copycat → ":"")+cardName(ev.card)+(ev.refl?L(" (เด้งกลับ!)"," (bounced!)"):"");
+  ht.textContent=ev.kind==="protect"?L("เปิด Protect ทั้งสองฝ่าย","Both Protects revealed"):pname(ev.p)+" · "+(ev.copy?"Copycat → ":"")+cardName(ev.card)+(ev.via==="bond"?" (Destiny Bond!)":ev.via==="conf"?L(" (สับสน!)"," (confused!)"):ev.refl?L(" (เด้งกลับ!)"," (bounced!)"):"");
   head.appendChild(ht); box.appendChild(head);
   const hitKey=new Set(ev.hit.map(([q,i])=>q+i)), blkKey=new Set((ev.block||[]).map(([q,i])=>q+i));
   const tiles=[];
@@ -2533,7 +2601,7 @@ function playScene(ev,k,total){
     box.appendChild(g);
   }
   const why=document.createElement("p"); why.className="scwhy"; why.textContent=ev.why; box.appendChild(why);
-  const kind=ev.kind==="protect"?"shield":ev.card==="copycat"?(ev.ok?"ok":"fail"):!CARDS[ev.card]||!CARDS[ev.card].atk?"info":!ev.ok?"fail":ev.refl?"reflect":"ok";
+  const kind=ev.kind==="protect"?"shield":ev.card==="copycat"||["raindance","sandstorm","entrain","doom","roleplay","sketch","fore","perish"].includes(ev.card)?(ev.ok?"ok":"fail"):!CARDS[ev.card]||!CARDS[ev.card].atk?"info":!ev.ok?"fail":ev.refl?"reflect":"ok";
   const r=document.createElement("div"); r.className="scres "+kind; r.textContent=L(RES[kind][0],RES[kind][1]); r.hidden=true; box.appendChild(r);
   const fast=still(), dots=document.createElement("div"); dots.className="scdots"; dots.textContent="• • •"; dots.hidden=true; box.insertBefore(dots,why);
   const atkCard=CARDS[ev.card]&&CARDS[ev.card].atk;
@@ -2570,6 +2638,64 @@ function summaryScene(n,ord,show,out){
   }
   sfx("stamp");
 }
+// The new non-targeting cards, shared by a normal play and by Copycat.
+function supportCard(p,c,x,out,copy){
+  const o=other(p), b0=snap(), push=(rows,hit,why,ok=true)=>{out.ev.push({p,v:p,card:c,copy,rows,before:b0,after:snap(),hit,ok,why}); if(copy) out.res[p]=ok?"self":"fail";};
+  const tag=copy?"Copycat → ":"";
+  const redraw=(q,i)=>{const was=S.team[q][i]; let n; do{n=pick()}while(n===was); S.team[q][i]=n; S.gift[q][i]=null; S.teraMark[q]=S.teraMark[q].filter(y=>y!==i); dittoOff(q,i); out.bump.push([q,i]); return [was,n];};
+  const top=q=>{const cc=counts(S.team[q].filter(t=>t!=null)), mx=Math.max(...Object.values(cc)), t=Object.keys(cc).filter(k=>cc[k]===mx).map(Number); return {t:t[pick(t.length)],mx,cc};};
+  if(c==="raindance"){ const was=S.curse; let n; do{n=pick()}while(n===was||n===S.curse2); S.curse=n; S.nextKO=null;
+    out.lines.push(L(pname(p)+" "+tag+"ใช้ Rain Dance! Knock Off เปลี่ยนเป็นธาตุ"+tn(n),pname(p)+" "+tag+"used Rain Dance! Knock Off is now "+tn(n))); out.sfx.push("rain");
+    P.forEach(q=>addLog(q,L("Rain Dance: Knock Off "+tn(was)+" → "+tn(n),"Rain Dance: Knock Off "+tn(was)+" → "+tn(n))));
+    return push(["A","B"],[],L("ฝนตกหนักจนล้างคำสาปเดิม Knock Off เปลี่ยนจากธาตุ"+tn(was)+" เป็นธาตุ"+tn(n)+" มีผลกับทั้งสองทีม","The rain washed the old curse away: Knock Off changed from "+tn(was)+" to "+tn(n)+" for both teams."));}
+  if(c==="sandstorm"||c==="entrain"){ const hit=[], parts=[];
+    for(const q of P){ if(S.mono[q]!=null) continue; const tp=top(q);
+      if(c==="sandstorm"){ if(tp.mx<2) continue; const idx=S.team[q].map((t,i)=>t===tp.t?i:-1).filter(i=>i>=0), i=idx[pick(idx.length)], [w,n]=redraw(q,i); hit.push([q,i]); parts.push(pname(q)+" "+L("ช่อง ","slot ")+(i+1)+" "+tn(w)+" → "+tn(n)); }
+      else { const one=S.team[q].map((t,i)=>tp.cc[t]===1&&t!==tp.t?i:-1).filter(i=>i>=0); if(!one.length) continue; const i=one[pick(one.length)], w=S.team[q][i];
+        S.team[q][i]=tp.t; S.gift[q][i]=null; S.teraMark[q]=S.teraMark[q].filter(y=>y!==i); dittoOff(q,i); out.bump.push([q,i]); hit.push([q,i]); parts.push(pname(q)+" "+L("ช่อง ","slot ")+(i+1)+" "+tn(w)+" → "+tn(tp.t)); } }
+    const nm=CARDS[c].n; out.lines.push(L(pname(p)+" "+tag+"ใช้ "+nm+"!",pname(p)+" "+tag+"used "+nm+"!")); out.sfx.push(c==="sandstorm"?"sand":"entrain");
+    parts.forEach(t=>P.forEach(q=>{if(t.startsWith(pname(q))) addLog(q,nm+": "+t);}));
+    return push(["A","B"],hit,(c==="sandstorm"?L("พายุทรายพัดธาตุที่ซ้ำมากที่สุดของแต่ละทีมออกไป 1 ช่อง: ","The sandstorm blew away 1 slot of each team's most repeated type: "):L("ทุกทีมถูกดึงให้กลมกลืน ช่องธาตุที่ไม่ซ้ำใคร 1 ช่องกลายเป็นธาตุหลักของทีม: ","Each team was pulled into line: 1 one-of-a-kind slot became the team's main type: "))+(parts.length?parts.join(" · "):L("ไม่มีทีมไหนเข้าเงื่อนไข","no team qualified")),true);}
+  if(c==="doom"){ S.doom[p]=S.cmdN+1; out.lines.push(L(pname(p)+" "+tag+"ใช้ Doom Desire! บางอย่างกำลังตกลงมา…",pname(p)+" "+tag+"used Doom Desire! Something is coming…")); out.sfx.push("doomSet");
+    return push([o],[],S.cmdN<S.maxCmd?L("คำสั่งถัดไป ช่องสุ่ม 1 ช่องของ "+pname(o)+" จะโดนสุ่มธาตุใหม่ ทะลุ Protect","Next command, 1 random slot of "+pname(o)+" gets redrawn, Protect or not."):L("นี่คือคำสั่งสุดท้าย Doom Desire จะตกลงมาตอนจบคำสั่งนี้","This is the last command, so Doom Desire lands as it ends."));}
+  if(c==="destiny"){ S.bond[p]=true; out.lines.push(L(pname(p)+" "+tag+"ใช้ Destiny Bond!",pname(p)+" "+tag+"used Destiny Bond!")); out.sfx.push("bondSet");
+    return push([p],[],L(pname(p)+" ผูกชะตาไว้ ถ้า "+pname(o)+" ใช้การ์ดเล็งศัตรูสำเร็จในคำสั่งนี้ ทีมของ "+pname(o)+" จะโดนผลเดียวกันด้วย",pname(p)+" tied fates: if "+pname(o)+" lands an enemy-target card this command, "+pname(o)+"'s team gets it too."));}
+  if(c==="swagger"){ S.conf[o]=S.cmdN+1; S.hand[o].push("tera"); S.teraT[o]++; out.lines.push(L(pname(p)+" "+tag+"ใช้ Swagger! "+pname(o)+" ได้ Terastal แต่หัวหมุน",pname(p)+" "+tag+"used Swagger! "+pname(o)+" gets a Terastal, but their head spins")); out.sfx.push("swagger");
+    addLog(o,L("Swagger: ได้การ์ด Terastal แต่คำสั่งถัดไปสับสน","Swagger: a Terastal card, but confused next command"));
+    return push([o],[],L(pname(o)+" ได้การ์ด Terastal 1 ใบ แต่คำสั่งถัดไปจะสับสน การ์ดเล็งศัตรูที่ใช้จะถูกสุ่มเป้า และมีโอกาสครึ่งหนึ่งที่จะโดนทีมตัวเอง",pname(o)+" got a Terastal card, but next command they're confused: their enemy-target card gets random targets, with a 50% chance of hitting their own team."));}
+  if(c==="roleplay"){ const vis=S.team[o].filter((t,i)=>t!=null&&!isHid(o,i)); if(!vis.length) return push([p],[],L("มองไม่เห็นธาตุของ "+pname(o)+" เลย Role Play จึงล้มเหลว","None of "+pname(o)+"'s types are visible, so Role Play failed."),false);
+    const cc=counts(vis), mx=Math.max(...Object.values(cc)), tops=Object.keys(cc).filter(k=>cc[k]===mx).map(Number), t=tops[pick(tops.length)];
+    const free=[0,1,2,3,4,5].filter(i=>i!==S.lock[p]), i=x&&x.self!=null?x.self:free[pick(free.length)], w=S.team[p][i];
+    if(S.mono[p]!=null) return push([p],[],L(pname(p)+" เป็นหัวหน้ายิม เปลี่ยนธาตุไม่ได้ Role Play จึงไม่มีผล",pname(p)+" is a Gym Leader and can't change type, so Role Play did nothing."),false);
+    S.team[p][i]=t; dittoOff(p,i); S.teraMark[p]=S.teraMark[p].filter(y=>y!==i); out.bump.push([p,i]); out.sfx.push("role");
+    out.lines.push(L(pname(p)+" "+tag+"ใช้ Role Play! เลียนแบบธาตุ"+tn(t),pname(p)+" "+tag+"used Role Play! Mimicking "+tn(t)));
+    addLog(p,L("Role Play ช่อง "+(i+1)+": "+tn(w)+" → "+tn(t),"Role Play slot "+(i+1)+": "+tn(w)+" → "+tn(t)));
+    return push([p],[[p,i]],L(pname(p)+" สวมบทเป็นธาตุที่ "+pname(o)+" มีมากที่สุด: ช่อง "+(i+1)+" "+tn(w)+" → "+tn(t),pname(p)+" took on "+pname(o)+"'s most common type: slot "+(i+1)+" "+tn(w)+" → "+tn(t)));}
+}
+function doSketch(p,c,out){
+  const b0=snap(), ok=c&&c!=="pass"&&c!=="sketch"&&CARDS[c];
+  if(ok){S.hand[p].push(c); if(c==="tera") S.teraT[p]++; addLog(p,L("Sketch: คัดลอก "+CARDS[c].n+" เข้ามือ","Sketch: copied "+CARDS[c].n+" into your hand")); out.sfx.push("sketch");}
+  out.ev.push({p,v:p,card:"sketch",rows:[p],before:b0,after:b0,hit:[],ok:!!ok,why:ok?L(pname(p)+" วาด "+CARDS[c].n+" ของ "+pname(other(p))+" เก็บไว้ในมือ ใช้ได้ตั้งแต่คำสั่งถัดไป",pname(p)+" sketched "+pname(other(p))+"'s "+CARDS[c].n+" into their hand, ready from next command."):L(pname(other(p))+" ไม่ได้ใช้การ์ดที่คัดลอกได้ Sketch จึงเสียเปล่า",pname(other(p))+" played nothing Sketch could copy, so it was wasted.")});
+  if(!ok) out.res[p]="fail";
+}
+function doomHit(p,out,end){
+  const o=other(p), b0=snap();
+  if(S.mono[o]!=null){out.ev.push({p,v:o,card:"doom",rows:[o],before:b0,after:b0,hit:[],ok:false,why:L("Doom Desire ตกลงมา แต่ "+pname(o)+" เป็นหัวหน้ายิม ไม่สะทกสะท้าน","Doom Desire landed, but "+pname(o)+" is a Gym Leader and didn't flinch.")}); return;}
+  const i=pick(N), was=S.team[o][i]; let n; do{n=pick()}while(n===was);
+  S.team[o][i]=n; S.gift[o][i]=null; S.teraMark[o]=S.teraMark[o].filter(y=>y!==i); dittoOff(o,i); out.bump.push([o,i]); out.sfx.push("doomHit"); S.hl[o].lost++;
+  out.lines.push(L("☄️ Doom Desire ของ "+pname(p)+" ตกใส่ช่อง "+(i+1)+" ของ "+pname(o)+"!","☄️ "+pname(p)+"'s Doom Desire struck "+pname(o)+"'s slot "+(i+1)+"!"));
+  addLog(o,L("Doom Desire: ช่อง "+(i+1)+" "+tn(was)+" → "+(isHid(o,i)?"?":tn(n)),"Doom Desire: slot "+(i+1)+" "+tn(was)+" → "+(isHid(o,i)?"?":tn(n))));
+  out.ev.push({p,v:o,card:"doom",hit:[[o,i]],rows:[o],before:b0,after:snap(),ok:true,why:L((end?"จบคำสั่งแล้ว ":"")+"Doom Desire ที่ "+pname(p)+" ปล่อยไว้ตกลงมาที่ช่อง "+(i+1)+" ของ "+pname(o)+" ทะลุ Protect: "+tn(was)+" → "+(isHid(o,i)?"?":tn(n)),(end?"As the command ends, ":"")+pname(p)+"'s Doom Desire struck "+pname(o)+"'s slot "+(i+1)+", Protect or not: "+tn(was)+" → "+(isHid(o,i)?"?":tn(n)))});
+}
+// Swagger: a confused side's attack gets random targets on team v.
+function confPlan(p,v,c){
+  const r=a=>a[pick(a.length)], all=[0,1,2,3,4,5], ts=[...new Set(S.team[v].filter(t=>t!=null))];
+  if(c==="roar"){ if(!ts.length) return null; return {card:c,type:r(ts)}; }
+  if(c==="present"){ const ok=ts.filter(t=>!isKO(t)); if(!ok.length) return null; return {card:c,type:r(ok)}; }
+  if(c==="trick"){ const th=all.filter(i=>!S.sub[v].includes(i)&&!S.taken[v].includes(i)); if(!th.length) return null; return {card:c,mine:pick(N),theirs:r(th)}; }
+  if(c==="tera"){ const th=all.filter(i=>!S.sub[v].includes(i)); if(!th.length) return null; const slot=r(th); let tt; do{tt=pick()}while(tt===S.team[v][slot]); return {card:c,slot,tt}; }
+  return null;
+}
 // Copycat: copy the opponent's revealed card with a random target. Returns an attack plan, or null when handled here.
 function copyPlan(p,c,out){
   const o=other(p), b0=snap(), rnd=a=>a[pick(a.length)];
@@ -2585,13 +2711,10 @@ function copyPlan(p,c,out){
   }
   if(c==="fore"){const hs=free.filter(i=>isHid(o,i)); if(!hs.length){note(L("Copycat เลียนแบบ Foresight แต่ไม่มีช่องซ่อนให้ดู "+failLine(),"Copycat copied Foresight, but nothing is hidden. "+failLine()),false); return null;}
     const i=rnd(hs); S.hid[o]=S.hid[o].filter(y=>y!==i); note(L("Copycat เลียนแบบ Foresight: เปิดช่อง "+(i+1)+" ของ "+pname(o)+" (สุ่ม)","Copycat copied Foresight: slot "+(i+1)+" of "+pname(o)+" revealed (random)"),true); out.bump.push([o,i]); return null;}
+  if(["raindance","sandstorm","entrain","doom","destiny","swagger","roleplay"].includes(c)){ if(c==="swagger"&&S.cmdN>=S.maxCmd){note(L("Copycat เลียนแบบ Swagger แต่ไม่มีคำสั่งถัดไปแล้ว "+failLine(),"Copycat copied Swagger, but there is no next command. "+failLine()),false); return null;}
+    supportCard(p,c,null,out,true); return null;}
   if(c==="sub"){const i=rnd(free.filter(i=>i!==S.lock[p])); if(!S.sub[p].includes(i)) S.sub[p].push(i); note(L("Copycat เลียนแบบ Substitute: ตั้งตัวแทนที่ช่อง "+(i+1)+" (สุ่ม)","Copycat copied Substitute: a stand-in on slot "+(i+1)+" (random)"),true,[[p,i]]); out.sfx.push("sub"); return null;}
   if(c==="conv"){const i=rnd(free), was=S.team[p][i]; dittoOff(p,i); let n; do{n=pick()}while(n===was); S.team[p][i]=n; S.teraMark[p]=S.teraMark[p].filter(y=>y!==i); note(L("Copycat เลียนแบบ Conversion: ช่อง "+(i+1)+" สุ่มธาตุใหม่ (สุ่มช่อง) "+(isHid(p,i)?"":tn(was)+" → "+tn(n)),"Copycat copied Conversion: slot "+(i+1)+" redrawn "+(isHid(p,i)?"":tn(was)+" → "+tn(n))),true,[[p,i]]); out.sfx.push("conv"); return null;}
-  if(c==="detect"){const i=rnd(free.filter(i=>i!==S.lock[p])); S.det[p]=i; note(L("Copycat เลียนแบบ Detect: กันเพิ่มช่อง "+(i+1)+" (สุ่ม)","Copycat copied Detect: slot "+(i+1)+" guarded too (random)"),true,[[p,i]]); return null;}
-  if(c==="safeguard"){S.safe[p]=true; note(L("Copycat เลียนแบบ Safeguard: กันการ์ดที่เล็งธาตุในคำสั่งนี้","Copycat copied Safeguard: type-aimed cards fail this command"),true); return null;}
-  if(c==="camo"){const i=rnd(free), was=S.team[p][i], cc=counts(S.team[p].filter((t,k)=>k!==i)), mx=Math.max(...Object.values(cc)), tops=Object.keys(cc).filter(k=>cc[k]===mx).map(Number), t=tops[pick(tops.length)];
-    S.team[p][i]=t; dittoOff(p,i); note(L("Copycat เลียนแบบ Camouflage: ช่อง "+(i+1)+" (สุ่ม) "+tn(was)+" → "+tn(t),"Copycat copied Camouflage: slot "+(i+1)+" (random) "+tn(was)+" → "+tn(t)),true,[[p,i]]); return null;}
-  if(c==="recycle"){ if(S.cmdN<S.maxCmd){S.recyc[p]=true; note(L("Copycat เลียนแบบ Recycle: คำสั่งถัดไปจั่วเพิ่ม 2 ใบ","Copycat copied Recycle: 2 more cards next command"),true);} else note(L("Copycat เลียนแบบ Recycle แต่ไม่มีคำสั่งถัดไปแล้ว "+failLine(),"Copycat copied Recycle, but there is no next command. "+failLine()),false); return null;}
   if(c==="wish"){ if(S.cmdN<S.maxCmd){S.wish[p]=true; note(L("Copycat เลียนแบบ Wish: คำสั่งถัดไปได้การ์ด Terastal ด้วย","Copycat copied Wish: a Terastal card arrives next command too"),true);} else note(L("Copycat เลียนแบบ Wish แต่ไม่มีคำสั่งถัดไปแล้ว "+failLine(),"Copycat copied Wish, but there is no next command. "+failLine()),false); return null;}
   note(L("อีกฝ่ายเปิด "+cardName(c)+" ซึ่งไม่มีอะไรให้เลียนแบบ Copycat จึงเสียเปล่า","The opponent revealed "+cardName(c)+", which can't be copied, so Copycat was wasted."),false);
   return null;
