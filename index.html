@@ -123,6 +123,21 @@ body.rolling .plate{animation:blink .4s steps(2) infinite}
 .log:empty{display:none}
 
 /* Gym badge pop-up */
+.linkbtn{background:#d6f0ff}
+.linkbtn.on{background:#7be0a8}.linkbtn.bad{background:#ffb3b3}
+.lobby{max-width:400px}
+.lobby .lbbig{font-size:19px;padding:14px 20px;width:100%}
+.lbor{margin:8px 0 2px;color:var(--muted,#667);font-size:14px}
+.lbjoin{display:flex;gap:8px;width:100%;justify-content:center;flex-wrap:wrap}
+#lbCode{font:inherit;font-size:24px;letter-spacing:.3em;text-align:center;width:9ch;padding:8px;border:3px solid #1f2638;border-radius:10px;text-transform:uppercase}
+.lbcode{font-family:"Press Start 2P",monospace;font-size:38px;letter-spacing:.18em;padding:14px 18px 12px;background:#fff7d1;border:4px solid #1f2638;border-radius:14px;box-shadow:0 4px 0 #1f2638}
+.lbrole{font-weight:700;margin:0}.lbstat{margin:0;font-size:15px}.lbstat.ok{color:#1d8a4c;font-weight:700}
+.lblink{font:inherit;font-size:13px;width:100%;padding:8px;border:2px solid #1f2638;border-radius:8px;text-align:center}
+.lbnote{font-size:13px;opacity:.8;margin:0}.lberr{color:#c62828;font-weight:700;margin:0}
+.lbleave{background:#ffd5d5}
+.nettoast{position:fixed;left:50%;bottom:92px;transform:translateX(-50%);z-index:40;max-width:min(90vw,420px);padding:10px 16px;border:3px solid #1f2638;border-radius:12px;background:#fff;color:#1f2638;font-weight:700;box-shadow:0 4px 0 #1f2638;text-align:center}
+.nettoast.on{animation:pop .3s ease-out}
+.lane.me .lane-head::after{content:"YOU";font-family:"Press Start 2P",monospace;font-size:10px;padding:4px 6px;border-radius:6px;background:#1f2638;color:#fff;margin-left:4px}
 .veil{position:fixed;inset:0;z-index:10;display:grid;place-items:center;padding:16px;background:rgba(14,18,32,.88)}
 .card{width:100%;max-width:430px;padding:26px 20px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:12px;animation:pop .35s ease-out}
 .card h2{font-family:var(--display);font-weight:600;font-size:clamp(24px,6.4vw,32px);line-height:1.2;margin:0;text-wrap:balance}
@@ -652,6 +667,7 @@ body.playing #roll{width:84px;height:84px;border-width:8px;font-size:15px}
         <span class="px" id="round">ROUND 0</span>
         <button id="modeBtn" class="btn modebtn" type="button">🎮 Cursed Draft ▾</button>
         <button id="menuBtn" class="btn" type="button">⚙ เมนู</button>
+        <button id="linkBtn" class="btn linkbtn" type="button">🔗 Link Battle</button>
         <button id="undo" class="btn" type="button" disabled hidden>ย้อนกลับ 1 ขั้น</button>
         <div hidden><select id="mode"><option value="starter">Starter Draft</option><option value="cursed">Cursed Draft</option><option value="double">Double Cursed</option><option value="safari">Safari Draft</option><option value="blind">Blind Draft</option><option value="mirror">Mirror Draft</option><option value="chaos">Wild Field</option><option value="box">Mystery Box</option><option value="color">Color Draft</option></select>
           <select id="series"><option value="bo1">แมตช์เดียว</option><option value="bo3">Best of 3</option><option value="koth">King of the Hill</option><option value="tour">Tournament</option></select></div>
@@ -758,6 +774,17 @@ body.playing #roll{width:84px;height:84px;border-width:8px;font-size:15px}
     <div class="cwnav"><button id="tourBack" class="btn" type="button"></button><button id="tourNext" class="btn" type="button"></button></div>
   </div>
 </div>
+
+<div class="veil" id="lobbyVeil" hidden role="dialog" aria-modal="true" aria-labelledby="lbTitle">
+  <div class="box card lobby">
+    <div class="px lbl">LINK BATTLE</div>
+    <h2 id="lbTitle">Union Room</h2>
+    <p id="lbText"></p>
+    <div id="lbBody"></div>
+    <button id="lbClose" class="btn" type="button">ปิด</button>
+  </div>
+</div>
+<div id="netToast" class="nettoast" role="status" aria-live="polite" hidden></div>
 
 <div class="veil" id="menuVeil" hidden role="dialog" aria-modal="true" aria-labelledby="menuTitle">
   <div class="box card menu">
@@ -922,6 +949,8 @@ const TYPES=[
  ["ความมืด","Dark","#705746",1],["เหล็ก","Steel","#B7B7CE",0],["แฟรี่","Fairy","#D685AD",0]];
 const N=6, P=["A","B"], $=id=>document.getElementById(id);
 let LANG="th";
+let NET={on:false};   // Link Battle state (see the Union Room section)
+const ME=()=>NET.on?(NET.role==="host"?"A":NET.role==="guest"?"B":null):null;
 const L=(th,en)=>LANG==="en"?en:th;
 const other=p=>p==="A"?"B":"A", tn=t=>TYPES[t][LANG==="en"?1:0];
 const pname=p=>$("name"+p).value.trim()||L("ผู้เล่น ","Player ")+p;
@@ -1377,7 +1406,7 @@ function setDialog(t){
 /* ---------- Per-viewer memory: score, history, sound, timer and language ---------- */
 let H={score:{A:0,B:0},rounds:[],mute:false,mins:2,lang:"th",series:"bo1",ser:{A:0,B:0,last:null,champ:null},koth:{champ:null,streak:0,best:{name:"",n:0}}};
 try{const j=JSON.parse(localStorage.getItem("choiceCD")||"null"); if(j&&j.score&&Array.isArray(j.rounds)) H=Object.assign(H,j);}catch(e){}
-function store(){try{localStorage.setItem("choiceCD",JSON.stringify(H))}catch(e){}}
+function store(){if(NET.on&&NET.role!=="host") return; try{localStorage.setItem("choiceCD",JSON.stringify(H))}catch(e){}}
 LANG=H.lang==="en"?"en":"th";
 let U=null;   // one-step undo snapshot
 function saveUndo(){U={S:JSON.parse(JSON.stringify(S)),log:{A:$("logA").textContent,B:$("logB").textContent},say:{A:$("sayA").textContent,B:$("sayB").textContent}};}
@@ -1936,17 +1965,17 @@ function render(){
     $("logd"+p).hidden=!$("log"+p).textContent; $("logs"+p).textContent=L("📜 บันทึกของ ","📜 Log for ")+pname(p);
     $("lane"+p).classList.toggle("lost",S.phase==="done"&&!!S.winner&&S.winner!==p);
     {const cr=$("crown"+p), k=H.series==="koth"&&H.koth&&H.koth.champ&&H.koth.champ===pname(p); cr.textContent=k?"👑":""; cr.classList.toggle("g2",!!k&&H.koth.streak===2); cr.classList.toggle("g3",!!k&&H.koth.streak>=3);}
-    if(p==="B"){const tb=$("tradeBtn"); tb.hidden=!(CAL()&&S.phase==="done"&&S.items.A&&!S.winner&&!(S.traded.A&&S.traded.B)); tb.textContent=L("🔁 ตลาดแลกของ","🔁 Trade market");}
+    if(p==="B"){const tb=$("tradeBtn"); tb.hidden=NET.on||!(CAL()&&S.phase==="done"&&S.items.A&&!S.winner&&!(S.traded.A&&S.traded.B)); tb.textContent=L("🔁 ตลาดแลกของ","🔁 Trade market");}
     {const il=$("ilist"+p), rows=live?S.team[p].map((t,i)=>{const it=isHid(p,i)?null:itemAt(p,i); if(!it) return "";
       const cu=S.cursedIt[p].includes(i)&&S.items[p]; return "<div"+(cu?' class="cur"':"")+"><b>"+L("ช่อง ","Slot ")+(i+1)+" · "+(cu?"💀 ":"")+it+"</b> — "+itemDesc(it)+"</div>";}).join(""):"";
      il.hidden=!rows; il.innerHTML=rows?"<b class=\"px\">"+L("ไอเทมในทีม","Items")+"</b>"+rows:"";}
     const nh=S.hid[p].filter(i=>isHid(p,i)).length;
     $("stat"+p).textContent=live?(nh?L("มองเห็น "+visTypes(p).length+" ธาตุ · ซ่อน "+nh+" ช่อง",visTypes(p).length+" types visible · "+nh+" hidden"):summary(S.team[p]).text)+(S.mono[p]!=null?L(" · หัวหน้ายิมธาตุ"+tn(S.mono[p])," · "+tn(S.mono[p])+" Gym Leader"):""):"";
     if(live){const ex=[]; if(S.phase==="cmd"&&S.conf[p]===S.cmdN) ex.push(L("😵 สับสน (Swagger)","😵 Confused (Swagger)")); if(S.doom[other(p)]) ex.push(L("☄️ Doom Desire กำลังตกลงมา","☄️ Doom Desire incoming")); if(ex.length) $("stat"+p).textContent+=" · "+ex.join(" · ");}
-    const myPick=S.phase==="cmd"&&S.picker===p;
+    const myPick=S.phase==="cmd"&&(NET.on?p===ME()&&!S.plan[p]:S.picker===p);
     $("lane"+p).classList.toggle("turn",myPick);
     const used=S.used[p].length?L(" · ใช้แล้ว: "," · Used: ")+S.used[p].map(cardName).join(", "):"";
-    $("rights"+p).textContent=S.phase==="cmd"?(S.plan[p]?L("สั่งการแล้ว (ซ่อนอยู่)","Command locked in (hidden)"):myPick?(mine?L("กำลังสั่งการ คำสั่ง "+S.cmdN+"/"+S.maxCmd,"Choosing command "+S.cmdN+"/"+S.maxCmd):L("ตาของคุณ! ให้อีกฝ่ายหันหน้าหนี แล้วกด COMMAND","Your turn! Have the other side look away, then press COMMAND")):L("รออีกฝ่ายสั่งการ","Waiting for the other side"))+used
+    $("rights"+p).textContent=S.phase==="cmd"?(S.plan[p]?L("สั่งการแล้ว (ซ่อนอยู่)","Command locked in (hidden)"):myPick?(mine?L("กำลังสั่งการ คำสั่ง "+S.cmdN+"/"+S.maxCmd,"Choosing command "+S.cmdN+"/"+S.maxCmd):NET.on?L("ตาของคุณ! กด COMMAND","Your turn! Press COMMAND"):L("ตาของคุณ! ให้อีกฝ่ายหันหน้าหนี แล้วกด COMMAND","Your turn! Have the other side look away, then press COMMAND")):NET.on?L("กำลังคิดคำสั่ง…","Choosing a command…"):L("รออีกฝ่ายสั่งการ","Waiting for the other side"))+used
       :live?L("ไพ่ในมือ "+S.hand[p].length+" ใบ","Cards in hand: "+S.hand[p].length)+used:"";
     // Hand: face-up only while its owner is choosing
     const hand=$("hand"+p); hand.textContent="";
@@ -1954,7 +1983,7 @@ function render(){
       S.hand[p].forEach((cd,k)=>{
         const b=document.createElement("button"); b.type="button";
         if(mine){b.className="cardbtn kk k-"+kindOf(cd)+" c-"+cd+(d.ci===k?" sel":""); b.innerHTML=cardHead(cd)+"<span>"+cShort(cd)+"</span>"; b.disabled=!canPlay(p,cd); b.addEventListener("click",()=>chooseCard(p,k));}
-        else if(hasF("open")&&S.phase==="cmd"){b.className="cardbtn kk k-"+kindOf(cd)+" c-"+cd; b.disabled=true; b.innerHTML=cardHead(cd)+"<span>"+cShort(cd)+"</span>";}
+        else if((hasF("open")&&S.phase==="cmd")||(NET.on&&p===ME())){b.className="cardbtn kk k-"+kindOf(cd)+" c-"+cd; b.disabled=true; b.innerHTML=cardHead(cd)+"<span>"+cShort(cd)+"</span>";}
         else{b.className="cardbtn back"; b.disabled=true; b.innerHTML="<b>?</b>"; b.setAttribute("aria-label",L("ไพ่คว่ำ","Face-down card"));}
         hand.appendChild(b);
       });
@@ -1968,7 +1997,8 @@ function render(){
     $("ok"+p).hidden=$("skip"+p).hidden=$("clr"+p).hidden=!mine;
     if(mine){$("ok"+p).disabled=!draftDone(); $("skip"+p).classList.toggle("on",d.ci==="pass");}
     $("hint"+p).textContent=mine?draftHint():"";
-    $("bet"+p).disabled=rolling||NOFS()||(S.phase!=="idle"&&S.phase!=="done");
+    $("bet"+p).disabled=rolling||NOFS()||(S.phase!=="idle"&&S.phase!=="done")||(NET.on&&ME()!==p);
+    $("name"+p).readOnly=NET.on&&ME()!==p; $("lane"+p).classList.toggle("me",NET.on&&ME()===p);
   }
   const v=$("verdict"); v.hidden=!live;
   if(live){
@@ -1982,9 +2012,11 @@ function render(){
   else if(rolling) s=L("ลูกบอลกำลังสั่น...","The ball is shaking...");
   else if(S.phase==="luck") s=L("Push Your Luck: ตาของ "+pname(S.lk.turn)+" กดเปิดช่องถัดไป หรือพอแล้ว","Push Your Luck: "+pname(S.lk.turn)+", open the next slot or stop");
   else if(S.phase==="box") s=S.bopen!=null?L(pname(S.bturn)+" เปิดได้"+BOXK[S.pool[S.bopen].k][1]+": "+S.pool[S.bopen].t.map(tn).join(", ")+" เลือกว่าจะเอายังไง",pname(S.bturn)+" opened a "+BOXK[S.pool[S.bopen].k][2]+" box: "+S.pool[S.bopen].t.map(tn).join(", ")+". Choose what to do"):L("Mystery Box: ตาของ "+pname(S.bturn)+" แตะกล่อง 1 ใบ","Mystery Box: "+pname(S.bturn)+", tap a box");
+  else if(S.phase==="ccmd"&&NET.on) s=L("Color Draft: ทั้งสองฝ่ายเลือกคำสั่งสีแบบลับบนเครื่องตัวเอง","Color Draft: both sides pick a color command in secret on their own device");
   else if(S.phase==="ccmd") s=L("Color Draft: "+pname(S.picker)+" เลือกคำสั่งสีแบบลับ","Color Draft: "+pname(S.picker)+" picks a color command in secret");
   else if(S.phase==="safari") s=L("Safari Draft: ตาของ "+pname(S.sOrder[S.spick])+" แตะธาตุ 1 อันในกล่องกลาง (หยิบแล้ว "+S.spick+"/12) ธาตุที่เหลือจะกลายเป็น Knock Off","Safari Draft: "+pname(S.sOrder[S.spick])+", tap 1 type in the middle panel ("+S.spick+"/12 picked). A leftover becomes the Knock Off type.");
   else if(S.phase==="cmd"&&d) s=L(pname(d.p)+" กำลังสั่งการ (คำสั่ง "+S.cmdN+"/"+S.maxCmd+"): ",pname(d.p)+" is choosing (command "+S.cmdN+"/"+S.maxCmd+"): ")+draftHint();
+  else if(S.phase==="cmd"&&NET.on) s=L("คำสั่ง "+S.cmdN+"/"+S.maxCmd+": ทั้งสองฝ่ายเลือกคำสั่งพร้อมกันบนเครื่องตัวเอง แล้วเปิดพร้อมกัน","Command "+S.cmdN+"/"+S.maxCmd+": both sides choose at the same time on their own device, then reveal together");
   else if(S.phase==="cmd") s=L("คำสั่ง "+S.cmdN+"/"+S.maxCmd+": ส่งเครื่องให้ "+pname(S.picker)+" ให้ "+pname(other(S.picker))+" หันหน้าหนี แล้วกด COMMAND","Command "+S.cmdN+"/"+S.maxCmd+": hand the device to "+pname(S.picker)+". "+pname(other(S.picker))+" looks away. Then press COMMAND.");
   else s=L("ใช้คำสั่งครบแล้ว! กดเริ่มจับเวลา Team Preview มีเวลาจัดทีม "+mins()+" นาที จบแบทเทิลแล้วกดบันทึกว่าใครชนะ","All commands done! Start the Team Preview timer: "+mins()+" min to build teams. After the battle, record who won.");
   setDialog(S.flash||s);
@@ -2002,11 +2034,11 @@ function render(){
   for(const p of P){const b=$("win"+p); b.textContent=L(pname(p)+" ชนะ",pname(p)+" won"); b.classList.toggle("on",S.winner===p);}
   $("scA").textContent=H.score.A; $("scB").textContent=H.score.B;
   if(COLOR()) renderColor();
-  renderSteps(); renderWizard(); renderFab();
+  renderSteps(); renderWizard(); renderFab(); netBadge(); netDirty();
 }
 
 /* ---------- Command wizard: one big step at a time ---------- */
-const anyVeil=()=>["colorVeil","tourVeil2","dittoVeil","trophyVeil","tradeVeil","fieldVeil","tourVeil","menuVeil","modeVeil","rvVeil","veil","teraVeil","chartVeil","imgVeil","fsVeil","cmdVeil"].some(id=>$(id)&&!$(id).hidden);
+const anyVeil=()=>["lobbyVeil","colorVeil","tourVeil2","dittoVeil","trophyVeil","tradeVeil","fieldVeil","tourVeil","menuVeil","modeVeil","rvVeil","veil","teraVeil","chartVeil","imgVeil","fsVeil","cmdVeil"].some(id=>$(id)&&!$(id).hidden);
 function slotBtn(q,i,sel,dis,fn){
   dis=dis||sealed(q,i);
   const b=document.createElement("button"); b.type="button"; b.className="sbtn"+(sel?" sel":"");
@@ -2165,7 +2197,7 @@ function renderWizard(){
     $("cwTitle").textContent=L("ยืนยันคำสั่ง","Confirm your command");
     $("cwText").textContent=L("กดยืนยันแล้วคำสั่งจะถูกซ่อน จากนั้นส่งเครื่องให้อีกฝ่าย","Once confirmed it's hidden. Then pass the device over.");
     const s=document.createElement("p"); s.className="cwsum"; s.textContent=describeDraft(d); body.appendChild(s);
-    next.textContent=S.plan[o]?L("ยืนยัน ✓ แล้วเปิดคำสั่ง!","Confirm ✓ and reveal!"):L("ยืนยัน ✓ แล้วส่งต่อให้ "+pname(o),"Confirm ✓, then pass to "+pname(o)); next.classList.add("go"); next.disabled=!draftDone(); next.onclick=()=>confirmCmd(p);
+    next.textContent=S.plan[o]?L("ยืนยัน ✓ แล้วเปิดคำสั่ง!","Confirm ✓ and reveal!"):NET.on?L("ยืนยัน ✓ ส่งคำสั่ง","Confirm ✓ and send"):L("ยืนยัน ✓ แล้วส่งต่อให้ "+pname(o),"Confirm ✓, then pass to "+pname(o)); next.classList.add("go"); next.disabled=!draftDone(); next.onclick=()=>confirmCmd(p);
   }
   if(st==="card"&&BARE()) back.textContent=L("ปิด","Close");
   const rb=$("cwRand"); rb.hidden=st==="confirm"||st==="handoff"; rb.textContent=L("🎲 สุ่มคำสั่งให้ทั้งหมด","🎲 Randomize my whole command");
@@ -2184,6 +2216,7 @@ function fabSet(main,act,alt,altAct){
 }
 function renderFab(){
   if(typeof S==="undefined") return;
+  if(NET.on&&netFab()) return;
   $("fabUndo").disabled=!U||S.phase==="rolling";
   const ph=S.phase;
   if(ph==="rolling") return fabSet(L("กำลังสุ่ม…","Drawing…"));
@@ -2196,8 +2229,9 @@ function renderFab(){
   if(S.winner) return fabSet(L("🎲 รอบต่อไป","🎲 Next round"),NOFS()?roll:openFS);
   if(T.id) return fabSet("⏱ "+$("clock").textContent+L(" · ยกเลิก"," · Cancel"),()=>$("tbtn").click());
   if(T.over) return fabSet(L(pname("A")+" ชนะ",pname("A")+" won"),()=>setWinner("A"),L(pname("B")+" ชนะ",pname("B")+" won"),()=>setWinner("B"));
-  return fabSet(L("⏱ เริ่มจับเวลาจัดทีม","⏱ Start the team timer"),()=>$("tbtn").click(),L("ข้ามไปบันทึกผล","Skip to result"),()=>{T.over=true; render();});
+  return fabSet(L("⏱ เริ่มจับเวลาจัดทีม","⏱ Start the team timer"),()=>$("tbtn").click(),L("ข้ามไปบันทึกผล","Skip to result"),()=>skipToResult());
 }
+function skipToResult(){T.over=true; render();}
 /* ---------- Future Sight pop-up ---------- */
 function openFS(){ modal("fsVeil",true); renderFS(); if(H.series==="koth"&&H.koth.next){const i=$("fsRows").querySelectorAll(".fsname")[P.indexOf(H.koth.next)]; if(i){i.select(); i.focus();}} }
 function renderFS(){
@@ -2211,13 +2245,14 @@ function renderFS(){
   rows.appendChild(od);
   for(const p of P){const r=document.createElement("div"); r.className="fsrow"; const n=document.createElement("input"); n.className="fsname"; n.value=$("name"+p).value; n.maxLength=24;
     n.setAttribute("aria-label",L("ชื่อผู้เล่น ","Player name ")+p); if(H.series==="koth"&&H.koth.next===p) n.classList.add("next");
-    n.addEventListener("input",()=>{$("name"+p).value=n.value; renderFab();}); r.appendChild(n);
-    for(let k=1;k<=6;k++){const b=document.createElement("button"); b.type="button"; b.className="btn"+($("bet"+p).value===String(k)?" on":""); b.textContent=k;
-      b.addEventListener("click",()=>{$("bet"+p).value=String(k); renderFS(); renderSteps(); sfx("click");}); r.appendChild(b);}
+    const off=NET.on&&ME()!==p; n.disabled=off;
+    n.addEventListener("input",()=>{$("name"+p).value=n.value; renderFab(); netName(p);}); r.appendChild(n);
+    for(let k=1;k<=6;k++){const b=document.createElement("button"); b.type="button"; b.className="btn"+($("bet"+p).value===String(k)?" on":""); b.textContent=k; b.disabled=off;
+      b.addEventListener("click",()=>{$("bet"+p).value=String(k); renderFS(); renderSteps(); sfx("click"); netBet(p);}); r.appendChild(b);}
     rows.appendChild(r);
     const o=other(p), bl=document.createElement("label"); bl.className="fsban"; bl.textContent=L("🚫 "+pname(p)+" แบนธาตุจากทีม "+pname(o)+": ","🚫 "+pname(p)+" bans a type from "+pname(o)+"'s team: ");
     const sel=document.createElement("select"); sel.innerHTML='<option value="">'+L("ไม่แบน","No ban")+'</option>'+TYPES.map((_,t)=>'<option value="'+t+'">'+tn(t)+'</option>').join("");
-    sel.value=BAN[o]==null?"":String(BAN[o]); sel.addEventListener("change",()=>{BAN[o]=sel.value===""?null:+sel.value;}); bl.appendChild(sel); rows.appendChild(bl);}
+    sel.value=BAN[o]==null?"":String(BAN[o]); sel.disabled=off; sel.addEventListener("change",()=>{BAN[o]=sel.value===""?null:+sel.value; if(NET.on&&NET.role==="guest") netAct({t:"ban",v:sel.value});}); bl.appendChild(sel); rows.appendChild(bl);}
   $("fsGo").disabled=!($("betA").value&&$("betB").value);
   $("fsGo").textContent=$("fsGo").disabled?L("เลือกให้ครบทั้ง 2 คนก่อน","Both players pick first"):L("🎲 สุ่มทีม","🎲 Draw"); $("fsClose").textContent=L("ปิด","Close");
 }
@@ -2408,14 +2443,15 @@ function tick(){
   const s=Math.ceil(left/1000);
   if(s!==T.last){T.last=s; if(!MUTE&&audio()){ if(s<=3) tone(1320,0,.18,"square",.09); else if(s<=10) sfx("lowhp"); else tone(1800,0,.025,"square",.025);} if(s<=3) buzz(80);}
 }
-$("tbtn").addEventListener("click",()=>{
+$("tbtn").addEventListener("click",()=>timerBtn());
+function timerBtn(){
   if(T.id){stopTimer(); return}
   if(CAL()&&S.phase==="done"&&!S.items.A){setDialog(L("Double Cursed: รับเข็มกลัดให้เรียบร้อยก่อน ไอเทมจะสุ่มให้อัตโนมัติ","Double Cursed: accept the badge first; items are drawn automatically.")); return}
   stopTimer();
   audio(); sfx("click");
   T.end=Date.now()+TEAM_MS; T.id=setInterval(tick,200); $("tmin").disabled=true; timerText();
-});
-$("tmin").addEventListener("change",()=>{TEAM_MS=+$("tmin").value*60000; H.mins=+$("tmin").value; store(); if(!T.id) stopTimer(); render();});
+}
+$("tmin").addEventListener("change",()=>{if(netBlock("host")){$("tmin").value=String(Math.round(TEAM_MS/60000)); return;} TEAM_MS=+$("tmin").value*60000; H.mins=+$("tmin").value; store(); if(!T.id) stopTimer(); render();});
 
 /* ---------- Gym Leader: 4+ of one type. The badge must be accepted. ---------- */
 function checkChosen(){
@@ -2441,7 +2477,7 @@ function chosen(p){
   render(); els[p].forEach(bump);
   if(S.pendItems&&!P.some(q=>S.mono[q]==null&&monoType(q)!=null)){S.pendItems=false; rollItems(true);}
 }
-$("chOk").addEventListener("click",()=>{chosen($("veil").dataset.p); checkChosen();});
+$("chOk").addEventListener("click",()=>{chosen($("veil").dataset.p); if(NET.on&&NET.role!=="host"){$("veil").hidden=true; $("wrap").inert=anyVeil();} else checkChosen();});
 
 const modeKey=()=>BUILD()?"buildup":LUCK()?"luck":BOX()?"box":COLOR()?"color":STARTER()?"starter":CAL()?"calamity":SAFARI()?"safari":BLIND()?"blind":MIRROR()?"mirror":CHAOS()?"chaos":"cursed";
 // Best of 3: the loser of the last round in a running series is the Underdog.
@@ -2566,17 +2602,22 @@ function renderColor(){
   for(const p of P){ const c=S.col?S.col[p]:null;
     els[p].forEach(el=>{el.className="slot"; if(c==null){blank(el); return;} el.style.background=COLORS[c][2]; el.style.color=COLORS[c][3]?"#fff":"#1f2638"; el.innerHTML=cn(c)+"<small>"+COLORS[c][1].toUpperCase()+"</small>";});
     if(c!=null) $("stat"+p).textContent=L("ทั้งทีมต้องเป็นโปเกมอนสี"+cn(c)+" (สีตามโปเกเด็กซ์)","The whole team must be "+cn(c)+" Pokémon (Pokédex color)");
-    $("rights"+p).textContent=S.phase==="ccmd"?(S.cplan[p]?L("สั่งการแล้ว (ซ่อนอยู่)","Command locked in (hidden)"):S.picker===p?L("ตาของคุณ","Your turn"):L("รออีกฝ่าย","Waiting")):"";
+    $("rights"+p).textContent=S.phase==="ccmd"?(S.cplan[p]?L("สั่งการแล้ว (ซ่อนอยู่)","Command locked in (hidden)"):(NET.on||S.picker===p)?L("ตาของคุณ","Your turn"):L("รออีกฝ่าย","Waiting")):"";
   }
 }
 function openColorCmd(p){
-  if(S.phase!=="ccmd"||S.picker!==p) return;
+  if(S.phase!=="ccmd"||(NET.on?!!S.cplan[p]:S.picker!==p)) return;
   const o=other(p); $("clTitle").textContent=pname(p)+L(": คำสั่งสี",": color command");
   $("clText").textContent=L("สีของคุณ: "+cn(S.col[p])+" · สีของ "+pname(o)+": "+cn(S.col[o])+" · เลือก 1 คำสั่งแบบลับ","Yours: "+cn(S.col[p])+" · "+pname(o)+"'s: "+cn(S.col[o])+" · pick 1 in secret");
   const g=$("clBody"); g.textContent="";
   for(const k in CCMD){const b=document.createElement("button"); b.type="button"; b.className="cardbtn"; b.innerHTML="<b>"+L(CCMD[k][0],CCMD[k][1])+"</b><span>"+L(CCMD[k][2],CCMD[k][3])+"</span>";
-    b.addEventListener("click",()=>{saveUndo(); S.cplan[p]=k; modal("colorVeil",false); sfx("protect"); if(S.cplan[o]){S.picker=null; resolveColor();} else {S.picker=o; render(); swipe(o);} }); g.appendChild(b);}
-  $("clBox").dataset.p=p; modal("colorVeil",true); swipe(p);
+    b.addEventListener("click",()=>colorChoose(p,k)); g.appendChild(b);}
+  $("clBox").dataset.p=p; modal("colorVeil",true); if(!NET.on) swipe(p);
+}
+function colorChoose(p,k){
+  if(S.phase!=="ccmd"||S.cplan[p]||!CCMD[k]) return; const o=other(p);
+  saveUndo(); S.cplan[p]=k; modal("colorVeil",false); sfx("protect");
+  if(S.cplan[o]){S.picker=null; resolveColor();} else if(NET.on){S.picker=null; render();} else {S.picker=o; render(); swipe(o);}
 }
 function resolveColor(){
   const ord=P[pick(2)]==="A"?["A","B"]:["B","A"], g={A:S.cplan.A==="guard",B:S.cplan.B==="guard"}, lines=[];
@@ -2720,9 +2761,9 @@ function beginCmd(){
   S.picker=order()[0];
 }
 function openPick(p){
-  if(S.phase!=="cmd"||S.picker!==p||S.draft) return;
+  if(S.phase!=="cmd"||(NET.on?!!S.plan[p]:S.picker!==p)||S.draft) return;
   S.draft={p,protect:BARE()?-1:S.lastLock[p],ci:null,type:null,mine:null,theirs:null,slot:null,tt:null,self:null,ace:null,build:null,step:firstStep(p)}; S.flash="";
-  render(); swipe(p);
+  render(); if(!NET.on) swipe(p);
 }
 // The command window opens on its own, straight to the first step, whenever a side is due to command.
 function handoff(p){S.draft={p,protect:BARE()?-1:S.lastLock[p],ci:null,type:null,mine:null,theirs:null,slot:null,tt:null,self:null,ace:null,build:null,step:firstStep(p)};}
@@ -2755,6 +2796,7 @@ function confirmCmd(p){
   S.plan[p]=Object.assign({},d,{card:d.ci==="pass"?"pass":S.hand[p][d.ci]}); S.draft=null;
   if(d.ace!=null&&S.ace[p]==null) S.ace[p]=d.ace;
   sfx("protect");
+  if(!S.plan[other(p)]&&NET.on){S.picker=null; S.flash=L("คำสั่งของ "+pname(p)+" ถูกซ่อนแล้ว รอ "+pname(other(p))+" …","Command from "+pname(p)+" is hidden. Waiting for "+pname(other(p))+"…"); render(); S.flash=""; return;}
   if(!S.plan[other(p)]){S.picker=other(p); S.flash=L("คำสั่งของ "+pname(p)+" ถูกซ่อนแล้ว","Command from "+pname(p)+" is hidden."); handoff(S.picker); render(); swipe(S.picker); return;}
   S.picker=null;
   if(!hasF("open")) P.forEach(q=>$("hand"+q).querySelectorAll(".cardbtn").forEach(b=>{b.className="cardbtn back"; b.disabled=true; b.innerHTML="<b>?</b>";}));
@@ -2927,6 +2969,7 @@ function reveal(){
   S.cmdN++;
   if(S.cmdN>S.maxCmd) finishCmds(); else beginCmd();
   for(const p of P) if(show[p].card==="mirror") out.res[p]=out.res[other(p)]==="reflect"?"mirror":"miss";
+  if(NET.on&&NET.role==="host") NET.rev={id:(NET.rev?NET.rev.id:0)+1,n,ord,show,out:{ev:out.ev,res:out.res,tera:out.tera}};
   showReveal(n,ord,show,out,()=>{
   render(); out.bump.forEach(([q,i])=>bump(els[q][i]));
   out.sfx.forEach((n,k)=>setTimeout(()=>sfx(n),k*450));
@@ -3225,7 +3268,7 @@ $("tvGrid").addEventListener("click",e=>{const b=e.target.closest(".tbtn"); if(!
 $("tvCancel").addEventListener("click",()=>{if(S.draft){S.draft.slot=null; S.draft.tt=null;} teraVeil(false); render();});
 $("tvOk").addEventListener("click",()=>{teraVeil(false); checkChosen();});
 
-$("roll").addEventListener("click",roll);
+$("roll").addEventListener("click",()=>roll());
 /* ---------- Global trainer count: shared by every device through /api/stats ---------- */
 let GS=null, GLOCAL={starter:0,cursed:0,calamity:0,safari:0,blind:0,mirror:0,chaos:0};
 try{GLOCAL=Object.assign(GLOCAL,JSON.parse(localStorage.getItem("choiceTC")||"{}"))}catch(e){}
@@ -3247,7 +3290,7 @@ async function countDraw(mode){
 }
 
 $("reset").addEventListener("click",()=>{
-  if(S.phase==="rolling") return;
+  if(S.phase==="rolling"||netBlock("host")) return;
   stopTimer(); archive(); U=null; S=fresh(0); H.ser={A:0,B:0,last:null,champ:null}; store();
   P.forEach(p=>{$("log"+p).textContent=""; say(p,""); $("name"+p).value=L("ผู้เล่น ","Player ")+p; $("bet"+p).value=""; els[p].forEach(el=>el.className="slot")});
   render();
@@ -3267,8 +3310,8 @@ for(const p of P){
   $("clr"+p).addEventListener("click",()=>{if(S.draft&&S.draft.p===p){S.draft={p,protect:BARE()?-1:null,ci:null,type:null,mine:null,theirs:null,slot:null,tt:null,self:null}; render();}});
   $("tsel"+p).addEventListener("change",()=>{if(S.draft&&S.draft.p===p){S.draft.type=+$("tsel"+p).value; render();}});
 }
-$("undo").addEventListener("click",undo);
-$("fabUndo").addEventListener("click",undo);
+$("undo").addEventListener("click",()=>undo());
+$("fabUndo").addEventListener("click",()=>undo());
 $("menuBtn").addEventListener("click",()=>{modal("menuVeil",true); $("menuClose").focus(); sfx("click");});
 $("menuClose").addEventListener("click",()=>modal("menuVeil",false));
 $("modeBtn").addEventListener("click",()=>{openModes(); sfx("click");});
@@ -3296,7 +3339,7 @@ $("trophyBtn").addEventListener("click",()=>{modal("menuVeil",false); drawTrophy
 $("trClose").addEventListener("click",()=>modal("trophyVeil",false));
 $("trClear").addEventListener("click",()=>{H.led=[]; store(); drawTrophy();});
 $("winB").addEventListener("click",()=>setWinner("B"));
-$("hclear").addEventListener("click",()=>{H.score={A:0,B:0}; H.rounds=[]; S.winner=null; store(); drawHist(); render();});
+$("hclear").addEventListener("click",()=>{if(netBlock("host")) return; H.score={A:0,B:0}; H.rounds=[]; S.winner=null; store(); drawHist(); render();});
 $("bgm").addEventListener("click",()=>{H.bgm=H.bgm===false; store(); applyLang(); audio(); sfx("click");});
 $("mute").addEventListener("click",()=>{MUTE=!MUTE; H.mute=MUTE; store(); applyLang(); if(!MUTE) sfx("click");});
 // Switching language redraws everything on screen; lines already written to the logs stay as they were.
@@ -3305,7 +3348,7 @@ $("lang").addEventListener("click",()=>{
   applyLang(); drawHist(); timerText(); if(chartT!=null) showChart(chartT); render(); sfx("click");
 });
 MUTE=!!H.mute;
-$("itemBtn").addEventListener("click",rollItems);
+$("itemBtn").addEventListener("click",()=>rollItems());
 $("mode").addEventListener("change",()=>{setMode($("mode").value); sfx("click");});
 $("series").addEventListener("change",()=>{setSeries($("series").value); sfx("click");});
 setMode(H.mode); setSeries(H.series);
@@ -3343,8 +3386,283 @@ if(H.autofs&&document.fullscreenEnabled){
   document.addEventListener("pointerdown",go,true);
 }
 if([1,2,3,5,10].includes(+H.mins)){$("tmin").value=String(H.mins); TEAM_MS=H.mins*60000;}
+/* ---------- Link Battle: play across devices through a Union Room ----------
+   The host's device runs the game (Trainer A) and pushes the shared state; the guest (Trainer B) sends actions
+   that the host applies; anyone else who joins watches. Both sides choose commands at the same time on their own screens. */
+const ORIG={};
+const NETAPI="/api/room";
+async function netApi(method,body,qs){
+  const r=await fetch(NETAPI+(qs?"?"+qs:""),method==="GET"?{cache:"no-store"}:{method,headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
+  let j=null; try{j=await r.json()}catch(e){}
+  if(!r.ok){const e=new Error((j&&j.error)||("http "+r.status)); e.status=r.status; throw e;}
+  return j;
+}
+function toast(m){const t=$("netToast"); t.textContent=m; t.hidden=false; t.classList.remove("on"); void t.offsetWidth; t.classList.add("on"); clearTimeout(toast.id); toast.id=setTimeout(()=>{t.hidden=true},2600);}
+function netNo(m){toast(m||L("ไม่ใช่ตาของคุณ","Not your turn")); sfx("fail");}
+// Wrap a game function so that, online, only its owner can use it. The guest sends its moves to the host.
+function wrap(name,own,mk){
+  const f=window[name]; ORIG[name]=f;
+  window[name]=function(...a){
+    if(!NET.on||NET.applying) return f.apply(this,a);
+    const w=typeof own==="function"?own(...a):own, me=ME();
+    if(NET.role==="spec") return netNo(L("ผู้ชมกดไม่ได้ 👀 ดูอย่างเดียวนะ","Spectators can only watch 👀"));
+    const ok=w==="any"||w===me||(w==="host"&&NET.role==="host");
+    if(!ok) return netNo(w==="host"?L("เฉพาะเจ้าของห้องเท่านั้น","Only the room host can do that"):w==="never"?L("ใช้ไม่ได้ตอนเล่นออนไลน์","Not available online"):L("ไม่ใช่ตาของคุณ","Not your turn"));
+    if(NET.role==="host"||!mk) return f.apply(this,a);
+    const act=mk(...a);
+    if(act===undefined) return f.apply(this,a);
+    if(act) netAct(act);
+  };
+}
+function netBlock(w){ if(!NET.on) return false; if(NET.role==="spec"||(w==="host"&&NET.role!=="host")){netNo(NET.role==="spec"?L("ผู้ชมกดไม่ได้ 👀","Spectators can only watch 👀"):L("เฉพาะเจ้าของห้องเท่านั้น","Only the room host can do that")); return true;} return false; }
+const dkey=()=>S.id+":"+S.cmdN;
+wrap("roll","any",()=>{ if(!NOFS()&&P.some(p=>$("bet"+p).value==="")){ORIG.roll(); return false;} return {t:"roll"}; });
+wrap("openFS","any");
+wrap("safariPick",()=>S.sOrder[S.spick],k=>({t:"safariPick",a:[k],tool:S.sTool}));
+wrap("boxOpen",()=>S.bturn,k=>({t:"boxOpen",a:[k]}));
+wrap("boxPick",()=>S.bturn,n=>({t:"boxPick",a:[n]}));
+wrap("openColorCmd",p=>p);
+wrap("colorChoose",p=>p,(p,k)=>{ if(S.phase!=="ccmd"||S.cplan[p]) return false; S.cplan[p]="x"; NET.sentC={k:S.id,at:Date.now()}; modal("colorVeil",false); render(); sfx("protect"); return {t:"colorChoose",a:[p,k]}; });
+wrap("openPick",p=>p);
+wrap("confirmCmd",p=>p,p=>{ const d=S.draft; if(!d||d.p!==p||!draftDone()||S.plan[p]) return false;
+  const act={t:"plan",d:JSON.parse(JSON.stringify(d)),k:dkey()}; S.plan[p]={m:1}; S.draft=null; NET.sent={k:dkey(),at:Date.now()};
+  S.flash=L("ส่งคำสั่งแล้ว! รอ "+pname(other(p))+" …","Command sent! Waiting for "+pname(other(p))+"…"); render(); S.flash=""; sfx("protect"); return act; });
+wrap("chosen","any",p=>{NET.chosenAt=Date.now(); return {t:"chosen",a:[p]};});
+wrap("setWinner","any",p=>({t:"setWinner",a:[p]}));
+wrap("surrender",p=>p,p=>({t:"surrender",a:[p]}));
+wrap("timerBtn","any",()=>({t:"timerBtn"}));
+wrap("skipToResult","any",()=>({t:"skipToResult"}));
+wrap("rollItems","any",()=>({t:"rollItems"}));
+wrap("undo","host"); wrap("setMode","host"); wrap("setSeries","host"); wrap("openModes","host"); wrap("openTour2","host"); wrap("openTrade","never");
+const NETACTS=["roll","safariPick","boxOpen","boxPick","colorChoose","chosen","setWinner","surrender","timerBtn","skipToResult","rollItems"];
+const NETOWN={safariPick:()=>S.sOrder[S.spick],boxOpen:()=>S.bturn,boxPick:()=>S.bturn,colorChoose:p=>p,surrender:p=>p};
+// Host: apply one action from the guest.
+function applyAct(a){
+  if(!a||!a.t) return;
+  if(a.t==="hello"){NET.guest=true; toast(L("🎉 ผู้เล่น B เข้าห้องแล้ว!","🎉 Trainer B joined!")); sfx("badge"); renderLobby(); netDirty(); return;}
+  if(a.t==="name"){$("nameB").value=String(a.v||"").slice(0,24); if(!$("fsVeil").hidden&&!document.activeElement.classList.contains("fsname")) renderFS(); render(); return;}
+  if(a.t==="bet"){const v=String(a.v||""); if(!["","1","2","3","4","5","6"].includes(v)) return; $("betB").value=v; if(!$("fsVeil").hidden&&!document.activeElement.classList.contains("fsname")) renderFS(); render(); return;}
+  if(a.t==="ban"){BAN.A=a.v==null||a.v===""?null:+a.v; netDirty(); return;}
+  if(a.t==="plan"){
+    if(S.phase!=="cmd"||S.plan.B||a.k!==dkey()||!a.d) return;
+    {const ci=a.d.ci; if(!(ci==="pass"||(Number.isInteger(ci)&&ci>=0&&ci<S.hand.B.length&&canPlay("B",S.hand.B[ci])))) return;}
+    const hd=S.draft; S.draft=Object.assign({},a.d,{p:"B"});
+    NET.applying=true; try{ORIG.confirmCmd("B")}catch(e){console.error(e)} finally{NET.applying=false}
+    if(S.draft&&S.draft.p==="B") S.draft=null;
+    if(S.phase==="cmd"&&hd&&!S.plan.A&&!S.draft){S.draft=hd; render();}
+    return;
+  }
+  if(!NETACTS.includes(a.t)) return;
+  const args=Array.isArray(a.a)?a.a.slice(0,2):[], w=NETOWN[a.t]?NETOWN[a.t](...args):"any";
+  if(w!=="any"&&w!=="B") return;
+  if(a.t==="safariPick") S.sTool=["rock","bait"].includes(a.tool)?a.tool:null;
+  NET.applying=true; try{ORIG[a.t](...args)}catch(e){console.error(e)} finally{NET.applying=false}
+  if(a.t==="chosen") checkChosen();
+}
+// Host: the shared picture of the game. The host's own unrevealed choices stay off it.
+function netSnap(){
+  const s=Object.assign({},S,{draft:null,plan:{A:S.plan.A?{m:1}:null,B:S.plan.B?{m:1}:null}});
+  if(S.cplan) s.cplan={A:S.cplan.A?"x":null,B:S.cplan.B?"x":null};
+  return {S:s,H:{mode:H.mode,hard:!!H.hard,score:H.score,series:H.series,ser:H.ser,koth:H.koth},
+    names:{A:$("nameA").value,B:$("nameB").value},bets:{A:$("betA").value,B:$("betB").value},
+    logs:{A:$("logA").textContent,B:$("logB").textContent},says:{A:$("sayA").hidden?"":$("sayA").textContent,B:$("sayB").hidden?"":$("sayB").textContent},
+    dlg:dlg.t,T:{run:!!T.id,over:!!T.over,ms:TEAM_MS},rev:NET.rev,guest:!!NET.guest};
+}
+function netDirty(){ if(NET.on&&NET.role==="host"&&!NET.pushT) NET.pushT=setTimeout(hostPush,120); }
+async function hostPush(){
+  NET.pushT=null; if(!NET.on||NET.role!=="host") return;
+  if(NET.pushing){NET.again=true; return;}
+  const o=netSnap(), key=JSON.stringify(o); if(key===NET.last) return;
+  o.T.left=T.id?Math.max(0,T.end-Date.now()):null;
+  NET.pushing=true; NET.act=Date.now();
+  try{ await netApi("POST",{op:"push",c:NET.code,tok:NET.tok,d:o}); NET.last=key; netOk(); }
+  catch(e){ NET.last=""; netErr(e); }
+  NET.pushing=false; if(NET.again){NET.again=false; hostPush();}
+}
+async function netAct(a){
+  NET.act=Date.now();
+  try{ await netApi("POST",{op:"act",c:NET.code,tok:NET.tok,a}); netOk(); }
+  catch(e){ netErr(e); toast(L("ส่งไม่สำเร็จ ลองอีกครั้ง","Couldn't send. Try again.")); }
+  clearTimeout(NET.timer); NET.timer=setTimeout(netTick,700);
+}
+function netOk(){ if(NET.bad){NET.bad=0; renderLobby(); netBadge();} }
+function netErr(e){ if(e&&e.status===404) return netGone(); NET.bad=(NET.bad||0)+1; if(NET.bad===3){toast(L("สัญญาณหลุด กำลังเชื่อมต่อใหม่…","Connection lost, reconnecting…")); netBadge();} }
+function netGone(){ toast(L("ห้องนี้ปิดไปแล้ว (หมดเวลา 2 ชั่วโมง)","This room has closed (2-hour limit)")); setTimeout(()=>netLeave(),1800); NET.on=false; }
+const netDelay=()=>document.hidden?8000:Date.now()-NET.act<20000?1200:S.phase==="done"&&!T.id?5000:2500;
+async function netTick(){
+  if(!NET.on) return;
+  clearTimeout(NET.timer);
+  try{
+    if(NET.role==="host"){
+      const j=await netApi("GET",null,"c="+NET.code+"&q=1&tok="+NET.tok);
+      if(j.q&&j.q.length){NET.act=Date.now(); j.q.forEach(applyAct);}
+      netOk(); hostPush();
+    }else{
+      const j=await netApi("GET",null,"c="+NET.code+"&v="+NET.v);
+      if(j.d&&j.v!==NET.v){NET.v=j.v; NET.act=Date.now(); applySnap(j.d,false);}
+      netOk();
+    }
+  }catch(e){ netErr(e); }
+  if(NET.on) NET.timer=setTimeout(netTick,netDelay());
+}
+// Guest, spectator, or a host coming back after a reload: take on the shared picture.
+function applySnap(d,asHost){
+  if(!d||!d.S) return;
+  const old=S, keep=old.draft, k0=old.id+":"+old.cmdN, first=!NET.seen; NET.seen=true;
+  if(d.H.mode!==H.mode||!!d.H.hard!==!!H.hard){H.hard=d.H.hard; NET.applying=true; try{setMode(d.H.mode)}finally{NET.applying=false}}
+  Object.assign(H,{score:d.H.score,series:d.H.series,ser:d.H.ser,koth:d.H.koth}); $("series").value=H.series;
+  S=d.S; const me=ME();
+  if(asHost){ if(S.phase==="cmd") S.plan={A:null,B:null}; if(S.phase==="ccmd") S.cplan={A:null,B:null}; S.draft=null; }
+  else{
+    S.draft=keep&&S.phase==="cmd"&&dkey()===k0&&me&&!S.plan[me]?keep:null;
+    if(me&&NET.sent&&NET.sent.k===dkey()&&Date.now()-NET.sent.at<6000&&S.phase==="cmd"&&!S.plan[me]) S.plan[me]={m:1};
+    if(me&&NET.sentC&&NET.sentC.k===S.id&&Date.now()-NET.sentC.at<6000&&S.phase==="ccmd"&&!S.cplan[me]) S.cplan[me]="x";
+    NET.guest=d.guest;
+  }
+  const typing=document.activeElement&&(document.activeElement.id==="name"+me||document.activeElement.classList.contains("fsname"));
+  const betsWas=$("betA").value+$("betB").value;
+  for(const p of P){
+    const mine=p===me&&!asHost;
+    if(!(mine&&(typing||Date.now()-(NET.pendName||0)<5000))) $("name"+p).value=d.names[p];
+    if(!(mine&&Date.now()-(NET.pendBet||0)<5000)) $("bet"+p).value=d.bets[p];
+    $("log"+p).textContent=d.logs[p]; say(p,d.says[p]);
+  }
+  // Team Preview timer
+  const t=d.T; if(t.ms&&t.ms!==TEAM_MS){TEAM_MS=t.ms; $("tmin").value=String(Math.round(t.ms/60000));}
+  if(t.run&&!T.id&&t.left!=null){T.end=Date.now()+t.left; T.over=false; T.id=setInterval(tick,200); $("tmin").disabled=true; timerText();}
+  else if(!t.run&&T.id){stopTimer(); if(t.over){T.over=true; showClock(0); $("clock").classList.add("over"); timerText();}}
+  else if(!t.run&&!t.over&&T.over) stopTimer();
+  else if(!t.run&&t.over&&!T.over){T.over=true; showClock(0); timerText();}
+  // A draw in progress: spin the slots until the result arrives
+  if(S.phase==="rolling"&&!NET.spin){NET.spin=setInterval(()=>P.forEach(p=>els[p].forEach(el=>paint(el,Math.floor(Math.random()*TYPES.length)))),80); if(!first) sfx("catch");}
+  const landed=S.phase!=="rolling"&&!!NET.spin; if(landed){clearInterval(NET.spin); NET.spin=null;}
+  if(asHost) NET.rev=d.rev;
+  render(); if(S.phase==="done"&&d.dlg) setDialog(d.dlg);
+  if(!$("fsVeil").hidden&&!typing&&betsWas!==$("betA").value+$("betB").value) renderFS();
+  renderLobby(); netBadge();
+  if(first||asHost){NET.revSeen=d.rev?d.rev.id:null; NET.fieldsSeen=S.id; NET.sid=S.id; return;}
+  if(landed||(S.id!==NET.sid&&S.phase!=="rolling")){P.forEach(q=>els[q].forEach(bump)); sfx("land");}
+  if(S.phase!=="rolling") NET.sid=S.id;
+  if(S.winner&&S.winner!==old.winner){winPop(S.winner); sfx("win");}
+  if(d.rev&&d.rev.id!==NET.revSeen){NET.revSeen=d.rev.id; const r=d.rev;
+    showReveal(r.n,r.ord,r.show,r.out,()=>{render(); if(r.out.tera){$("tvGemIn").style.setProperty("--c",TYPES[r.out.tera.t][2]); $("tvTitle").textContent=r.out.tera.line; $("tvText").textContent=r.out.tera.text;
+      $("tvGrid").hidden=true; $("tvCancel").hidden=true; $("tvGem").hidden=false; $("tvOk").hidden=false; teraVeil(true);} else netChosen();}); return;}
+  if(CHAOS()&&S.fields.length&&S.phase!=="rolling"&&NET.fieldsSeen!==S.id){NET.fieldsSeen=S.id; if(!anyVeil()){openFields(); return;}}
+  netChosen();
+}
+// The Gym Badge pop-up follows the shared state: it opens when a badge is due and closes once accepted.
+function netChosen(){
+  const pend=P.some(q=>S.mono[q]==null&&monoType(q)!=null);
+  if(!$("veil").hidden&&!pend){$("veil").hidden=true; $("wrap").inert=anyVeil();}
+  else if(pend&&$("veil").hidden&&!anyVeil()&&Date.now()-(NET.chosenAt||0)>4000) checkChosen();
+}
+function netName(p){
+  if(!NET.on) return;
+  if(NET.role==="host"){netDirty(); return;}
+  if(NET.role!=="guest"||p!=="B") return;
+  NET.pendName=Date.now(); clearTimeout(NET.nameT); NET.nameT=setTimeout(()=>netAct({t:"name",v:$("nameB").value}),500);
+}
+function netBet(p){
+  if(!NET.on) return;
+  if(NET.role==="host"){netDirty(); return;}
+  if(NET.role==="guest"&&p==="B"){NET.pendBet=Date.now(); netAct({t:"bet",v:$("betB").value});}
+}
+// The big button, while online.
+function netFab(){
+  const me=ME(), ph=S.phase;
+  $("fabUndo").disabled=NET.role!=="host"||!U||ph==="rolling";
+  if(NET.role==="spec") return fabSet(L("👀 กำลังชมห้อง ","👀 Watching room ")+NET.code),true;
+  const wait=t=>(fabSet("⏳ "+t),true);
+  if(ph==="safari"&&S.sOrder[S.spick]!==me) return wait(L("รอ "+pname(S.sOrder[S.spick])+" หยิบธาตุ","Waiting for "+pname(S.sOrder[S.spick])));
+  if(ph==="box"&&S.bturn!==me) return wait(L("รอ "+pname(S.bturn)+" เปิดกล่อง","Waiting for "+pname(S.bturn)));
+  if(ph==="ccmd") return S.cplan[me]?wait(L("รอ "+pname(other(me))+" สั่งการสี","Waiting for "+pname(other(me)))):(fabSet(L("🎨 สั่งการสีของคุณ","🎨 Your color command"),()=>openColorCmd(me)),true);
+  if(ph==="cmd") return S.plan[me]?wait(L("รอ "+pname(other(me))+" สั่งการ ("+S.cmdN+"/"+S.maxCmd+")","Waiting for "+pname(other(me))+" ("+S.cmdN+"/"+S.maxCmd+")")):(fabSet(L("🎴 สั่งการ ("+S.cmdN+"/"+S.maxCmd+")","🎴 Command ("+S.cmdN+"/"+S.maxCmd+")"),()=>openPick(me)),true);
+  return false;
+}
+function netBadge(){
+  const b=$("linkBtn"); if(!b) return;
+  b.classList.toggle("on",!!NET.on); b.classList.toggle("bad",!!NET.on&&NET.bad>=3);
+  b.textContent=NET.on?"🔗 "+NET.code+" · "+(NET.role==="spec"?"👀":ME()):"🔗 Link Battle";
+}
+function roomLink(){return location.origin+location.pathname+"?room="+NET.code;}
+function renderLobby(){
+  const body=$("lbBody"); if(!body||$("lobbyVeil").hidden) return;
+  $("lbTitle").textContent="Union Room"; $("lbClose").textContent=L("ปิด","Close"); body.textContent="";
+  const el=(tag,cls,txt)=>{const e=document.createElement(tag); if(cls) e.className=cls; if(txt!=null) e.textContent=txt; return e;};
+  if(!NET.on){
+    $("lbText").textContent=L("เล่นกันคนละเครื่องผ่านลิงก์ เจ้าของห้องเป็นผู้เล่น A คนแรกที่เข้าห้องเป็นผู้เล่น B คนต่อ ๆ ไปเข้ามาดูได้","Play on two devices through a link. The host is Trainer A, the first to join is Trainer B, and anyone after that watches.");
+    const c=el("button","btn go lbbig",L("🏠 สร้างห้องใหม่","🏠 Create a room")); c.type="button"; c.onclick=netCreate; body.appendChild(c);
+    body.appendChild(el("p","lbor",L("หรือใส่รหัสห้อง","or enter a room code")));
+    const row=el("div","lbjoin"), inp=el("input"); inp.id="lbCode"; inp.maxLength=4; inp.placeholder="ABCD"; inp.autocomplete="off"; inp.setAttribute("aria-label",L("รหัสห้อง","Room code"));
+    inp.addEventListener("input",()=>{inp.value=inp.value.toUpperCase().replace(/[^A-Z0-9]/g,"");});
+    inp.addEventListener("keydown",e=>{if(e.key==="Enter") netJoin(inp.value);});
+    const j=el("button","btn",L("🚪 เข้าห้อง","🚪 Join")); j.type="button"; j.onclick=()=>netJoin(inp.value); row.append(inp,j); body.appendChild(row);
+    if(NET.err) body.appendChild(el("p","lberr",NET.err));
+    body.appendChild(el("p","lbnote",L("ห้องอยู่ได้ 2 ชั่วโมงหลังเลิกเล่น · ระหว่างออนไลน์ ประวัติและคะแนนของเครื่องผู้เข้าห้องจะไม่ถูกแก้","A room lasts 2 hours after the last move · Joining doesn't touch your own saved history or score")));
+    return;
+  }
+  $("lbText").textContent=NET.role==="host"?L("ส่งรหัสหรือลิงก์นี้ให้เพื่อน","Send this code or link to your friend"):L("คุณอยู่ในห้องนี้","You're in this room");
+  body.appendChild(el("div","lbcode",NET.code));
+  body.appendChild(el("p","lbrole",NET.role==="host"?L("คุณคือ ผู้เล่น A (เจ้าของห้อง)","You are Trainer A (host)"):NET.role==="guest"?L("คุณคือ ผู้เล่น B","You are Trainer B"):L("คุณคือ ผู้ชม 👀","You are a spectator 👀")));
+  body.appendChild(el("p","lbstat"+(NET.guest?" ok":""),NET.bad>=3?L("⚠ สัญญาณไม่ดี กำลังเชื่อมต่อใหม่…","⚠ Connection trouble, retrying…"):NET.guest?L("✅ ผู้เล่นครบ 2 คนแล้ว เริ่มได้เลย","✅ Both trainers are in. Ready!"):L("⏳ รอผู้เล่น B เข้าห้อง…","⏳ Waiting for Trainer B…")));
+  const lk=el("input","lblink"); lk.readOnly=true; lk.value=roomLink(); lk.setAttribute("aria-label",L("ลิงก์ห้อง","Room link")); lk.onclick=()=>lk.select(); body.appendChild(lk);
+  const row=el("div","lbjoin"), cp=el("button","btn",L("📋 คัดลอกลิงก์","📋 Copy link")); cp.type="button";
+  cp.onclick=()=>{try{navigator.clipboard.writeText(roomLink()).then(()=>{cp.textContent=L("คัดลอกแล้ว ✓","Copied ✓")},()=>lk.select())}catch(e){lk.select()}};
+  row.appendChild(cp);
+  if(navigator.share){const sh=el("button","btn",L("📤 แชร์","📤 Share")); sh.type="button"; sh.onclick=()=>navigator.share({title:"Choice: Cursed Draft",text:L("มาแบทเทิลกัน! รหัสห้อง ","Battle me! Room code ")+NET.code,url:roomLink()}).catch(()=>{}); row.appendChild(sh);}
+  body.appendChild(row);
+  body.appendChild(el("p","lbnote",L("ผู้เล่นทั้งสองเลือกคำสั่งพร้อมกันบนเครื่องตัวเอง ไม่ต้องส่งเครื่อง · ซิงก์ทุก 1–2 วินาที","Both trainers choose commands at the same time on their own device · syncs every 1–2 seconds")));
+  const lv=el("button","btn lbleave",L("🚪 ออกจากห้อง","🚪 Leave room")); lv.type="button"; lv.onclick=netLeave; body.appendChild(lv);
+}
+function openLobby(){NET.err=""; modal("lobbyVeil",true); renderLobby(); sfx("click"); const c=$("lbCode"); if(c) c.focus();}
+function netSave(){try{localStorage.setItem("choiceNet",JSON.stringify({code:NET.code,role:NET.role,tok:NET.tok}))}catch(e){}}
+function netStart(code,role,tok){
+  Object.assign(NET,{on:true,role,code,tok:tok||null,v:-1,last:"",seen:false,bad:0,act:Date.now(),guest:false,rev:null,revSeen:null});
+  netSave(); try{history.replaceState(null,"","?room="+code)}catch(e){}
+  document.body.classList.add("online"); document.body.classList.toggle("spec",role==="spec");
+  netBadge(); renderLobby(); render(); netTick();
+}
+async function netCreate(){
+  NET.err=""; const b=$("lbBody").querySelector(".lbbig"); if(b){b.disabled=true; b.textContent=L("กำลังสร้างห้อง…","Creating…");}
+  try{
+    const j=await netApi("POST",{op:"create"});
+    if(H.series==="tour") ORIG.setSeries("bo1");
+    if(S.phase==="rolling"){S=fresh(S.round);}
+    netStart(j.code,"host",j.tok); sfx("badge");
+  }catch(e){NET.err=e.status===503?L("ระบบห้องยังไม่พร้อม (ยังไม่ได้เชื่อมฐานข้อมูล)","Rooms aren't available (storage not connected)"):L("สร้างห้องไม่สำเร็จ เช็กอินเทอร์เน็ตแล้วลองใหม่","Couldn't create a room. Check your connection and try again."); renderLobby();}
+}
+async function netJoin(code,saved){
+  code=String(code||"").toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,6); if(code.length<4){NET.err=L("ใส่รหัสห้อง 4 ตัว","Enter the 4-character code"); renderLobby(); return;}
+  NET.err="";
+  try{
+    if(saved&&saved.code===code&&saved.role==="host"){
+      const j=await netApi("GET",null,"c="+code+"&v=-1");
+      netStart(code,"host",saved.tok); if(j.d){NET.seen=false; applySnap(j.d,true); NET.guest=!!j.d.guest; renderLobby(); netBadge();} return;
+    }
+    if(saved&&saved.code===code&&saved.role==="guest"){ await netApi("GET",null,"c="+code+"&v=-1"); netStart(code,"guest",saved.tok); return; }
+    const j=await netApi("POST",{op:"join",c:code});
+    stopTimer(); U=null; S=fresh(0); P.forEach(p=>{$("log"+p).textContent=""; say(p,"");});
+    netStart(code,j.role,j.tok); sfx("badge");
+    toast(j.role==="guest"?L("เข้าห้องแล้ว! คุณคือผู้เล่น B","Joined! You are Trainer B"):L("ห้องนี้มีผู้เล่นครบแล้ว คุณเข้ามาเป็นผู้ชม 👀","Both trainers are already in. You're watching 👀"));
+  }catch(e){NET.err=e.status===404?L("ไม่พบห้องนี้ หรือห้องหมดอายุแล้ว","Room not found or expired"):e.status===503?L("ระบบห้องยังไม่พร้อม","Rooms aren't available"):L("เข้าห้องไม่สำเร็จ เช็กอินเทอร์เน็ตแล้วลองใหม่","Couldn't join. Check your connection and try again.");
+    if(saved){try{localStorage.removeItem("choiceNet")}catch(x){} try{history.replaceState(null,"",location.pathname)}catch(x){} modal("lobbyVeil",true);} renderLobby();}
+}
+function netLeave(){
+  const wasHost=NET.role==="host";
+  clearTimeout(NET.timer); clearInterval(NET.spin); NET={on:false};
+  try{localStorage.removeItem("choiceNet")}catch(e){} try{history.replaceState(null,"",location.pathname)}catch(e){}
+  if(!wasHost){location.reload(); return;}
+  document.body.classList.remove("online","spec"); netBadge(); renderLobby(); render(); toast(L("ออกจากห้องแล้ว","Left the room"));
+}
+$("linkBtn").addEventListener("click",openLobby);
+$("lbClose").addEventListener("click",()=>modal("lobbyVeil",false));
+document.addEventListener("visibilitychange",()=>{if(NET.on&&!document.hidden) netTick();});
+for(const p of P){$("name"+p).addEventListener("input",()=>netName(p)); $("bet"+p).addEventListener("change",()=>netBet(p));}
+
 applyLang(); drawHist(); stopTimer(); render();
-if(!H.seenModes) openModes();
+{const rc=new URLSearchParams(location.search).get("room");
+ if(rc){let sv=null; try{sv=JSON.parse(localStorage.getItem("choiceNet")||"null")}catch(e){} netJoin(rc,sv&&sv.code===rc.toUpperCase()?sv:{code:"",role:""});}
+ else if(!H.seenModes) openModes();}
 </script>
 
 </body></html>
