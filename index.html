@@ -499,6 +499,42 @@ body.mode-chaos h1 em{color:#fff}
 .fsname.next{border-color:var(--red);background:#fff0f0}
 .fan{margin:0;text-align:center;font-size:12px;color:#8e97b5}
 @media (prefers-reduced-motion:reduce){body.rolling #roll,body.rolling .plate,.dialog::after,.slot.land,.say,.card,.badge-stage::before,.badge-stage svg{animation:none}}
+/* Readability pass: nothing important below 12px, small labels in the regular font */
+.px{font-size:11px}
+.eyebrow{font-size:11px}
+.btn.px{font-size:12px}
+.lane .px,.mid .px.lbl,.hlbox .lbl,.cwwho .px,.pool .px.lbl{font-family:var(--display);font-weight:600;font-size:13px;letter-spacing:.05em;line-height:1.3}
+.cwwho .px{font-size:14px}
+.lane.turn .lane-head::after{content:"ตาของคุณ!";font-family:var(--display);font-weight:700;font-size:15px;padding:5px 10px;border-radius:8px}
+:root[lang="en"] .lane.turn .lane-head::after{content:"YOUR TURN!"}
+.lane.turn{box-shadow:inset 0 0 0 3px var(--screen),inset 0 0 0 5px var(--edge),0 0 0 4px var(--yellow),0 0 30px 8px rgba(246,198,28,.45),0 6px 0 4px #0b0f1c}
+.slot::before{font-family:var(--display);font-weight:600;font-size:12px}
+.slot small{font-family:var(--body);font-weight:600;font-size:12px;letter-spacing:.02em}
+.marks b,.slot .item,.sbtn em{font-size:12px}
+.wtag,.ud{font-size:11px}
+.mt small{font-size:10px}
+.mt em,.mt .sh{font-size:11px}
+.poolgrid .tbtn small.pw,.ibtn small,.cardbtn .etag{font-size:12px}
+.dcard b em,.fsc i,.fvc small,.sbtn small,.tcrow{font-size:11px}
+.lane-head input{min-height:44px}
+.scres.shield{color:#1a8a9a;border-color:#1a8a9a}
+.cw #cwNext:not(:disabled){background:var(--pc);color:#fff}
+#serBtns{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));width:100%}
+#serBtns .btn{font-size:14px;padding:10px 6px}
+/* Phones while a round is on: a slim header, and the side whose turn it is comes first */
+body.playing .ball-top{padding:12px 12px 30px}
+body.playing .ball-top::before,body.playing .eyebrow,body.playing .ball-bot .tag,body.playing .ball-bot .note{display:none}
+body.playing h1{font-size:clamp(26px,4vw,36px);margin:0}
+body.playing h1 em{margin-top:.45em;font-size:.42em}
+body.playing .ball-bot{padding:44px 12px 12px}
+body.playing #roll{width:84px;height:84px;border-width:8px;font-size:15px}
+@media (max-width:719px){
+  body.turnA .arena{grid-template-areas:"a" "mid" "b"}
+  body.turnB .arena{grid-template-areas:"b" "mid" "a"}
+  .slot{min-height:80px}
+}
+/* Wide screens: the floating button sits in the corner instead of over the middle panel */
+@media (min-width:1040px){.fab{left:auto;right:24px;transform:none}}
 </style>
 
 <div class="wrap" id="wrap">
@@ -918,7 +954,7 @@ function renderModes(){
   });
   $("serL").textContent=L("ซีรีส์","Series");
   const sb=$("serBtns"); sb.textContent="";
-  [["bo1",L("แมตช์เดียว","Single match")],["bo3",L("Best of 3 + Underdog","Best of 3 + Underdog")],["koth",L("👑 King of the Hill","👑 King of the Hill")]].forEach(([v,t])=>{
+  [["bo1",L("แมตช์เดียว","Single match")],["bo3",L("Best of 3","Best of 3")],["koth",L("👑 King of the Hill","👑 King of the Hill")]].forEach(([v,t])=>{
     const b=document.createElement("button"); b.type="button"; b.className="btn"+(H.series===v?" on":""); b.textContent=t; b.disabled=!can;
     b.addEventListener("click",()=>{setSeries(v); renderModes(); sfx("click");}); sb.appendChild(b);});
   $("hardL").textContent=L("💀 กติกาโหด","💀 Hard rules");
@@ -1704,7 +1740,9 @@ function render(){
   else if(S.phase==="cmd"&&d) s=L(pname(d.p)+" กำลังสั่งการ (คำสั่ง "+S.cmdN+"/"+S.maxCmd+"): ",pname(d.p)+" is choosing (command "+S.cmdN+"/"+S.maxCmd+"): ")+draftHint();
   else if(S.phase==="cmd") s=L("คำสั่ง "+S.cmdN+"/"+S.maxCmd+": ส่งเครื่องให้ "+pname(S.picker)+" ให้ "+pname(other(S.picker))+" หันหน้าหนี แล้วกด COMMAND","Command "+S.cmdN+"/"+S.maxCmd+": hand the device to "+pname(S.picker)+". "+pname(other(S.picker))+" looks away. Then press COMMAND.");
   else s=L("ใช้คำสั่งครบแล้ว! กดเริ่มจับเวลา Team Preview มีเวลาจัดทีม "+mins()+" นาที จบแบทเทิลแล้วกดบันทึกว่าใครชนะ","All commands done! Start the Team Preview timer: "+mins()+" min to build teams. After the battle, record who won.");
-  setDialog((S.flash?S.flash+" ":"")+s);
+  setDialog(S.flash||s);
+  document.body.classList.toggle("playing",S.phase!=="idle");
+  for(const q of P) document.body.classList.toggle("turn"+q,S.phase==="cmd"&&(S.draft?S.draft.p:S.picker)===q);
   $("timer").hidden=S.phase!=="done";
   $("hlBox").hidden=S.phase!=="done"; if(S.phase==="done"){$("hlList").innerHTML=hlLines().map(t=>"<li>"+t.replace(/</g,"&lt;")+"</li>").join(""); $("hlShot").textContent=L("📸 บันทึกรูปสรุป","📸 Save the result card");}
   $("round").textContent="ROUND "+S.round;
@@ -2446,7 +2484,7 @@ function miniTile(c,i){
   if(c.it&&!c.h) d.insertAdjacentHTML("beforeend",'<em>'+c.it+'</em>');
   return d;
 }
-const RES={ok:["✔ สำเร็จ","✔ SUCCESS"],fail:["✕ ล้มเหลว","✕ FAILED"],reflect:["↩ เด้งกลับ","↩ BOUNCED"],info:["ℹ เตรียมพร้อม","ℹ SET UP"]};
+const RES={shield:["🛡 ตั้งโล่แล้ว","🛡 SHIELDS UP"],ok:["✔ สำเร็จ","✔ SUCCESS"],fail:["✕ ล้มเหลว","✕ FAILED"],reflect:["↩ เด้งกลับ","↩ BOUNCED"],info:["ℹ เตรียมพร้อม","ℹ SET UP"]};
 function playScene(ev,k,total){
   const box=$("rvScene"); box.textContent="";
   const head=document.createElement("div"); head.className="schead"+(ev.card?" c-"+ev.card:"");
@@ -2463,7 +2501,7 @@ function playScene(ev,k,total){
     box.appendChild(g);
   }
   const why=document.createElement("p"); why.className="scwhy"; why.textContent=ev.why; box.appendChild(why);
-  const kind=ev.card==="copycat"?(ev.ok?"ok":"fail"):ev.kind==="protect"||!CARDS[ev.card]||!CARDS[ev.card].atk?"info":!ev.ok?"fail":ev.refl?"reflect":"ok";
+  const kind=ev.kind==="protect"?"shield":ev.card==="copycat"?(ev.ok?"ok":"fail"):!CARDS[ev.card]||!CARDS[ev.card].atk?"info":!ev.ok?"fail":ev.refl?"reflect":"ok";
   const r=document.createElement("div"); r.className="scres "+kind; r.textContent=L(RES[kind][0],RES[kind][1]); r.hidden=true; box.appendChild(r);
   const fast=still(), dots=document.createElement("div"); dots.className="scdots"; dots.textContent="• • •"; dots.hidden=true; box.insertBefore(dots,why);
   const atkCard=CARDS[ev.card]&&CARDS[ev.card].atk;
