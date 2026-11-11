@@ -1669,7 +1669,7 @@ $("tmin").addEventListener("change",()=>{TEAM_MS=+$("tmin").value*60000; H.mins=
 /* ---------- Gym Leader: 4+ of one type. The badge must be accepted. ---------- */
 function checkChosen(){
   const p=P.find(q=>S.mono[q]==null&&monoType(q)!=null), v=$("veil");
-  if(!p){v.hidden=true; $("wrap").inert=false; autoHand(); return}
+  if(!p){v.hidden=true; $("wrap").inert=false; return}
   const t=monoType(p), n=S.team[p].filter(x=>x===t).length, o=pname(other(p));
   v.dataset.p=p; $("chBadge").innerHTML=badgeSVG(t);
   $("chTitle").textContent=L("ได้รับเข็มกลัดยิมธาตุ"+tn(t)+"!","You got the "+tn(t)+" Gym Badge!");
@@ -1795,7 +1795,6 @@ function openPick(p){
 }
 // The command window opens on its own, straight to the first step, whenever a side is due to command.
 function handoff(p){S.draft={p,protect:BARE()?-1:S.lastLock[p],ci:null,type:null,mine:null,theirs:null,slot:null,tt:null,self:null,step:BARE()?"card":"protect"};}
-function autoHand(){if(S.phase==="cmd"&&S.picker&&!S.draft&&!anyVeil()){handoff(S.picker); render();}}
 function chooseCard(p,k){
   const d=S.draft; if(!d||d.p!==p) return;
   Object.assign(d,{ci:k,type:null,mine:null,theirs:null,slot:null,tt:null,self:null});
