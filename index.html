@@ -295,6 +295,34 @@ body.mode-blind .steps .st.cur{background:#ffcf9a}
 .rvs.hit,.rvs.mirror{color:#1f8a46}.rvs.fail,.rvs.reflect{color:var(--red)}.rvs.miss,.rvs.self{color:var(--muted)}
 @keyframes stamp{from{transform:translateX(-50%) rotate(-8deg) scale(2.2);opacity:0}}
 #rvOk{font-size:18px;padding:12px 30px;background:var(--yellow)}
+.rvnav{display:flex;gap:10px;justify-content:center}
+#rvSkip{font-size:15px}
+.rvscene{width:100%;max-height:70vh;overflow:auto;padding:16px;display:flex;flex-direction:column;gap:10px;text-align:left}
+.schead{display:flex;align-items:center;gap:8px;padding:6px 10px;border-radius:8px;background:var(--ink);color:#fff;border-left:10px solid var(--edge);font-family:var(--display)}
+.schead b{font-weight:600;font-size:18px} .schead small{font-family:var(--px);font-size:9px;opacity:.8}
+.schead.c-roar{border-left-color:#d9542b}.schead.c-trick{border-left-color:#2c68d6}.schead.c-present{border-left-color:#e05aa0}.schead.c-tera{border-left-color:#b59cff}.schead.c-mirror{border-left-color:#7fc6d9}.schead.c-sub{border-left-color:#35b565}.schead.c-conv{border-left-color:#f6c61c}
+.scrow{font-family:var(--display);font-weight:600;font-size:14px;color:var(--muted)}
+.mgrid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:5px}
+.mt{position:relative;min-height:54px;display:flex;flex-direction:column;align-items:center;justify-content:center;border:3px solid var(--ink);border-radius:8px;font-family:var(--display);font-weight:600;font-size:13px;line-height:1.1;text-align:center;padding:12px 2px 4px;transition:opacity .3s}
+.mt small{position:absolute;top:1px;left:4px;font-family:var(--px);font-size:7px;opacity:.7}
+.mt em{font-style:normal;font-family:var(--body);font-size:8.5px;font-weight:600;background:rgba(255,255,255,.9);color:#1f2638;border-radius:4px;padding:0 3px;margin-top:2px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mt .sh{position:absolute;top:-9px;right:-7px;font-style:normal;font-family:var(--body);font-weight:600;font-size:10px;line-height:1;padding:3px 5px;border-radius:99px;background:var(--green);color:#fff;border:2px solid var(--ink)}
+.mt.hidd{background:repeating-linear-gradient(135deg,#2a2f45 0 8px,#232838 8px 16px);color:#cfd5e6}
+.mgrid:has(.hl) .mt:not(.hl):not(.blk){opacity:.4}
+.mt.hl{outline:3px solid var(--yellow);outline-offset:1px}
+.mt.blk{outline:3px solid var(--green);outline-offset:1px}
+.mt.chg{animation:chg .5s cubic-bezier(.2,1.6,.4,1)}
+@keyframes chg{from{transform:rotateY(90deg) scale(.8)}to{transform:none}}
+.mt.shake{animation:shake .45s}
+@keyframes shake{25%{transform:translateX(-5px)}50%{transform:translateX(5px)}75%{transform:translateX(-3px)}}
+.scwhy{margin:0;font-family:var(--display);font-weight:500;font-size:16px;line-height:1.5;color:var(--ink)}
+.scres{align-self:flex-start;font-family:var(--display);font-weight:600;font-size:17px;padding:2px 12px;border-radius:8px;border:3px solid currentColor;animation:stamp2 .3s cubic-bezier(.2,1.8,.4,1)}
+@keyframes stamp2{from{transform:scale(1.8);opacity:0}}
+.scres.ok{color:#1f8a46}.scres.fail{color:var(--red)}.scres.reflect{color:#b5651d}.scres.info{color:var(--muted)}
+.sumrow{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;padding:10px 0;border-top:3px dotted var(--edge)}
+.sumrow b{font-family:var(--display);font-weight:600;font-size:17px}
+.sumrow p{margin:0;width:100%;font-size:14px;line-height:1.5}
+@media (prefers-reduced-motion:reduce){.mt.chg,.mt.shake,.scres{animation:none}}
 @media (prefers-reduced-motion:reduce){.fi{transition:none}.rvvs,.rvs{animation:none}}
 .fan{margin:0;text-align:center;font-size:12px;color:#8e97b5}
 @media (prefers-reduced-motion:reduce){body.rolling #roll,body.rolling .plate,.dialog::after,.slot.land,.say,.card,.badge-stage::before,.badge-stage svg{animation:none}}
@@ -417,12 +445,13 @@ body.mode-blind .steps .st.cur{background:#ffcf9a}
 <div class="veil rvveil" id="rvVeil" hidden role="dialog" aria-modal="true" aria-labelledby="rvTitle">
   <div class="rv">
     <div class="px rvt" id="rvTitle">REVEAL</div>
-    <div class="rvrow">
+    <div class="rvrow" id="rvRow">
       <div class="flip" id="rvA"><div class="fi"><div class="fb back"><span class="px">A</span></div><div class="fb front"><small class="rvn"></small><b class="rvc"></b><span class="rvd"></span><i class="rvs" hidden></i></div></div></div>
       <div class="rvvs px">VS</div>
       <div class="flip" id="rvB"><div class="fi"><div class="fb back"><span class="px">B</span></div><div class="fb front"><small class="rvn"></small><b class="rvc"></b><span class="rvd"></span><i class="rvs" hidden></i></div></div></div>
     </div>
-    <button id="rvOk" class="btn" type="button" hidden>ดูผล</button>
+    <div class="rvscene box" id="rvScene" hidden></div>
+    <div class="rvnav"><button id="rvSkip" class="btn" type="button" hidden>ข้ามไปสรุป</button><button id="rvOk" class="btn" type="button" hidden>ดูผล</button></div>
   </div>
 </div>
 
@@ -1534,33 +1563,45 @@ function confirmCmd(p){
   S.picker=null; reveal();
 }
 const failLine=()=>Q(QT.fail);
+// A picture of both teams at one moment, for the step-by-step replay.
+const snap=()=>{const o={}; for(const q of P) o[q]=S.team[q].map((t,i)=>({t,h:isHid(q,i),g:guarded(q,i),it:itemAt(q,i)})); return o;};
+const sl=(q,i)=>L("ช่อง "+(i+1),"slot "+(i+1))+(isHid(q,i)?"":" ("+tn(S.team[q][i])+")");
 // Card effects. p = who played it, v = whose team it lands on (the opponent, or p itself when reflected).
 function effect(p,v,pl,refl,out){
   const c=pl.card, nm=CARDS[c].n, who=refl?L("สะท้อนใส่ "+pname(v)+" เอง! ","reflected onto "+pname(v)+"! "):"";
-  const fail=why=>{out.lines.push(nm+" ("+pname(p)+"): "+who+why); addLog(p,L("คำสั่ง "+S.cmdN+": ","Command "+S.cmdN+": ")+nm+" → "+who+why); out.sfx.push("fail"); out.res[p]="fail";};
+  const ev={p,v,card:c,refl,rows:c==="trick"?[p,v]:[v],before:snap(),hit:[],block:[],ok:true,why:""};
+  out.ev.push(ev);
+  const pre=refl?L(pname(other(p))+" ตั้ง Mirror Coat ไว้ "+nm+" จึงเด้งกลับไปโดนทีมของ "+pname(v)+" เอง แล้ว: ",pname(other(p))+" had a Mirror Coat up, so "+nm+" bounced back onto "+pname(v)+"'s own team: "):"";
+  const fail=(why,short,block)=>{ev.ok=false; ev.why=pre+why; ev.block=block||[]; ev.after=ev.before;
+    out.lines.push(nm+" ("+pname(p)+"): "+who+short); addLog(p,L("คำสั่ง "+S.cmdN+": ","Command "+S.cmdN+": ")+nm+" → "+who+short); out.sfx.push("fail"); out.res[p]="fail";};
   if(c==="roar"||c==="present"){
     const t=pl.type;
-    if(c==="roar"&&S.mono[v]!=null) return fail(L("หัวหน้ายิมไม่สะทกสะท้าน "+failLine(),"The Gym Leader doesn't flinch. "+failLine()));
-    if(c==="present"&&(S.mono[v]!=null||t===S.curse)) return fail(failLine());
-    if(S.team[v].some((x,i)=>x===t&&guarded(v,i))) return fail(L("โดน Protect ดักทาง! ","Blocked by Protect! ")+failLine());
+    if(c==="roar"&&S.mono[v]!=null) return fail(L(pname(v)+" เป็นหัวหน้ายิม ห้ามใช้ Roar ใส่ผู้บริหาร Roar จึงล้มเหลว",pname(v)+" is a Gym Leader, and Roar can't be used on management. Roar failed."),L("หัวหน้ายิมไม่สะทกสะท้าน "+failLine(),"The Gym Leader doesn't flinch. "+failLine()));
+    if(c==="present"&&S.mono[v]!=null) return fail(L(pname(v)+" เป็นหัวหน้ายิม ไม่รับของขวัญ Present จึงล้มเหลว",pname(v)+" is a Gym Leader and refuses gifts. Present failed."),failLine());
+    if(c==="present"&&t===S.curse) return fail(L("ธาตุ"+tn(t)+"ติด Knock Off ถือไอเทมไม่ได้ Present จึงล้มเหลว",tn(t)+" has Knock Off and can't hold items. Present failed."),failLine());
+    const blk=S.team[v].map((x,i)=>x===t&&guarded(v,i)?i:-1).filter(i=>i>=0);
+    if(blk.length) return fail(L(pname(v)+" ป้องกัน"+blk.map(i=>"ช่อง "+(i+1)).join(", ")+" ซึ่งเป็นธาตุ"+tn(t)+"ไว้ การ์ดที่เล็งธาตุ"+tn(t)+"จึงล้มเหลวทั้งใบ (อ่านใจถูก!)",pname(v)+" protected "+blk.map(i=>"slot "+(i+1)).join(", ")+", which is "+tn(t)+", so a card aimed at "+tn(t)+" fails completely. Good read!"),L("โดน Protect ดักทาง! ","Blocked by Protect! ")+failLine(),blk.map(i=>[v,i]));
     const idx=S.team[v].map((x,i)=>x===t?i:-1).filter(i=>i>=0);
-    if(!idx.length) return fail(L("ไม่มีธาตุ"+tn(t)+"ให้โดน ","No "+tn(t)+" to hit. ")+failLine());
+    if(!idx.length) return fail(L("ตอนการ์ดนี้ทำงาน ทีมของ "+pname(v)+" ไม่มีธาตุ"+tn(t)+"เหลือแล้ว (ถูกเปลี่ยนไปก่อนหน้าในคำสั่งนี้) การ์ดจึงไม่โดนอะไร","When this card resolved, "+pname(v)+" had no "+tn(t)+" left (it changed earlier this command), so it hit nothing."),L("ไม่มีธาตุ"+tn(t)+"ให้โดน ","No "+tn(t)+" to hit. ")+failLine());
     const got=[];
     if(c==="roar"){
       idx.forEach(i=>{let n; do{n=pick()}while(n===t); S.team[v][i]=n; S.gift[v][i]=null; S.teraMark[v]=S.teraMark[v].filter(x=>x!==i); got.push(L("ช่อง "+(i+1)+(isHid(v,i)?" ได้ ?":" ได้ "+tn(n)),"slot "+(i+1)+(isHid(v,i)?" got ?":" got "+tn(n))));});
       out.lines.push(CT("roar")+" "+L(pname(p)+" ใช้ Roar! ",pname(p)+" used Roar! ")+who+Q(QT.roar,t)); out.sfx.push("roar");
+      ev.why=pre+L("ทุกช่องธาตุ"+tn(t)+"ของ "+pname(v)+" ("+idx.map(i=>i+1).join(", ")+") ถูกไล่ออก แล้วสุ่มธาตุใหม่เข้ามา: "+got.join(", "),"Every "+tn(t)+" slot of "+pname(v)+" ("+idx.map(i=>i+1).join(", ")+") was driven out and redrawn: "+got.join(", "));
       if(monoType(v)==null) say(v,rollQuote(v));
     }else{
       const used=new Set(S.gift[v].filter(Boolean));
       idx.forEach(i=>{let it,n=0; do{it=itemFor(t); n++}while(used.has(it)&&n<60); used.add(it); S.gift[v][i]=it; got.push(L("ช่อง "+(i+1)+" ได้ ","slot "+(i+1)+" got ")+(isHid(v,i)?"?":it));});
       out.lines.push(CT("present")+" "+L(pname(p)+" ใช้ Present! ",pname(p)+" used Present! ")+who+Q(QT.present,t)); out.sfx.push("present"); say(v,Q(QT.presentGot));
+      ev.why=pre+L("ทุกช่องธาตุ"+tn(t)+"ของ "+pname(v)+" ได้ไอเทมสุ่ม ต้องถือตามนี้ ห้ามเปลี่ยน: "+got.join(", "),"Every "+tn(t)+" slot of "+pname(v)+" got a random item it must hold: "+got.join(", "));
     }
-    idx.forEach(i=>out.bump.push([v,i])); out.res[p]=refl?"reflect":"hit";
+    idx.forEach(i=>out.bump.push([v,i])); ev.hit=idx.map(i=>[v,i]); out.res[p]=refl?"reflect":"hit";
     addLog(p,L("คำสั่ง "+S.cmdN+": ","Command "+S.cmdN+": ")+nm+L(" ใส่ธาตุ"+tn(t)+" ของ "+pname(v)+" → "," on "+pname(v)+"'s "+tn(t)+" → ")+got.join(", "));
   }else if(c==="trick"){
     const a=pl.mine, b=pl.theirs;
-    if(guarded(v,b)) return fail(L("โดน Protect ดักทาง! ","Blocked by Protect! ")+failLine());
-    if(S.taken[v].includes(b)) return fail(failLine());
+    if(guarded(v,b)) return fail(L(pname(v)+" ป้องกันช่อง "+(b+1)+" ไว้พอดี Trick จึงขโมยไม่ได้ (อ่านใจถูก!)",pname(v)+" protected slot "+(b+1)+" exactly, so Trick couldn't take it. Good read!"),L("โดน Protect ดักทาง! ","Blocked by Protect! ")+failLine(),[[v,b]]);
+    if(S.taken[v].includes(b)) return fail(L("ช่อง "+(b+1)+" ของ "+pname(v)+" เป็นของกลางที่ขโมยมาแล้ว เอาคืนไม่ได้","Slot "+(b+1)+" of "+pname(v)+" is already Stolen and can't be taken back."),failLine(),[[v,b]]);
+    const txt=L(pname(p)+" เอา"+sl(v,b)+"ของ "+pname(v)+" มา แลกกับ"+sl(p,a)+"ของตัวเอง ช่องที่ได้มาติดป้าย “ของกลาง” เอาคืนไม่ได้",pname(p)+" took "+sl(v,b)+" from "+pname(v)+", giving "+sl(p,a)+" in return. The taken slot is Stolen for good.");
     const mine=S.team[p][a], theirs=S.team[v][b];
     S.team[p][a]=theirs; S.team[v][b]=mine; [S.gift[p][a],S.gift[v][b]]=[S.gift[v][b],S.gift[p][a]];
     const ha=S.hid[p].includes(a), hb=S.hid[v].includes(b);
@@ -1568,43 +1609,54 @@ function effect(p,v,pl,refl,out){
     if(!S.taken[p].includes(a)) S.taken[p].push(a);
     S.teraMark[p]=S.teraMark[p].filter(x=>x!==a); S.teraMark[v]=S.teraMark[v].filter(x=>x!==b);
     out.lines.push(CT("trick")+" "+L(pname(p)+" ใช้ Trick สำเร็จ!",pname(p)+"'s Trick worked!")); out.sfx.push("trick"); say(v,Q(QT.trick));
-    out.bump.push([p,a],[v,b]); out.res[p]="hit";
+    out.bump.push([p,a],[v,b]); out.res[p]="hit"; ev.hit=[[p,a],[v,b]]; ev.why=txt;
     addLog(p,L("คำสั่ง "+S.cmdN+": Trick เอาช่อง "+(b+1)+" ของ "+pname(v)+" มาใส่ช่อง "+(a+1),"Command "+S.cmdN+": Trick took slot "+(b+1)+" of "+pname(v)+" into slot "+(a+1)));
   }else if(c==="tera"){
     const i=pl.slot, t=pl.tt;
-    if(guarded(v,i)) return fail(L("โดน Protect ดักทาง! ","Blocked by Protect! ")+failLine());
-    const was=S.team[v][i], line=Q(QT.teraUse);
+    if(guarded(v,i)) return fail(L(pname(v)+" ป้องกันช่อง "+(i+1)+" ไว้พอดี Terastal จึงล้มเหลว (อ่านใจถูก!)",pname(v)+" protected slot "+(i+1)+" exactly, so Terastal failed. Good read!"),L("โดน Protect ดักทาง! ","Blocked by Protect! ")+failLine(),[[v,i]]);
+    const was=S.team[v][i], wasH=isHid(v,i), line=Q(QT.teraUse);
     S.team[v][i]=t; S.hid[v]=S.hid[v].filter(x=>x!==i); if(!S.teraMark[v].includes(i)) S.teraMark[v].push(i);
-    say(p,line); out.bump.push([v,i]); out.res[p]=refl?"reflect":"hit";
+    say(p,line); out.bump.push([v,i]); out.res[p]=refl?"reflect":"hit"; ev.hit=[[v,i]];
+    ev.why=pre+L("ช่อง "+(i+1)+" ของ "+pname(v)+" ถูกสวมมงกุฎผลึก เปลี่ยนจาก"+(wasH?"ธาตุที่ซ่อนอยู่":"ธาตุ"+tn(was))+" เป็นธาตุ"+tn(t),"Slot "+(i+1)+" of "+pname(v)+" was crowned in crystal: "+(wasH?"a hidden type":tn(was))+" → "+tn(t));
     out.tera={line,t,text:CT("tera")+" "+who+L(pname(p)+" ใช้ Terastal! ช่อง "+(i+1)+" ของ "+pname(v)+" กลายเป็นธาตุ"+tn(t)+"!",pname(p)+" used Terastal! Slot "+(i+1)+" of "+pname(v)+" became "+tn(t)+"!")};
     out.lines.push(L(pname(p)+" ใช้ Terastal! ",pname(p)+" used Terastal! ")+who);
     addLog(p,L("คำสั่ง "+S.cmdN+": Terastal ช่อง "+(i+1)+" ของ "+pname(v)+": ","Command "+S.cmdN+": Terastal on slot "+(i+1)+" of "+pname(v)+": ")+tn(was)+" → "+tn(t));
   }
+  ev.after=snap();
 }
 function reveal(){
-  const ord=order(), pl=S.plan, out={lines:[],bump:[],sfx:[],tera:null,res:{A:"self",B:"self"}}, n=S.cmdN;
+  const ord=order(), pl=S.plan, out={lines:[],bump:[],sfx:[],tera:null,res:{A:"self",B:"self"},ev:[]}, n=S.cmdN;
   const show={}; for(const p of P) show[p]={card:pl[p].card,desc:describeDraft(pl[p])};
   for(const p of P){
     S.lock[p]=pl[p].protect;
     if(pl[p].card!=="pass") S.hand[p].splice(pl[p].ci,1);
     S.used[p].push(pl[p].card);
+    S.lock[p]=pl[p].protect;
     addLog(p,L("คำสั่ง "+S.cmdN+": Protect ช่อง "+(S.lock[p]+1)+" · การ์ด ","Command "+S.cmdN+": Protect slot "+(S.lock[p]+1)+" · card ")+cardName(pl[p].card));
   }
+  {const s0=snap(); out.ev.push({kind:"protect",rows:["A","B"],before:s0,after:s0,hit:P.map(p=>[p,S.lock[p]]),ok:true,
+    why:L(P.map(p=>pname(p)+" ป้องกัน"+sl(p,S.lock[p])).join(" · ")+" — การ์ดที่เล็งช่องนี้ หรือเล็งธาตุของช่องนี้ จะล้มเหลว",P.map(p=>pname(p)+" protects "+sl(p,S.lock[p])).join(" · ")+". Cards aimed at that slot, or at its type, will fail.")});}
   // Own-side cards first, in turn order
   for(const p of ord){
-    const x=pl[p];
-    if(x.card==="sub"){ if(!S.sub[p].includes(x.self)) S.sub[p].push(x.self); out.lines.push(L(pname(p)+" ตั้งตัวแทนที่ช่อง "+(x.self+1)+"! ",pname(p)+" set a Substitute on slot "+(x.self+1)+"! ")+Q(QT.sub)); out.sfx.push("sub"); out.bump.push([p,x.self]); }
+    const x=pl[p], b0=snap();
+    const sev=(why,hit)=>out.ev.push({p,v:p,card:x.card,rows:[p],before:b0,after:snap(),hit:hit||[],ok:true,why});
+    if(x.card==="sub"){ if(!S.sub[p].includes(x.self)) S.sub[p].push(x.self); out.lines.push(L(pname(p)+" ตั้งตัวแทนที่ช่อง "+(x.self+1)+"! ",pname(p)+" set a Substitute on slot "+(x.self+1)+"! ")+Q(QT.sub)); out.sfx.push("sub"); out.bump.push([p,x.self]);
+      sev(L(pname(p)+" ตั้งตัวแทนที่"+sl(p,x.self)+" ช่องนี้จะถูกป้องกันไปจนจบรอบ",pname(p)+" put a Substitute on "+sl(p,x.self)+". It stays protected for the rest of the round."),[[p,x.self]]); }
     if(x.card==="conv"){ const i=x.self, was=S.team[p][i]; let n; do{n=pick()}while(n===was); S.team[p][i]=n; S.teraMark[p]=S.teraMark[p].filter(y=>y!==i);
       out.lines.push(L(pname(p)+" ใช้ Conversion! ช่อง "+(i+1)+" กลายเป็น",pname(p)+" used Conversion! Slot "+(i+1)+" became ")+(isHid(p,i)?"?":tn(n))+" "+Q(QT.conv)); out.sfx.push("conv"); out.bump.push([p,i]);
-      addLog(p,L("Conversion ช่อง "+(i+1)+": ","Conversion slot "+(i+1)+": ")+tn(was)+" → "+(isHid(p,i)?"?":tn(n))); }
-    if(x.card==="mirror") out.lines.push(L(pname(p)+" ตั้ง Mirror Coat!",pname(p)+" raised a Mirror Coat!"));
-    if(x.card==="pass") out.lines.push(L(pname(p)+": ",pname(p)+": ")+Q(QT.run));
+      addLog(p,L("Conversion ช่อง "+(i+1)+": ","Conversion slot "+(i+1)+": ")+tn(was)+" → "+(isHid(p,i)?"?":tn(n)));
+      sev(L(pname(p)+" สุ่มธาตุใหม่ให้ช่อง "+(i+1)+" ของตัวเอง: "+(isHid(p,i)?"(ซ่อนอยู่)":tn(was)+" → "+tn(n)),pname(p)+" redrew slot "+(i+1)+" of their own team: "+(isHid(p,i)?"(hidden)":tn(was)+" → "+tn(n))),[[p,i]]); }
+    if(x.card==="mirror"){ out.lines.push(L(pname(p)+" ตั้ง Mirror Coat!",pname(p)+" raised a Mirror Coat!"));
+      sev(L(pname(p)+" ตั้ง Mirror Coat: ถ้า "+pname(other(p))+" ใช้การ์ดโจมตีในคำสั่งนี้ จะเด้งกลับไปหาเจ้าของ",pname(p)+" raised a Mirror Coat: if "+pname(other(p))+" attacks this command, it bounces back.")); }
+    if(x.card==="pass"){ out.lines.push(L(pname(p)+": ",pname(p)+": ")+Q(QT.run));
+      sev(L(pname(p)+" ไม่ใช้การ์ด เก็บไพ่ไว้ ใช้แค่ Protect",pname(p)+" played no card and kept their hand, Protect only.")); }
   }
   // Then attacks, in turn order
   for(const p of ord){
     const x=pl[p], o=other(p); if(!CARDS[x.card]||!CARDS[x.card].atk) continue;
     if(pl[o].card==="mirror"){
-      if(x.card==="trick"){ out.lines.push(L("Mirror Coat ของ "+pname(o)+" ทำให้ Trick ล้มเหลว! ","Mirror Coat from "+pname(o)+" foiled the Trick! ")+failLine()); addLog(p,L("Trick ถูก Mirror Coat สกัด","Trick foiled by Mirror Coat")); out.sfx.push("mirror"); out.res[p]="fail"; continue; }
+      if(x.card==="trick"){ out.lines.push(L("Mirror Coat ของ "+pname(o)+" ทำให้ Trick ล้มเหลว! ","Mirror Coat from "+pname(o)+" foiled the Trick! ")+failLine()); addLog(p,L("Trick ถูก Mirror Coat สกัด","Trick foiled by Mirror Coat")); out.sfx.push("mirror"); out.res[p]="fail";
+        const s1=snap(); out.ev.push({p,v:o,card:"trick",rows:[o],before:s1,after:s1,hit:[],block:[],ok:false,why:L(pname(o)+" ตั้ง Mirror Coat ไว้ Trick จึงล้มเหลว (Mirror Coat สะท้อน Trick ไม่ได้ แต่ทำให้ล้มเหลว)",pname(o)+" had a Mirror Coat up, so the Trick failed (Mirror Coat can't bounce a Trick, but it stops it).")}); continue; }
       out.sfx.push("mirror"); effect(p,p,Object.assign({},x,x.card==="tera"?{}:{}),true,out); continue;
     }
     effect(p,o,x,false,out);
@@ -1630,24 +1682,87 @@ const STAMP={hit:["สำเร็จ!","HIT!"],fail:["ล้มเหลว!","
 function showReveal(n,ord,show,out,done){
   $("cmdVeil").hidden=true;
   $("rvTitle").textContent="COMMAND "+n+"/2 · "+L("เปิดคำสั่ง!","REVEAL!");
-  const fill=p=>{
+  P.forEach(p=>{
     const el=$("rv"+p), x=show[p];
     el.classList.remove("on"); el.querySelector(".front").className="fb front c-"+x.card;
     el.querySelector(".rvn").textContent=pname(p);
     el.querySelector(".rvc").textContent=cardName(x.card);
     el.querySelector(".rvd").textContent=x.desc;
-    const st=el.querySelector(".rvs"), r=x.card==="pass"?"self":out.res[p];
-    st.textContent=L(STAMP[r][0],STAMP[r][1]); st.className="rvs "+r; st.hidden=true;
-  };
-  P.forEach(fill);
-  const ok=$("rvOk"); ok.hidden=true; ok.textContent=L("ดูผล ›","See result ›");
+    el.querySelector(".rvs").hidden=true;
+  });
+  $("rvRow").hidden=false; $("rvScene").hidden=true; $("rvSkip").hidden=true;
+  const ok=$("rvOk"); ok.hidden=true; ok.textContent=L("ดูว่าเกิดอะไรขึ้น ›","See what happens ›");
   $("rvVeil").hidden=false; $("wrap").inert=true;
-  let closed=false;
+  let closed=false, k=-1;
   const close=()=>{if(closed) return; closed=true; $("rvVeil").hidden=true; $("wrap").inert=anyVeil(); done();};
-  ok.onclick=close;
+  const evs=out.ev;
+  const step=()=>{
+    k++;
+    $("rvRow").hidden=true; $("rvScene").hidden=false;
+    if(k<evs.length){ playScene(evs[k],k,evs.length); $("rvSkip").hidden=false; ok.textContent=L("ต่อไป ›","Next ›"); }
+    else if(k===evs.length){ summaryScene(n,ord,show,out); $("rvSkip").hidden=true; ok.textContent=L("ดูทีม ›","See the teams ›"); }
+    else close();
+    ok.focus();
+  };
+  ok.onclick=step;
+  $("rvSkip").onclick=()=>{k=evs.length-1; step();};
   const fast=still(), t0=fast?0:450, gap=fast?0:650;
-  ord.forEach((p,k)=>setTimeout(()=>{$("rv"+p).classList.add("on"); sfx("flip");},t0+k*gap));
-  setTimeout(()=>{P.forEach(p=>{const st=$("rv"+p).querySelector(".rvs"); st.hidden=false;}); sfx("stamp"); ok.hidden=false; ok.focus();},t0+2*gap+(fast?0:350));
+  ord.forEach((p,j)=>setTimeout(()=>{$("rv"+p).classList.add("on"); sfx("flip");},t0+j*gap));
+  setTimeout(()=>{ok.hidden=false; ok.focus();},t0+2*gap+(fast?0:200));
+}
+// One tile in the replay board.
+function miniTile(c,i){
+  const d=document.createElement("div"); d.className="mt";
+  if(c.h||c.t==null){d.classList.add("hidd"); d.innerHTML="<small>"+(i+1)+"</small>?";}
+  else{d.style.background=TYPES[c.t][2]; d.style.color=TYPES[c.t][3]?"#fff":"#1f2638"; d.innerHTML="<small>"+(i+1)+"</small>"+tn(c.t);}
+  if(c.g) d.insertAdjacentHTML("beforeend",'<i class="sh">'+L("กัน","P")+'</i>');
+  if(c.it&&!c.h) d.insertAdjacentHTML("beforeend",'<em>'+c.it+'</em>');
+  return d;
+}
+const RES={ok:["✔ สำเร็จ","✔ SUCCESS"],fail:["✕ ล้มเหลว","✕ FAILED"],reflect:["↩ เด้งกลับ","↩ BOUNCED"],info:["ℹ เตรียมพร้อม","ℹ SET UP"]};
+function playScene(ev,k,total){
+  const box=$("rvScene"); box.textContent="";
+  const head=document.createElement("div"); head.className="schead"+(ev.card?" c-"+ev.card:"");
+  head.innerHTML="<small>"+(k+1)+"/"+total+"</small> ";
+  const ht=document.createElement("b");
+  ht.textContent=ev.kind==="protect"?L("เปิด Protect ทั้งสองฝ่าย","Both Protects revealed"):pname(ev.p)+" · "+cardName(ev.card)+(ev.refl?L(" (เด้งกลับ!)"," (bounced!)"):"");
+  head.appendChild(ht); box.appendChild(head);
+  const hitKey=new Set(ev.hit.map(([q,i])=>q+i)), blkKey=new Set((ev.block||[]).map(([q,i])=>q+i));
+  const tiles=[];
+  for(const q of ev.rows){
+    const lab=document.createElement("div"); lab.className="scrow"; lab.textContent=L("ทีม ","Team ")+pname(q); box.appendChild(lab);
+    const g=document.createElement("div"); g.className="mgrid";
+    ev.before[q].forEach((c,i)=>{const t=miniTile(c,i); if(hitKey.has(q+i)) t.classList.add("hl"); if(blkKey.has(q+i)) t.classList.add("blk"); g.appendChild(t); tiles.push({q,i,el:t});});
+    box.appendChild(g);
+  }
+  const why=document.createElement("p"); why.className="scwhy"; why.textContent=ev.why; box.appendChild(why);
+  const kind=ev.kind==="protect"||!CARDS[ev.card]||!CARDS[ev.card].atk?"info":!ev.ok?"fail":ev.refl?"reflect":"ok";
+  const r=document.createElement("div"); r.className="scres "+kind; r.textContent=L(RES[kind][0],RES[kind][1]); r.hidden=true; box.appendChild(r);
+  const fast=still();
+  setTimeout(()=>{
+    // Show the change: hit tiles flip to their new state; blocked tiles shake behind the shield
+    tiles.forEach(({q,i,el})=>{
+      if(hitKey.has(q+i)&&ev.after!==ev.before){const nt=miniTile(ev.after[q][i],i); nt.classList.add("hl","chg"); el.replaceWith(nt);}
+      if(blkKey.has(q+i)) el.classList.add("shake");
+    });
+    r.hidden=false; sfx(kind==="fail"?"fail":kind==="ok"||kind==="reflect"?"stamp":"click");
+  },fast?0:700);
+}
+function summaryScene(n,ord,show,out){
+  const box=$("rvScene"); box.textContent="";
+  const head=document.createElement("div"); head.className="schead"; head.innerHTML="<b>"+L("สรุปคำสั่ง "+n+"/2","Command "+n+"/2 summary")+"</b>"; box.appendChild(head);
+  for(const p of ord){
+    const card=show[p].card, atk=CARDS[card]&&CARDS[card].atk;
+    const ev=out.ev.filter(e=>e.p===p&&e.card===card).pop();
+    const res=card==="pass"?"info":card==="mirror"?(out.res[p]==="mirror"?"ok":"fail"):!atk?"ok":out.res[p]==="hit"?"ok":out.res[p]==="reflect"?"reflect":"fail";
+    const row=document.createElement("div"); row.className="sumrow";
+    const t=document.createElement("b"); t.textContent=pname(p)+" · "+cardName(card);
+    const st=document.createElement("span"); st.className="scres "+res;
+    st.textContent=card==="mirror"?(res==="ok"?L("↩ สะท้อนได้","↩ Bounced it"):L("เสียเปล่า","Wasted")):L(RES[res][0],RES[res][1]);
+    const w=document.createElement("p"); w.textContent=card==="mirror"&&res!=="ok"?L(pname(other(p))+" ไม่ได้โจมตี Mirror Coat จึงเสียเปล่า",pname(other(p))+" didn't attack, so the Mirror Coat was wasted."):(ev?ev.why:"");
+    row.append(t,st,w); box.appendChild(row);
+  }
+  sfx("stamp");
 }
 function finishCmds(){
   S.phase="done"; S.draft=null; S.picker=null;
