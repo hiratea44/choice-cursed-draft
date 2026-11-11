@@ -452,6 +452,7 @@ details.rules[open]>summary h2{margin-bottom:12px}
 #tourNext.go{background:var(--yellow)}
 .fields{width:100%;display:flex;flex-direction:column;gap:4px;padding:8px;border:3px dashed #e05aa0;border-radius:10px;background:#fff0f7;font-size:13px;text-align:left}
 .fields b{font-family:var(--display);font-weight:600;font-size:15px;color:#a3245f}
+.cardbtn.c-detect{border-left:10px solid #35b565}.cardbtn.c-safeguard{border-left:10px solid #7fd6c9}.cardbtn.c-camo{border-left:10px solid #6b8e4e}.cardbtn.c-recycle{border-left:10px solid #4aa3df}.fb.front.c-detect{border-top-color:#35b565}.fb.front.c-safeguard{border-top-color:#7fd6c9}.fb.front.c-camo{border-top-color:#6b8e4e}.fb.front.c-recycle{border-top-color:#4aa3df}.schead.c-detect{border-left-color:#35b565}.schead.c-safeguard{border-left-color:#7fd6c9}.schead.c-camo{border-left-color:#6b8e4e}.schead.c-recycle{border-left-color:#4aa3df}.dcard.c-detect{border-left-color:#35b565}.dcard.c-safeguard{border-left-color:#7fd6c9}.dcard.c-camo{border-left-color:#6b8e4e}.dcard.c-recycle{border-left-color:#4aa3df}
 .cardbtn.c-perish{border-left:10px solid #3b2a4a}.cardbtn.c-fore{border-left:10px solid #3fb0c9}.fb.front.c-perish{border-top-color:#3b2a4a}.fb.front.c-fore{border-top-color:#3fb0c9}.schead.c-perish{border-left-color:#3b2a4a}.schead.c-fore{border-left-color:#3fb0c9}.dcard.c-perish{border-left-color:#3b2a4a}.dcard.c-fore{border-left-color:#3fb0c9}
 .cardbtn.c-copycat{border-left:10px solid #8e7cc3}.cardbtn.c-wish{border-left:10px solid #ffb3d1}
 .fb.front.c-copycat{border-top-color:#8e7cc3}.fb.front.c-wish{border-top-color:#ffb3d1}
@@ -999,6 +1000,10 @@ const DECKINFO=[
    ["copycat","Copycat",["ทำตามเจ้า แต่ไม่รู้จะไปโดนใคร","Same move as yours, aimed who-knows-where."],["ใช้การ์ดเดียวกับที่อีกฝ่ายเปิดในคำสั่งนี้ เป้าหมายสุ่ม","Copy the opponent's card this command, random target."],"×1"],
    ["fore","Foresight",["สิ่งที่ซ่อนอยู่ จะไม่ซ่อนอีกต่อไป","What hides will hide no more."],["เฉพาะ Blind Draft: เปิดดูช่องที่ซ่อนของอีกฝ่าย 1 ช่อง","Blind Draft only: reveal 1 of the opponent's hidden slots."],"×2"],
    ["perish","Perish Song",["เพลงสุดท้าย ของคนที่ไม่ยอมแพ้","The last song of someone who won't give up."],["กติกาโหด: แพ้ 2 รอบติดได้ใบนี้ ทั้งสองทีมสุ่มใหม่ 2 ช่อง ทะลุ Protect","Hard rules: 2 losses in a row earn it. Both teams redraw 2 slots, Protect or not."],"★"],
+   ["detect","Detect",["ระวังสองทาง","Watching two ways."],["Protect เพิ่มอีก 1 ช่องในคำสั่งนี้","Protect 1 more slot this command."],"×1"],
+   ["safeguard","Safeguard",["ม่านคุ้มกันทั้งทีม","A veil over the whole team."],["คำสั่งนี้ Roar และ Present ที่เล็งทีมเราล้มเหลว","Roar and Present aimed at you fail this command."],"×1"],
+   ["camo","Camouflage",["กลมกลืนไปกับฝูง","Blend in with the crowd."],["เปลี่ยนช่องของตัวเอง 1 ช่องเป็นธาตุที่ทีมมีมากที่สุด ใช้ไต่ไปเป็นหัวหน้ายิม","Turn 1 own slot into your most common type. A step toward Gym Leader."],"×1"],
+   ["recycle","Recycle",["ของเก่ายังใช้ได้","Old tricks still work."],["คำสั่งถัดไป จั่วการ์ดจากกองเพิ่ม 2 ใบ","Next command, draw 2 more cards from the deck."],"×1"],
    ["wish","Wish",["รอหน่อย ของดีกำลังมา","Wait a little. Something good is coming."],["คำสั่งนี้ไม่ทำอะไร คำสั่งถัดไปได้การ์ด Terastal (ใช้ในคำสั่งสุดท้ายไม่ได้)","Nothing now; a Terastal card next command (not on the last command)."],"×1"]]],
  [["กติกาพิเศษ","Special rule"],[
    ["gym","Gym Leader",["ไม่มีปุ่มปฏิเสธ","There is no decline button."],["ได้ธาตุเดียวกัน 4 ช่องขึ้นไป ทั้งทีมเป็นธาตุนั้น ไม่โดน Roar, Present, Knock Off แต่แบทเทิลจริงมีจุดอ่อนเดียว","4+ of one type: the whole team turns into it. Immune to Roar, Present, Knock Off, but one weakness in battle."],""]]]];
@@ -1035,7 +1040,7 @@ const RULES={
   ["สุ่มทีม","แต่ละฝ่ายได้ธาตุ 6 ช่องจาก 18 ธาตุ ซ้ำกันได้ ธาตุเดียวกันออกได้สูงสุด 6 ช่อง จำนวนธาตุของทีมสุ่มตามเรทที่กำหนด (ดูใน Future Sight) 1 ช่องคือโปเกมอน 1 ตัวที่มีธาตุนั้น"],
   ["Knock Off","สุ่ม 1 ธาตุกลางต่อรอบ ช่องที่เป็นธาตุนั้นห้ามถือไอเทม"],
   ["Gym Leader (หัวหน้ายิม)","ได้ธาตุเดียวกัน 4 ช่องขึ้นไปเมื่อไร ต้องรับเข็มกลัดทันที ทั้งทีมกลายเป็นธาตุนั้น ไม่ติด Knock Off ไม่รับ Present และอีกฝ่ายใช้ Roar ไม่ได้"],
-  ["ไพ่คำสาป (Curse Hand)","หลังสุ่ม แต่ละฝ่ายจั่วการ์ด 3 ใบจากกอง Roar ×2, Trick ×2, Present ×2, Mirror Coat, Substitute, Conversion, Copycat, Wish บวกการ์ด Terastal ที่ได้ (สูงสุด 2 ใบ) ไพ่ในมือคว่ำไว้ อีกฝ่ายมองไม่เห็น"],
+  ["ไพ่คำสาป (Curse Hand)","หลังสุ่ม แต่ละฝ่ายจั่วการ์ด 3 ใบจากกอง Roar ×2, Trick ×2, Present ×2, Mirror Coat, Substitute, Conversion, Copycat, Wish, Detect, Safeguard, Camouflage, Recycle บวกการ์ด Terastal ที่ได้ (สูงสุด 2 ใบ) ไพ่ในมือคว่ำไว้ อีกฝ่ายมองไม่เห็น"],
   ["เฟสสั่งการ","มี 2 คำสั่ง ทุกคำสั่งทั้งสองฝ่ายเลือกแบบลับทีละคน (อีกฝ่ายหันหน้าหนี): Protect 1 ช่อง + การ์ด 1 ใบ (หรือไม่ใช้) + เป้าหมาย แล้วเปิดพร้อมกัน การ์ดฝั่งตัวเอง (Substitute, Conversion, Mirror Coat) ทำงานก่อน ตามด้วยการ์ดเล็งศัตรู ฝ่ายที่มีธาตุน้อยกว่าทำงานก่อน"],
   ["Protect (ป้องกัน)","เลือกใหม่ทุกคำสั่ง การ์ดที่เล็งช่อง (Trick, Terastal) ถ้าโดนช่องที่ Protect ไว้จะล้มเหลว การ์ดที่เล็งธาตุ (Roar, Present) ถ้าธาตุนั้นมีช่องที่ Protect ไว้ จะล้มเหลวทั้งใบ อ่านใจให้ถูก"],
   ["Roar (คำราม)","เลือกธาตุของอีกฝ่าย ทุกช่องที่เป็นธาตุนั้นถูกไล่ออกแล้วสุ่มใหม่ ไม่ออกธาตุเดิม"],
@@ -1046,6 +1051,10 @@ const RULES={
   ["Substitute","เลือกช่องของตัวเอง ช่องนั้นถูกป้องกันถาวรจนจบรอบ"],
   ["Conversion","สุ่มธาตุใหม่ให้ช่องของตัวเอง 1 ช่อง"],
   ["Copycat","ใช้การ์ดเดียวกับที่อีกฝ่ายเปิดในคำสั่งเดียวกัน ระบบสุ่มเป้าหมายให้ ถ้าอีกฝ่ายใช้ Mirror Coat หรือไม่ใช้การ์ด Copycat จะเสียเปล่า"],
+  ["Detect","Protect เพิ่มอีก 1 ช่องในคำสั่งนี้ ใช้ไม่ได้ในสนามเปลือย"],
+  ["Safeguard","คำสั่งนี้ การ์ดที่เล็งธาตุ (Roar, Present) ใส่ทีมเราล้มเหลวทั้งหมด"],
+  ["Camouflage","เปลี่ยนช่องของตัวเอง 1 ช่องเป็นธาตุที่ทีมมีมากที่สุด (ถ้าเท่ากันสุ่มเลือก)"],
+  ["Recycle","คำสั่งถัดไป จั่วการ์ดจากกองเพิ่ม 2 ใบ ใช้ในคำสั่งสุดท้ายไม่ได้"],
   ["Wish","คำสั่งนี้ไม่ทำอะไร แต่คำสั่งถัดไปได้การ์ด Terastal 1 ใบ ใช้ในคำสั่งสุดท้ายไม่ได้"],
   ["Mirror Draft","สองฝ่ายเริ่มด้วยทีมเหมือนกันทุกช่อง แล้วสาปกันจนต่าง สนามแสดงว่าทีมต่างกันกี่ช่อง ถ้าจบคำสั่งแล้วยังเหมือนกันเป๊ะ รอบหน้าทั้งคู่ได้ Terastal +1 (Mirror Bonus)"],
   ["Starter Draft","โหมดมือใหม่: ไม่ต้องทาย Future Sight มีคำสั่งเดียว การ์ดมีแค่ Roar กับ Trick ไม่มี Terastal"],
@@ -1071,7 +1080,7 @@ const RULES={
   ["The draw","Each side gets 6 slots drawn from the 18 types. Repeats are allowed, up to all 6 slots of the same type. How many types a team gets follows set odds (see Future Sight). One slot is one Pokémon that has that type."],
   ["Knock Off","One type is drawn for the round. Slots of that type can't hold an item."],
   ["Gym Leader","Get 4 or more slots of the same type and the badge is yours, no refusals. The whole team becomes that type, ignores Knock Off, refuses Present, and can't be roared at."],
-  ["Curse Hand","After the draw each side draws 3 cards from a deck of Roar ×2, Trick ×2, Present ×2, Mirror Coat, Substitute, Conversion, Copycat and Wish, plus any Terastal cards earned (up to 2). Hands stay face-down."],
+  ["Curse Hand","After the draw each side draws 3 cards from a deck of Roar ×2, Trick ×2, Present ×2, Mirror Coat, Substitute, Conversion, Copycat, Wish, Detect, Safeguard, Camouflage and Recycle, plus any Terastal cards earned (up to 2). Hands stay face-down."],
   ["Commands","There are 2 commands. In each, both sides choose in secret one at a time (the other looks away): Protect 1 slot + 1 card (or none) + its target. Then everything is revealed at once. Own-side cards (Substitute, Conversion, Mirror Coat) resolve first, then enemy-target cards; the side with fewer types goes first."],
   ["Protect","Chosen again every command. A card aimed at a slot (Trick, Terastal) fails on a protected slot. A card aimed at a type (Roar, Present) fails completely if any slot of that type is protected. Read your opponent."],
   ["Roar","Pick one of the opponent's types: every slot of that type is redrawn, never as the same type."],
@@ -1082,6 +1091,10 @@ const RULES={
   ["Substitute","Pick one of your own slots: it stays protected for the rest of the round."],
   ["Conversion","Redraw the type of one of your own slots."],
   ["Copycat","Copy the card the opponent reveals in the same command, with a random target. Wasted against Mirror Coat or no card."],
+  ["Detect","Protect 1 more slot this command. Not playable on Bare Field."],
+  ["Safeguard","This command, cards aimed at a type (Roar, Present) fail against your team."],
+  ["Camouflage","Turn 1 of your own slots into your team's most common type (ties are random)."],
+  ["Recycle","Next command, draw 2 more cards from the deck. Not playable on the last command."],
   ["Wish","Nothing this command, but a Terastal card arrives next command. Can't be played on the last command."],
   ["Mirror Draft","Both sides start with the exact same team, then curse it apart. The field shows how many slots differ; still identical after the commands means +1 Terastal each next round (Mirror Bonus)."],
   ["Starter Draft","Beginner mode: no Future Sight, 1 command, only Roar and Trick, no Terastal."],
@@ -1475,7 +1488,7 @@ const fresh=round=>({phase:"idle",round,flash:"",koi:pick(KO_TH.length),items:{A
   lock:{A:null,B:null},sub:{A:[],B:[]},taken:{A:[],B:[]},gift:{A:Array(N).fill(null),B:Array(N).fill(null)},
   winner:null,id:0,noBan:{A:false,B:false},mono:{A:null,B:null},teraN:{A:0,B:0},teraT:{A:0,B:0},teraMark:{A:[],B:[]},uniq0:{A:0,B:0},betHit:{A:false,B:false},
   hand:{A:[],B:[]},used:{A:[],B:[]},cmdN:0,picker:null,plan:{A:null,B:null},draft:null,coin:pick(2),hid:{A:[],B:[]},
-  pool:[],poolTaken:[],sOrder:[],spick:0,under:null,pendItems:false,lastLock:{A:null,B:null},gb:false,maxCmd:2,fields:[],curse2:null,wish:{A:false,B:false},
+  pool:[],poolTaken:[],sOrder:[],spick:0,under:null,pendItems:false,lastLock:{A:null,B:null},gb:false,maxCmd:2,fields:[],curse2:null,wish:{A:false,B:false},det:{A:null,B:null},safe:{A:false,B:false},recyc:{A:false,B:false},
   hl:{A:{read:0,lost:0,refl:0,stole:0},B:{read:0,lost:0,refl:0,stole:0}},ditto:{A:null,B:null},dittoQ:[],koX:[],traded:{A:false,B:false},cursedIt:{A:[],B:[]},
   sUsed:{A:{rock:false,bait:false},B:{rock:false,bait:false}},sTool:null,bait:null,hint:{A:[0,0,0,0,0,0],B:[0,0,0,0,0,0]},nextKO:null,lastStand:{A:false,B:false}});
 let S=fresh(0);
@@ -1526,7 +1539,12 @@ function lastStand(p){
   if(!HARD()||H.rounds.length<2) return false;
   return H.rounds.slice(0,2).every(r=>r.winner&&r.names[r.winner==="A"?"B":"A"]===pname(p));
 }
-const DECK=["roar","roar","trick","trick","present","present","mirror","sub","conv","copycat","wish"];
+CARDS.detect={n:"Detect",need:"self",atk:0,th:"Protect เพิ่มอีก 1 ช่องในคำสั่งนี้",en:"Protect 1 more slot this command"};
+CARDS.safeguard={n:"Safeguard",need:null,atk:0,th:"คำสั่งนี้ การ์ดที่เล็งธาตุ (Roar, Present) ใส่ทีมเราล้มเหลวทั้งหมด",en:"This command, cards aimed at a type (Roar, Present) fail against your team"};
+CARDS.camo={n:"Camouflage",need:"self",atk:0,th:"เปลี่ยนช่องของตัวเอง 1 ช่องเป็นธาตุที่ทีมมีมากที่สุด",en:"Turn 1 of your slots into your team's most common type"};
+CARDS.recycle={n:"Recycle",need:null,atk:0,th:"คำสั่งถัดไป จั่วการ์ดจากกองเพิ่ม 2 ใบ",en:"Next command, draw 2 more cards from the deck"};
+const DECK=["roar","roar","trick","trick","present","present","mirror","sub","conv","copycat","wish","detect","safeguard","camo","recycle"];
+const recyclable=()=>DECK.filter(c=>c!=="recycle");
 /* ---------- Wild Field: two field effects each round ---------- */
 const FIELDS={
  flip:{n:"Upside Down",th:"ฝ่ายที่มีธาตุมากกว่าได้ทำก่อน",en:"The side with more types goes first",tn:"โลกกลับหัว"},
@@ -1562,10 +1580,10 @@ const FS_ODDS=TYPE_ODDS.map(x=>x+"%");
 const STARTER=()=>H.mode==="starter", HARD=()=>!!H.hard;
 const CAL=()=>H.mode==="double", SAFARI=()=>H.mode==="safari", BLIND=()=>H.mode==="blind", MIRROR=()=>H.mode==="mirror", CHAOS=()=>H.mode==="chaos";
 const isHid=(p,i)=>S.hid[p].includes(i)&&S.phase!=="done";
-const guarded=(p,i)=>i===S.lock[p]||S.sub[p].includes(i);
+const guarded=(p,i)=>i===S.lock[p]||S.sub[p].includes(i)||(S.det&&S.det[p]===i);
 const visTypes=p=>[...new Set(S.team[p].filter((t,i)=>t!=null&&!isHid(p,i)))];
 const typeOpts=(p,card)=>{const o=other(p); if(card==="roar") return S.noBan[p]?[]:visTypes(o); if(card==="present") return S.mono[o]!=null?[]:visTypes(o).filter(t=>!isKO(t)); return [];};
-const canPlay=(p,card)=>{ if(card==="fore"&&!S.hid[other(p)].some(i=>isHid(other(p),i))) return false; if(card==="wish"&&S.cmdN>=S.maxCmd) return false; if(card==="mirror"&&hasF("shatter")) return false; if(card==="sub"&&BARE()) return false; return (CARDS[card].need!=="type"&&CARDS[card].need!=="own")||typeOpts(p,card).length>0; };
+const canPlay=(p,card)=>{ if(card==="recycle"&&S.cmdN>=S.maxCmd) return false; if(card==="detect"&&BARE()) return false; if(card==="fore"&&!S.hid[other(p)].some(i=>isHid(other(p),i))) return false; if(card==="wish"&&S.cmdN>=S.maxCmd) return false; if(card==="mirror"&&hasF("shatter")) return false; if(card==="sub"&&BARE()) return false; return (CARDS[card].need!=="type"&&CARDS[card].need!=="own")||typeOpts(p,card).length>0; };
 // The item a slot holds: Double Cursed items once drawn, otherwise a Present gift (Knock Off still strips it).
 const itemAt=(p,i)=>{if(S.items&&S.items[p]) return S.items[p][i]; const g=S.gift&&S.gift[p]?S.gift[p][i]:null; if(!g) return null; if(isKO(S.team[p][i])&&S.mono[p]==null) return null; return g;};
 const cardHead=c=>"<b>"+CARDS[c].n+"</b>"+(CARDS[c].atk?'<i class="etag">'+L("เล็งศัตรู","Enemy-target")+"</i>":"");
@@ -1776,7 +1794,7 @@ function describeDraft(d){
     a.push(c==="roar"||c==="present"?n+" → "+L("ธาตุ","")+tn(d.type)+L(" ของ "+pname(o)," of "+pname(o))
       :c==="trick"?n+": "+L("ให้ ","give ")+slotName(d.p,d.mine)+L(" แลก ",", take ")+slotName(o,d.theirs)
       :c==="tera"?n+": "+slotName(o,d.slot)+" → "+tn(d.tt)
-      :c==="sub"||c==="conv"?n+" → "+slotName(d.p,d.self)
+      :c==="sub"||c==="conv"||c==="detect"||c==="camo"?n+" → "+slotName(d.p,d.self)
       :c==="fore"?n+": "+L("ช่อง ","slot ")+(d.slot+1)+L(" ของ "+pname(o)," of "+pname(o)):n);}
   return a.join(" · ");
 }
@@ -2246,6 +2264,8 @@ function safariPick(k){
 function startCmd(){S.cmdN=1; beginCmd();}
 function beginCmd(){
   S.phase="cmd"; S.plan={A:null,B:null}; S.draft=null; if(S.cmdN>1) S.lastLock={A:S.lock.A,B:S.lock.B}; S.lock={A:null,B:null};
+  S.det={A:null,B:null}; S.safe={A:false,B:false};
+  for(const p of P) if(S.recyc&&S.recyc[p]){S.recyc[p]=false; const got=shuffle(recyclable()).slice(0,2); S.hand[p].push(...got); addLog(p,L("Recycle: จั่วเพิ่ม "+got.map(c=>CARDS[c].n).join(", "),"Recycle: drew "+got.map(c=>CARDS[c].n).join(", ")));}
   for(const p of P) if(S.wish[p]){S.wish[p]=false; S.hand[p].push("tera"); S.teraT[p]++; addLog(p,L("Wish เป็นจริง! ได้การ์ด Terastal","Wish came true! A Terastal card"));}
   S.picker=order()[0];
 }
@@ -2304,6 +2324,7 @@ function effect(p,v,pl,refl,out){
   if(c==="roar"||c==="present"){
     const t=pl.type;
     if(c==="roar"&&S.mono[v]!=null) return fail(L(pname(v)+" เป็นหัวหน้ายิม ห้ามใช้ Roar ใส่ผู้บริหาร Roar จึงล้มเหลว",pname(v)+" is a Gym Leader, and Roar can't be used on management. Roar failed."),L("หัวหน้ายิมไม่สะทกสะท้าน "+failLine(),"The Gym Leader doesn't flinch. "+failLine()));
+    if(S.safe&&S.safe[v]) return fail(L(pname(v)+" กาง Safeguard ไว้ "+nm+" ที่เล็งธาตุจึงล้มเหลว",pname(v)+" had Safeguard up, so "+nm+" (aimed at a type) failed."),L("โดน Safeguard กันไว้! ","Stopped by Safeguard! ")+failLine());
     if(c==="present"&&S.mono[v]!=null) return fail(L(pname(v)+" เป็นหัวหน้ายิม ไม่รับของขวัญ Present จึงล้มเหลว",pname(v)+" is a Gym Leader and refuses gifts. Present failed."),failLine());
     if(c==="present"&&isKO(t)) return fail(L("ธาตุ"+tn(t)+"ติด Knock Off ถือไอเทมไม่ได้ Present จึงล้มเหลว",tn(t)+" has Knock Off and can't hold items. Present failed."),failLine());
     const blk=S.team[v].map((x,i)=>x===t&&guarded(v,i)?i:-1).filter(i=>i>=0);
@@ -2401,6 +2422,17 @@ function reveal(){
       sev(L(pname(p)+" สุ่มธาตุใหม่ให้ช่อง "+(i+1)+" ของตัวเอง: "+(isHid(p,i)?"(ซ่อนอยู่)":tn(was)+" → "+tn(n)),pname(p)+" redrew slot "+(i+1)+" of their own team: "+(isHid(p,i)?"(hidden)":tn(was)+" → "+tn(n))),[[p,i]]); }
     if(x.card==="mirror"){ out.lines.push(L(pname(p)+" ตั้ง Mirror Coat!",pname(p)+" raised a Mirror Coat!"));
       sev(L(pname(p)+" ตั้ง Mirror Coat: ถ้า "+pname(other(p))+" ใช้การ์ดเล็งศัตรูในคำสั่งนี้ จะเด้งกลับไปโดนเจ้าของ",pname(p)+" raised a Mirror Coat: if "+pname(other(p))+" attacks this command, it bounces back.")); }
+    if(x.card==="detect"){ S.det[p]=x.self; out.lines.push(L(pname(p)+" ใช้ Detect! กันเพิ่มช่อง "+(x.self+1),pname(p)+" used Detect! Slot "+(x.self+1)+" is guarded too")); out.sfx.push("protect");
+      sev(L(pname(p)+" ใช้ Detect: "+sl(p,x.self)+" ถูกป้องกันเพิ่มในคำสั่งนี้ (รวมกับ Protect เป็น 2 ช่อง)",pname(p)+" used Detect: "+sl(p,x.self)+" is also protected this command (2 slots with Protect)"),[[p,x.self]]); }
+    if(x.card==="safeguard"){ S.safe[p]=true; out.lines.push(L(pname(p)+" กาง Safeguard!",pname(p)+" raised Safeguard!")); out.sfx.push("sub");
+      sev(L(pname(p)+" กาง Safeguard: คำสั่งนี้ Roar และ Present ที่เล็งทีมนี้จะล้มเหลว",pname(p)+" raised Safeguard: Roar and Present aimed at this team fail this command")); }
+    if(x.card==="camo"){ const i=x.self, was=S.team[p][i], c=counts(S.team[p].filter((t,k)=>k!==i&&t!=null)), mx=Math.max(...Object.values(c)), tops=Object.keys(c).filter(k=>c[k]===mx).map(Number), t=tops[pick(tops.length)];
+      if(t!==was){S.team[p][i]=t; dittoOff(p,i); S.teraMark[p]=S.teraMark[p].filter(y=>y!==i); out.bump.push([p,i]);}
+      out.lines.push(L(pname(p)+" ใช้ Camouflage! ช่อง "+(i+1)+" กลมกลืนกับทีม",pname(p)+" used Camouflage! Slot "+(i+1)+" blends in")); out.sfx.push("conv");
+      addLog(p,L("Camouflage ช่อง "+(i+1)+": "+tn(was)+" → "+tn(t),"Camouflage slot "+(i+1)+": "+tn(was)+" → "+tn(t)));
+      sev(t!==was?L(pname(p)+" พรางตัว: ช่อง "+(i+1)+" "+tn(was)+" → "+tn(t)+" (ธาตุที่ทีมมีมากที่สุด)",pname(p)+" blended in: slot "+(i+1)+" "+tn(was)+" → "+tn(t)+" (the team's most common type)"):L("ช่อง "+(i+1)+" เป็นธาตุ"+tn(t)+"อยู่แล้ว จึงไม่มีอะไรเปลี่ยน","Slot "+(i+1)+" was already "+tn(t)+", so nothing changed."),[[p,i]]); }
+    if(x.card==="recycle"){ S.recyc[p]=true; out.lines.push(L(pname(p)+" ใช้ Recycle!",pname(p)+" used Recycle!")); out.sfx.push("conv");
+      sev(L(pname(p)+" ใช้ Recycle: คำสั่งถัดไปจะจั่วการ์ดจากกองเพิ่ม 2 ใบ",pname(p)+" used Recycle: 2 more cards from the deck next command.")); }
     if(x.card==="wish"){ S.wish[p]=true; out.lines.push(L(pname(p)+" อธิษฐาน! คำสั่งถัดไปได้ Terastal",pname(p)+" made a Wish! A Terastal arrives next command"));
       sev(L(pname(p)+" ใช้ Wish: คำสั่งนี้ไม่ทำอะไร แต่คำสั่งถัดไปจะได้การ์ด Terastal 1 ใบ",pname(p)+" used Wish: nothing now, but a Terastal card arrives next command.")); out.sfx.push("conv"); }
     if(x.card==="perish"){ const b1=snap(), hit=[];
@@ -2555,6 +2587,11 @@ function copyPlan(p,c,out){
     const i=rnd(hs); S.hid[o]=S.hid[o].filter(y=>y!==i); note(L("Copycat เลียนแบบ Foresight: เปิดช่อง "+(i+1)+" ของ "+pname(o)+" (สุ่ม)","Copycat copied Foresight: slot "+(i+1)+" of "+pname(o)+" revealed (random)"),true); out.bump.push([o,i]); return null;}
   if(c==="sub"){const i=rnd(free.filter(i=>i!==S.lock[p])); if(!S.sub[p].includes(i)) S.sub[p].push(i); note(L("Copycat เลียนแบบ Substitute: ตั้งตัวแทนที่ช่อง "+(i+1)+" (สุ่ม)","Copycat copied Substitute: a stand-in on slot "+(i+1)+" (random)"),true,[[p,i]]); out.sfx.push("sub"); return null;}
   if(c==="conv"){const i=rnd(free), was=S.team[p][i]; dittoOff(p,i); let n; do{n=pick()}while(n===was); S.team[p][i]=n; S.teraMark[p]=S.teraMark[p].filter(y=>y!==i); note(L("Copycat เลียนแบบ Conversion: ช่อง "+(i+1)+" สุ่มธาตุใหม่ (สุ่มช่อง) "+(isHid(p,i)?"":tn(was)+" → "+tn(n)),"Copycat copied Conversion: slot "+(i+1)+" redrawn "+(isHid(p,i)?"":tn(was)+" → "+tn(n))),true,[[p,i]]); out.sfx.push("conv"); return null;}
+  if(c==="detect"){const i=rnd(free.filter(i=>i!==S.lock[p])); S.det[p]=i; note(L("Copycat เลียนแบบ Detect: กันเพิ่มช่อง "+(i+1)+" (สุ่ม)","Copycat copied Detect: slot "+(i+1)+" guarded too (random)"),true,[[p,i]]); return null;}
+  if(c==="safeguard"){S.safe[p]=true; note(L("Copycat เลียนแบบ Safeguard: กันการ์ดที่เล็งธาตุในคำสั่งนี้","Copycat copied Safeguard: type-aimed cards fail this command"),true); return null;}
+  if(c==="camo"){const i=rnd(free), was=S.team[p][i], cc=counts(S.team[p].filter((t,k)=>k!==i)), mx=Math.max(...Object.values(cc)), tops=Object.keys(cc).filter(k=>cc[k]===mx).map(Number), t=tops[pick(tops.length)];
+    S.team[p][i]=t; dittoOff(p,i); note(L("Copycat เลียนแบบ Camouflage: ช่อง "+(i+1)+" (สุ่ม) "+tn(was)+" → "+tn(t),"Copycat copied Camouflage: slot "+(i+1)+" (random) "+tn(was)+" → "+tn(t)),true,[[p,i]]); return null;}
+  if(c==="recycle"){ if(S.cmdN<S.maxCmd){S.recyc[p]=true; note(L("Copycat เลียนแบบ Recycle: คำสั่งถัดไปจั่วเพิ่ม 2 ใบ","Copycat copied Recycle: 2 more cards next command"),true);} else note(L("Copycat เลียนแบบ Recycle แต่ไม่มีคำสั่งถัดไปแล้ว "+failLine(),"Copycat copied Recycle, but there is no next command. "+failLine()),false); return null;}
   if(c==="wish"){ if(S.cmdN<S.maxCmd){S.wish[p]=true; note(L("Copycat เลียนแบบ Wish: คำสั่งถัดไปได้การ์ด Terastal ด้วย","Copycat copied Wish: a Terastal card arrives next command too"),true);} else note(L("Copycat เลียนแบบ Wish แต่ไม่มีคำสั่งถัดไปแล้ว "+failLine(),"Copycat copied Wish, but there is no next command. "+failLine()),false); return null;}
   note(L("อีกฝ่ายเปิด "+cardName(c)+" ซึ่งไม่มีอะไรให้เลียนแบบ Copycat จึงเสียเปล่า","The opponent revealed "+cardName(c)+", which can't be copied, so Copycat was wasted."),false);
   return null;
