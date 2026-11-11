@@ -750,7 +750,7 @@ function renderModes(){
 /* ---------- First-time tour ---------- */
 const TOUR=[
  ["🎲",["ยินดีต้อนรับสู่ Choice!","Welcome to Choice!"],["ที่นี่ดวงเป็นคนเลือกทีมให้คุณ เล่น 2 คนบนเครื่องเดียว สุ่มและสาปกันให้เสร็จ แล้วไปจัดทีมสู้จริงใน Pokémon Champions","Here, luck picks your team. Two players, one device: draw and curse each other here, then build and battle for real in Pokémon Champions."]],
- ["🔮",["Future Sight","Future Sight"],["ก่อนสุ่ม ทายว่าทีมจะมีกี่ธาตุ ทาย 4–6 ถูกได้ Terastal ทาย 1–3 ถูก (ยากกว่า) ได้ League Contract ไว้เป็นหัวหน้ายิม มีตารางโอกาสให้ดูตอนทาย","Before the draw, guess how many types your team will have. A correct 4–6 earns Terastal; a correct 1–3 (harder) earns a League Contract to become Gym Leader. The odds are shown when you guess."]],
+ ["🔮",["Future Sight","Future Sight"],["ก่อนสุ่ม ทายว่าทีมจะมีกี่ธาตุ ทายถูกได้การ์ด Terastal ไว้เปลี่ยนธาตุของอีกฝ่าย 1 ช่อง","Before the draw, guess how many types your team will have. Guess right for a Terastal card that changes 1 opponent slot."]],
  ["⚪",["สุ่มทีม 6 ช่อง","Draw 6 slots"],["แต่ละช่องคือโปเกมอน 1 ตัวที่มีธาตุนั้น สุ่ม 1 ธาตุเป็น Knock Off (ห้ามถือไอเทม) ได้ธาตุเดียวกัน 4 ช่องขึ้นไปเป็นหัวหน้ายิมทันที","Each slot is one Pokémon of that type. One type is Knock Off (no items). Get 4+ of one type and you're a Gym Leader."]],
  ["🎴",["สั่งการแบบลับ 2 ครั้ง","2 secret commands"],["ทุกคำสั่ง เลือก Protect 1 ช่อง + การ์ด 1 ใบ จากไพ่ในมือ ส่งเครื่องให้กันโดยให้อีกฝ่ายหันหน้าหนี ระบบจะพาเลือกทีละขั้น","Each command: Protect 1 slot + play 1 card from your hand. Pass the device while the other looks away. The game walks you through it step by step."]],
  ["🃏",["เปิดไพ่พร้อมกัน","Reveal together"],["ไพ่ทั้งสองฝ่ายพลิกพร้อมกัน แล้วดูทีละฉากว่าเกิดอะไรขึ้น ถ้าเดา Protect ถูก การ์ดของอีกฝ่ายจะล้มเหลว ส่วน Mirror Coat ทำให้การ์ดเด้งกลับ","Both cards flip at once, then each effect plays out scene by scene. Guess the right Protect and their card fails; a Mirror Coat bounces it back."]],
@@ -775,13 +775,12 @@ const DECKINFO=[
    ["roar","Roar",["เสียงเดียว ทั้งธาตุต้องถอย","One roar, and a whole type retreats."],["เลือกธาตุของอีกฝ่าย ทุกช่องธาตุนั้นสุ่มใหม่","Every opponent slot of a chosen type is redrawn."],"×2"],
    ["trick","Trick",["สิ่งที่เจ้าให้ไป คือสิ่งที่เจ้าไม่อยากได้","What you give away is what you never wanted."],["แลกช่องของเรากับช่องของอีกฝ่าย ได้มาแล้วเอาคืนไม่ได้","Swap a slot with theirs. Taken slots can't be taken back."],"×2"],
    ["present","Present",["ของขวัญที่ไม่ได้ขอ ห้ามคืน","An unasked-for gift. No returns."],["ยัดไอเทมสุ่มให้ทุกช่องของธาตุที่เลือก","Force random items onto every slot of a type."],"×2"],
-   ["tera","Terastal",["มงกุฎที่สวมให้ ไม่ใช่ของขวัญ","A crown placed on your head is no gift."],["เปลี่ยนธาตุอีกฝ่าย 1 ช่องเป็นธาตุที่เลือก ได้จากโชค 1/6 หรือทาย 4–6 ถูก","Change 1 opponent slot's type. From 1/6 luck or a correct 4–6 guess."],"★"]]],
+   ["tera","Terastal",["มงกุฎที่สวมให้ ไม่ใช่ของขวัญ","A crown placed on your head is no gift."],["เปลี่ยนธาตุอีกฝ่าย 1 ช่องเป็นธาตุที่เลือก ได้จากโชค 1/6 หรือทาย Future Sight ถูก","Change 1 opponent slot's type. From 1/6 luck or a correct 4–6 guess."],"★"]]],
  [["การ์ดป้องกันและแก้ทีม","Defense and fixes"],[
    ["mirror","Mirror Coat",["สิ่งที่ส่งมา จะกลับไปหาเจ้าของ","What you send comes back to you."],["ถ้าอีกฝ่ายโจมตีในคำสั่งเดียวกัน การ์ดเด้งกลับ (Trick แค่ล้มเหลว)","If they attack the same command, it bounces back (Trick just fails)."],"×1"],
    ["sub","Substitute",["ตัวจริงอยู่ข้างหลัง","The real one hides behind."],["ช่องที่เลือกถูกป้องกันถาวรจนจบรอบ","The chosen slot stays protected all round."],"×1"],
    ["conv","Conversion",["ไม่ชอบธาตุนี้ ก็เปลี่ยนซะ","Don't like it? Change it."],["สุ่มธาตุใหม่ให้ช่องของตัวเอง 1 ช่อง","Redraw one of your own slots."],"×1"]]],
- [["การ์ดพิเศษ","Special"],[
-   ["contract","League Contract",["เซ็นแล้ว ห้ามลาออก","Signed. No resigning."],["ได้เมื่อทาย Future Sight 1–3 ถูก เป็นหัวหน้ายิมของธาตุที่มี 2 ช่องขึ้นไป ทำงานเป็นอย่างสุดท้าย","From a correct 1–3 guess. Become Gym Leader of a type you hold 2+ of. Resolves last."],"★"],
+ [["กติกาพิเศษ","Special rule"],[
    ["gym","Gym Leader",["ไม่มีปุ่มปฏิเสธ","There is no decline button."],["ได้ธาตุเดียวกัน 4 ช่องขึ้นไป ทั้งทีมเป็นธาตุนั้น ไม่โดน Roar, Present, Knock Off แต่แบทเทิลจริงมีจุดอ่อนเดียว","4+ of one type: the whole team turns into it. Immune to Roar, Present, Knock Off, but one weakness in battle."],""]]]];
 function drawCurses(){
   const box=$("deck"); if(!box) return; box.textContent="";
@@ -812,7 +811,7 @@ function drawCursesOld(){
 const RULES={
  th:[
   ["โหมด","Cursed Draft สุ่มทีมปกติ · Double Cursed สุ่มไอเทมให้ทุกช่องด้วย · Safari Draft ผลัดกันหยิบธาตุเอง · Blind Draft ทีมถูกซ่อนไว้ฝ่ายละ 2 ช่อง เลือกได้ที่ช่องโหมด และเปิดซีรีส์ Best of 3 ได้ทุกโหมด"],
-  ["Future Sight (มองอนาคต)","ก่อนสุ่ม ทั้งสองฝ่ายทายว่าในทีมตัวเองจะมีกี่ธาตุ 1 ถึง 6 (ธาตุซ้ำนับเป็นธาตุเดียว) รางวัล 2 ระดับ: ทาย 4–6 ถูกได้การ์ด Terastal · ทาย 1–3 ถูกได้การ์ด League Contract เรทจำนวนธาตุของทีม (= โอกาสทายถูก): 1 ธาตุ 1% · 2 ธาตุ 5% · 3 ธาตุ 15% · 4 ธาตุ 30% · 5 ธาตุ 32% · 6 ธาตุ 17% (Safari Draft ไม่ต้องทาย)"],
+  ["Future Sight (มองอนาคต)","ก่อนสุ่ม ทั้งสองฝ่ายทายว่าในทีมตัวเองจะมีกี่ธาตุ 1 ถึง 6 (ธาตุซ้ำนับเป็นธาตุเดียว) ทายถูกได้การ์ด Terastal เรทจำนวนธาตุของทีม (= โอกาสทายถูก): 1 ธาตุ 1% · 2 ธาตุ 5% · 3 ธาตุ 15% · 4 ธาตุ 30% · 5 ธาตุ 32% · 6 ธาตุ 17% (Safari Draft ไม่ต้องทาย)"],
   ["สุ่มทีม","แต่ละฝ่ายได้ธาตุ 6 ช่องจาก 18 ธาตุ ซ้ำกันได้ ธาตุเดียวกันออกได้สูงสุด 6 ช่อง จำนวนธาตุของทีมสุ่มตามเรทที่กำหนด (ดูใน Future Sight) 1 ช่องคือโปเกมอน 1 ตัวที่มีธาตุนั้น"],
   ["Knock Off","สุ่ม 1 ธาตุกลางต่อรอบ ช่องที่เป็นธาตุนั้นห้ามถือไอเทม"],
   ["Gym Leader (หัวหน้ายิม)","ได้ธาตุเดียวกัน 4 ช่องขึ้นไปเมื่อไร ต้องรับเข็มกลัดทันที ทั้งทีมกลายเป็นธาตุนั้น ไม่ติด Knock Off ไม่รับ Present และอีกฝ่ายใช้ Roar ไม่ได้"],
@@ -826,7 +825,6 @@ const RULES={
   ["Mirror Coat","ถ้าอีกฝ่ายใช้การ์ดโจมตีในคำสั่งเดียวกัน Roar, Present, Terastal สะท้อนกลับใส่เจ้าของ ส่วน Trick ล้มเหลว"],
   ["Substitute","เลือกช่องของตัวเอง ช่องนั้นถูกป้องกันถาวรจนจบรอบ"],
   ["Conversion","สุ่มธาตุใหม่ให้ช่องของตัวเอง 1 ช่อง"],
-  ["League Contract","ได้เมื่อทาย Future Sight 1–3 ถูก ใช้แทนการ์ด 1 คำสั่ง เลือกธาตุในทีมที่มี 2 ช่องขึ้นไป ทำงานเป็นอย่างสุดท้ายของคำสั่ง ถ้าตอนนั้นธาตุนั้นยังเหลือ 2 ช่องขึ้นไป ทั้งทีมกลายเป็นธาตุนั้นและเป็นหัวหน้ายิม ไม่อย่างนั้นสัญญาเป็นโมฆะ ถ้าเป็นหัวหน้ายิมอยู่แล้ว การ์ดนี้เปลี่ยนเป็น Terastal ถ้าทั้งสองฝ่ายเป็นหัวหน้ายิม = GYM BATTLE!"],
   ["Double Cursed (สาปซ้อน)","โหมดที่โหดกว่า จบคำสั่งแล้วทุกช่องได้ไอเทมสุ่มจาก Pokémon Champions ตามธาตุอัตโนมัติ ไม่ซ้ำกันในทีม ช่อง Knock Off ไม่ได้ ไอเทมจาก Present คงอยู่ และทุกทีมได้ Mega Stone 1 ช่อง พร้อมไอเทมสำรอง ห้ามเปลี่ยน"],
   ["Safari Draft","เปิดทุ่ง 14 ธาตุ ผลัดกันหยิบแบบงู (A B B A A B B A …) จนได้คนละ 6 ช่อง ธาตุที่เหลือ 2 อัน สุ่ม 1 อันเป็น Knock Off"],
   ["Blind Draft","หลังสุ่ม แต่ละทีมมี 2 ช่องที่ถูกซ่อนจากทุกคน การ์ดยังเล็งช่องที่ซ่อนได้ (เสี่ยงดวง) และเปิดเผยทั้งหมดเมื่อจบคำสั่ง"],
@@ -834,7 +832,7 @@ const RULES={
   ["Team Preview","จบคำสั่งแล้ว กดเริ่มจับเวลา จัดทีมตามเวลาที่ตั้งไว้ จบแบทเทิลแล้วกดบันทึกว่าใครชนะ"]],
  en:[
   ["Modes","Cursed Draft: the classic draw · Double Cursed: every slot also gets an item · Safari Draft: take turns picking types · Blind Draft: 2 slots per team stay hidden. Best of 3 can be switched on in any mode."],
-  ["Future Sight","Before the draw, both sides guess how many different types their team will have, 1 to 6 (repeats count once). Two reward tiers: a correct 4–6 guess earns a Terastal card; a correct 1–3 guess earns a League Contract. Odds for how many types a team gets (= chance the guess comes true): 1 type 1% · 2: 5% · 3: 15% · 4: 30% · 5: 32% · 6: 17%. (Not used in Safari Draft.)"],
+  ["Future Sight","Before the draw, both sides guess how many different types their team will have, 1 to 6 (repeats count once). A correct guess earns a Terastal card. Odds for how many types a team gets (= chance the guess comes true): 1 type 1% · 2: 5% · 3: 15% · 4: 30% · 5: 32% · 6: 17%. (Not used in Safari Draft.)"],
   ["The draw","Each side gets 6 slots drawn from the 18 types. Repeats are allowed, up to all 6 slots of the same type. How many types a team gets follows set odds (see Future Sight). One slot is one Pokémon that has that type."],
   ["Knock Off","One type is drawn for the round. Slots of that type can't hold an item."],
   ["Gym Leader","Get 4 or more slots of the same type and the badge is yours, no refusals. The whole team becomes that type, ignores Knock Off, refuses Present, and can't be roared at."],
@@ -848,7 +846,6 @@ const RULES={
   ["Mirror Coat","If the opponent attacks in the same command, Roar, Present and Terastal bounce back onto their own team, and Trick fails."],
   ["Substitute","Pick one of your own slots: it stays protected for the rest of the round."],
   ["Conversion","Redraw the type of one of your own slots."],
-  ["League Contract","From a correct 1–3 Future Sight guess. Costs one command. Pick a type you hold 2+ of. It resolves last in the command: if 2+ of that type remain, the whole team becomes that type and you are Gym Leader; otherwise the contract is void. Already a Gym Leader? It becomes a Terastal card. Both sides Gym Leaders = GYM BATTLE!"],
   ["Double Cursed","The harsher mode. After the commands every slot automatically gets a type-matched item from the Pokémon Champions pool, no duplicates within a team. Knock Off slots get nothing, Present items stay, and each team gets one Mega Stone slot with a backup item. No swaps."],
   ["Safari Draft","14 types appear on the field. Take turns picking in snake order (A B B A A B B A …) until both have 6. One of the 2 leftovers becomes the Knock Off type."],
   ["Blind Draft","After the draw, 2 slots on each team are hidden from everyone. Cards can still target hidden slots (a gamble). Everything is revealed when the commands end."],
@@ -1137,7 +1134,7 @@ const fresh=round=>({phase:"idle",round,flash:"",koi:pick(KO_TH.length),items:{A
   lock:{A:null,B:null},sub:{A:[],B:[]},taken:{A:[],B:[]},gift:{A:Array(N).fill(null),B:Array(N).fill(null)},
   winner:null,id:0,noBan:{A:false,B:false},mono:{A:null,B:null},teraN:{A:0,B:0},teraT:{A:0,B:0},teraMark:{A:[],B:[]},uniq0:{A:0,B:0},betHit:{A:false,B:false},
   hand:{A:[],B:[]},used:{A:[],B:[]},cmdN:0,picker:null,plan:{A:null,B:null},draft:null,coin:pick(2),hid:{A:[],B:[]},
-  pool:[],poolTaken:[],sOrder:[],spick:0,under:null,pendItems:false,lastLock:{A:null,B:null},contract:{A:0,B:0},gb:false});
+  pool:[],poolTaken:[],sOrder:[],spick:0,under:null,pendItems:false,lastLock:{A:null,B:null},gb:false});
 let S=fresh(0);
 const els={A:[],B:[]};
 for(const p of P) for(let i=0;i<N;i++){
@@ -1174,7 +1171,6 @@ const CARDS={
  mirror:{n:"Mirror Coat",need:null,atk:0,th:"สะท้อนการ์ดโจมตีของอีกฝ่ายในคำสั่งนี้กลับไปหาเจ้าของ",en:"Reflects the opponent's attack this command back at them"},
  sub:{n:"Substitute",need:"self",atk:0,th:"ตัวแทน: ช่องที่เลือกถูกป้องกันถาวรจนจบรอบ",en:"A stand-in: the chosen slot stays protected for the rest of the round"},
  conv:{n:"Conversion",need:"self",atk:0,th:"สุ่มธาตุใหม่ให้ช่องของตัวเอง 1 ช่อง",en:"Redraw the type of one of your own slots"}};
-CARDS.contract={n:"League Contract",need:"own",atk:0,th:"เซ็นสัญญาเป็นหัวหน้ายิมของธาตุที่มี 2 ช่องขึ้นไป ทำงานเป็นอย่างสุดท้าย",en:"Sign on as Gym Leader of a type you hold 2+ of. Resolves last"};
 const DECK=["roar","roar","trick","trick","present","present","mirror","sub","conv"];
 // Future Sight odds with the 15% type attraction (simulated), and the reward for each guess.
 // Set odds for how many different types a team ends up with (1..6). Also the chance each Future Sight guess comes true.
@@ -1184,7 +1180,7 @@ const CAL=()=>H.mode==="double", SAFARI=()=>H.mode==="safari", BLIND=()=>H.mode=
 const isHid=(p,i)=>S.hid[p].includes(i)&&S.phase!=="done";
 const guarded=(p,i)=>i===S.lock[p]||S.sub[p].includes(i);
 const visTypes=p=>[...new Set(S.team[p].filter((t,i)=>t!=null&&!isHid(p,i)))];
-const typeOpts=(p,card)=>{const o=other(p); if(card==="contract"){ if(S.mono[p]!=null) return []; const c=counts(S.team[p].filter((t,i)=>!isHid(p,i))); return Object.keys(c).filter(k=>c[k]>=2).map(Number);} if(card==="roar") return S.noBan[p]?[]:visTypes(o); if(card==="present") return S.mono[o]!=null?[]:visTypes(o).filter(t=>t!==S.curse); return [];};
+const typeOpts=(p,card)=>{const o=other(p); if(card==="roar") return S.noBan[p]?[]:visTypes(o); if(card==="present") return S.mono[o]!=null?[]:visTypes(o).filter(t=>t!==S.curse); return [];};
 const canPlay=(p,card)=>(CARDS[card].need!=="type"&&CARDS[card].need!=="own")||typeOpts(p,card).length>0;
 // The item a slot holds: Double Cursed items once drawn, otherwise a Present gift (Knock Off still strips it).
 const itemAt=(p,i)=>{if(S.items&&S.items[p]) return S.items[p][i]; const g=S.gift&&S.gift[p]?S.gift[p][i]:null; if(!g) return null; if(S.team[p][i]===S.curse&&S.mono[p]==null) return null; return g;};
@@ -1368,8 +1364,7 @@ function describeDraft(d){
     a.push(c==="roar"||c==="present"?n+" → "+L("ธาตุ","")+tn(d.type)+L(" ของ "+pname(o)," of "+pname(o))
       :c==="trick"?n+": "+L("ให้ ","give ")+slotName(d.p,d.mine)+L(" แลก ",", take ")+slotName(o,d.theirs)
       :c==="tera"?n+": "+slotName(o,d.slot)+" → "+tn(d.tt)
-      :c==="sub"||c==="conv"?n+" → "+slotName(d.p,d.self)
-      :c==="contract"?n+" → "+L("ยิมธาตุ","Gym: ")+tn(d.type):n);}
+      :c==="sub"||c==="conv"?n+" → "+slotName(d.p,d.self):n);}
   return a.join(" · ");
 }
 function afterCard(d){
@@ -1423,11 +1418,6 @@ function renderWizard(){
       const g2=grid("tgrid"); TYPES.forEach((_,t)=>{const b=document.createElement("button"); b.type="button"; b.className="tbtn"+(d.tt===t?" sel":"");
         b.style.background=TYPES[t][2]; b.style.color=TYPES[t][3]?"#fff":"#1f2638"; b.textContent=tn(t);
         b.addEventListener("click",()=>{d.tt=t; sfx("click"); done();}); g2.appendChild(b);}); body.appendChild(g2);
-    }else if(need==="own"){
-      body.appendChild(sub(L("ธาตุในทีมคุณที่มี 2 ช่องขึ้นไป (สัญญาทำงานเป็นอย่างสุดท้าย ถ้าถึงตอนนั้นเหลือไม่ถึง 2 ช่อง สัญญาเป็นโมฆะ)","Your types with 2+ slots (it resolves last; if fewer than 2 remain by then, the contract is void)")));
-      const g=grid("tgrid"); typeOpts(p,c).forEach(t=>{const b=document.createElement("button"); b.type="button"; b.className="tbtn"+(d.type===t?" sel":"");
-        b.style.background=TYPES[t][2]; b.style.color=TYPES[t][3]?"#fff":"#1f2638"; b.textContent=tn(t);
-        b.addEventListener("click",()=>{d.type=t; sfx("click"); done();}); g.appendChild(b);}); body.appendChild(g);
     }else if(need==="self"){
       body.appendChild(sub(L("ช่องของคุณ (ไม่ใช่ช่อง Protect)","Your slot (not the Protect slot)")));
       const g=grid("sgrid"); for(let i=0;i<N;i++) g.appendChild(slotBtn(p,i,d.self===i,i===d.protect,()=>{d.self=i; done();})); body.appendChild(g);
@@ -1471,7 +1461,7 @@ function renderFS(){
   const rows=$("fsRows"); rows.textContent="";
   const od=document.createElement("div"); od.className="fsodds";
   od.innerHTML="<b>"+L("รางวัลถ้าทายถูก","Reward for a correct guess")+"</b>";
-  const nt=document.createElement("p"); nt.textContent=L("ทาย 1–3 ถูก = League Contract (เป็นหัวหน้ายิมได้) · ทาย 4–6 ถูก = Terastal · ทายต่ำเสี่ยงกว่า แต่รางวัลใหญ่กว่า","Guess 1–3 right = League Contract (become a Gym Leader) · 4–6 right = Terastal · Lower is riskier, but pays more"); od.appendChild(nt);
+  const nt=document.createElement("p"); nt.textContent=L("ทายถูกได้การ์ด Terastal 1 ใบ ใช้เปลี่ยนธาตุของอีกฝ่าย 1 ช่อง","A correct guess earns a Terastal card: change 1 opponent slot's type."); od.appendChild(nt);
   rows.appendChild(od);
   for(const p of P){const r=document.createElement("div"); r.className="fsrow"; const n=document.createElement("b"); n.textContent=pname(p); r.appendChild(n);
     for(let k=1;k<=6;k++){const b=document.createElement("button"); b.type="button"; b.className="btn"+($("bet"+p).value===String(k)?" on":""); b.textContent=k;
@@ -1599,7 +1589,6 @@ function chosen(p){
   addLog(p,L("ได้เข็มกลัดหัวหน้ายิมธาตุ"+tn(t)+" ทั้ง 6 ช่องเป็นธาตุ"+tn(t)+" · "+pname(other(p))+" ใช้ Roar ไม่ได้ · ไม่ติด Knock Off · ไม่รับ Present",
     "Got the "+tn(t)+" Gym Badge. All 6 slots are "+tn(t)+" · "+pname(other(p))+" can't use Roar · ignores Knock Off · refuses Present"));
   say(p,Q(QT.leader,t));
-  const ci=S.hand[p].indexOf("contract"); if(ci>=0){S.hand[p][ci]="tera"; addLog(p,L("เป็นหัวหน้ายิมแล้ว League Contract เปลี่ยนเป็น Terastal","Already a Gym Leader: League Contract became a Terastal card"));}
   gymBattle();
   render(); els[p].forEach(bump);
   if(S.pendItems&&!P.some(q=>S.mono[q]==null&&monoType(q)!=null)){S.pendItems=false; rollItems(true);}
@@ -1616,7 +1605,6 @@ function seriesStart(){
 function deal(p){
   const n=3+(S.under===p?1:0), h=shuffle(DECK.slice()).slice(0,n);
   for(let k=0;k<S.teraN[p];k++) h.push("tera");
-  if(S.contract[p]) h.push(monoType(p)!=null?"tera":"contract");
   S.hand[p]=h;
 }
 // Shared ending of the draw and of the Safari: Future Sight, Terastal, Underdog, Knock Off, first lines.
@@ -1624,10 +1612,9 @@ function settle(bets){
   for(const p of P){
     const u=summary(S.team[p]).uniq; S.uniq0[p]=u;
     S.betHit[p]=!SAFARI()&&+bets[p]===u;
-    const bonus=S.under===p?1:0, low=S.betHit[p]&&+bets[p]<=3;
-    S.contract[p]=low?1:0;
-    S.teraT[p]=S.teraN[p]=Math.min(2,(S.wild[p]?1:0)+(S.betHit[p]&&!low?1:0)+bonus);
-    if(!SAFARI()) addLog(p,L("Future Sight ทาย "+bets[p]+" ได้จริง "+u+" → ","Future Sight guessed "+bets[p]+", got "+u+" → ")+(low?Q(QT.betHit)+L(" ทายต่ำถูกเป๊ะ! ได้การ์ด League Contract"," A low guess, spot on! League Contract card"):S.betHit[p]?Q(QT.betHit)+L(" ได้ Terastal +1"," +1 Terastal"):Q(QT.betMiss)));
+    const bonus=S.under===p?1:0;
+    S.teraT[p]=S.teraN[p]=Math.min(2,(S.wild[p]?1:0)+(S.betHit[p]?1:0)+bonus);
+    if(!SAFARI()) addLog(p,L("Future Sight ทาย "+bets[p]+" ได้จริง "+u+" → ","Future Sight guessed "+bets[p]+", got "+u+" → ")+(S.betHit[p]?Q(QT.betHit)+L(" ได้ Terastal +1"," +1 Terastal"):Q(QT.betMiss)));
     if(S.wild[p]) addLog(p,"Terastal → "+Q(QT.tera)+L(" ได้การ์ด Terastal เพิ่มในมือ"," A Terastal card joins your hand."));
     if(bonus) addLog(p,L("UNDERDOG: จั่วไพ่เพิ่ม 1 ใบ และได้ Terastal +1","UNDERDOG: 1 extra card and +1 Terastal"));
     deal(p);
@@ -1832,20 +1819,6 @@ function reveal(){
     }
     effect(p,o,x,false,out);
   }
-  // League Contracts resolve last, after every attack
-  for(const p of ord){
-    const x=pl[p]; if(x.card!=="contract") continue;
-    const t=x.type, b0=snap(), cnt=S.team[p].filter(y=>y===t).length;
-    if(S.mono[p]!=null||cnt<2){
-      out.ev.push({p,v:p,card:"contract",rows:[p],before:b0,after:b0,hit:[],block:[],ok:false,why:L("ตอนเซ็นสัญญา ธาตุ"+tn(t)+"ของ "+pname(p)+" เหลือ "+cnt+" ช่อง (ต้องมี 2 ช่องขึ้นไป) สัญญาจึงเป็นโมฆะ","At signing, "+pname(p)+" had "+cnt+" "+tn(t)+" slot(s) (2+ needed), so the contract is void.")});
-      out.res[p]="fail"; out.sfx.push("fail"); out.lines.push("League Contract ("+pname(p)+"): "+L("สัญญาเป็นโมฆะ! ","Contract void! ")+failLine()); addLog(p,L("League Contract เป็นโมฆะ","League Contract void")); continue;
-    }
-    S.team[p].fill(t); S.taken[p]=[]; S.teraMark[p]=[]; S.hid[p]=[]; S.mono[p]=t; S.noBan[other(p)]=true;
-    out.ev.push({p,v:p,card:"contract",rows:[p],before:b0,after:snap(),hit:S.team[p].map((_,i)=>[p,i]),block:[],ok:true,why:L(pname(p)+" เซ็นสัญญาจ้าง! ทั้ง 6 ช่องกลายเป็นธาตุ"+tn(t)+" เป็นหัวหน้ายิม: ไม่ติด Knock Off ไม่รับ Present และ "+pname(other(p))+" ห้ามใช้ Roar ใส่ผู้บริหาร",pname(p)+" signed the contract! All 6 slots became "+tn(t)+". As Gym Leader: ignores Knock Off, refuses Present, and "+pname(other(p))+" can't Roar at management.")});
-    out.res[p]="hit"; out.sfx.push("badge"); out.lines.push(L(pname(p)+" เซ็น League Contract! หัวหน้ายิมธาตุ"+tn(t)+"คนใหม่!",pname(p)+" signed the League Contract! New "+tn(t)+" Gym Leader!")); say(p,Q(QT.leader,t));
-    for(let i=0;i<N;i++) out.bump.push([p,i]);
-    addLog(p,L("League Contract: เป็นหัวหน้ายิมธาตุ"+tn(t),"League Contract: became the "+tn(t)+" Gym Leader"));
-  }
   S.flash=out.lines.join(" ");
   gymBattle();
   S.cmdN++;
@@ -1922,7 +1895,7 @@ function playScene(ev,k,total){
     box.appendChild(g);
   }
   const why=document.createElement("p"); why.className="scwhy"; why.textContent=ev.why; box.appendChild(why);
-  const kind=ev.card==="contract"?(ev.ok?"ok":"fail"):ev.kind==="protect"||!CARDS[ev.card]||!CARDS[ev.card].atk?"info":!ev.ok?"fail":ev.refl?"reflect":"ok";
+  const kind=ev.kind==="protect"||!CARDS[ev.card]||!CARDS[ev.card].atk?"info":!ev.ok?"fail":ev.refl?"reflect":"ok";
   const r=document.createElement("div"); r.className="scres "+kind; r.textContent=L(RES[kind][0],RES[kind][1]); r.hidden=true; box.appendChild(r);
   const fast=still();
   setTimeout(()=>{
@@ -1940,7 +1913,7 @@ function summaryScene(n,ord,show,out){
   for(const p of ord){
     const card=show[p].card, atk=CARDS[card]&&CARDS[card].atk;
     const ev=out.ev.filter(e=>e.p===p&&e.card===card).pop();
-    const res=card==="pass"?"info":card==="contract"?(out.res[p]==="hit"?"ok":"fail"):card==="mirror"?(out.res[p]==="mirror"?"ok":"fail"):!atk?"ok":out.res[p]==="hit"?"ok":out.res[p]==="reflect"?"reflect":"fail";
+    const res=card==="pass"?"info":card==="mirror"?(out.res[p]==="mirror"?"ok":"fail"):!atk?"ok":out.res[p]==="hit"?"ok":out.res[p]==="reflect"?"reflect":"fail";
     const row=document.createElement("div"); row.className="sumrow";
     const t=document.createElement("b"); t.textContent=pname(p)+" · "+cardName(card);
     const st=document.createElement("span"); st.className="scres "+res;
