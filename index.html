@@ -370,6 +370,13 @@ details.rules[open]>summary h2{margin-bottom:12px}
 .fsc span{font-family:var(--display);font-weight:600;font-size:14px}
 .fsc i{font-style:normal;font-size:9px;line-height:1.2;text-align:center}
 .fsc.hi{background:#fff3cf}
+.tour{max-width:440px}
+.tourart{width:96px;height:96px;display:grid;place-items:center;font-size:52px;border-radius:50%;border:5px solid var(--ink);background:linear-gradient(180deg,#ef4a51 0 46%,var(--ink) 46% 54%,#fff 54%);box-shadow:0 5px 0 rgba(0,0,0,.3)}
+.tour p{font-size:16px;line-height:1.6}
+.tourdots{display:flex;gap:6px}
+.tourdots i{width:10px;height:10px;border-radius:50%;background:var(--edge)}
+.tourdots i.on{background:var(--ink);width:24px;border-radius:99px}
+#tourNext.go{background:var(--yellow)}
 .fan{margin:0;text-align:center;font-size:12px;color:#8e97b5}
 @media (prefers-reduced-motion:reduce){body.rolling #roll,body.rolling .plate,.dialog::after,.slot.land,.say,.card,.badge-stage::before,.badge-stage svg{animation:none}}
 </style>
@@ -480,6 +487,17 @@ details.rules[open]>summary h2{margin-bottom:12px}
   </div>
 </div>
 
+<div class="veil" id="tourVeil" hidden role="dialog" aria-modal="true" aria-labelledby="tourTitle">
+  <div class="box card tour">
+    <div class="px lbl" id="tourStep"></div>
+    <div class="tourart" id="tourArt"></div>
+    <h2 id="tourTitle"></h2>
+    <p id="tourText"></p>
+    <div class="tourdots" id="tourDots"></div>
+    <div class="cwnav"><button id="tourBack" class="btn" type="button"></button><button id="tourNext" class="btn" type="button"></button></div>
+  </div>
+</div>
+
 <div class="veil" id="menuVeil" hidden role="dialog" aria-modal="true" aria-labelledby="menuTitle">
   <div class="box card menu">
     <div class="px lbl">MENU</div>
@@ -493,6 +511,7 @@ details.rules[open]>summary h2{margin-bottom:12px}
       <button id="copy" class="btn" type="button" disabled>คัดลอกผล</button>
       <label class="trow" for="layout"><span id="layoutL">จัดหน้า</span>
         <select id="layout"><option value="auto">อัตโนมัติ</option><option value="h">แนวนอน</option><option value="v">แนวตั้ง</option></select></label>
+      <button id="tourBtn" class="btn" type="button">📖 สอนเล่น</button>
       <button id="reset" class="btn" type="button" disabled>รีเซ็ต</button>
     </div>
     <button id="menuClose" class="btn" type="button">ปิด</button>
@@ -728,6 +747,27 @@ function renderModes(){
     b.addEventListener("click",()=>{setSeries(v); renderModes(); sfx("click");}); sb.appendChild(b);});
   $("modeGo").textContent=L("เริ่มเลย ✓","Let's go ✓");
 }
+/* ---------- First-time tour ---------- */
+const TOUR=[
+ ["🎲",["ยินดีต้อนรับสู่ Choice!","Welcome to Choice!"],["ที่นี่ดวงเป็นคนเลือกทีมให้คุณ เล่น 2 คนบนเครื่องเดียว สุ่มและสาปกันให้เสร็จ แล้วไปจัดทีมสู้จริงใน Pokémon Champions","Here, luck picks your team. Two players, one device: draw and curse each other here, then build and battle for real in Pokémon Champions."]],
+ ["🔮",["Future Sight","Future Sight"],["ก่อนสุ่ม ทายว่าทีมจะมีกี่ธาตุ ทาย 4–6 ถูกได้ Terastal ทาย 1–3 ถูก (ยากกว่า) ได้ League Contract ไว้เป็นหัวหน้ายิม มีตารางโอกาสให้ดูตอนทาย","Before the draw, guess how many types your team will have. A correct 4–6 earns Terastal; a correct 1–3 (harder) earns a League Contract to become Gym Leader. The odds are shown when you guess."]],
+ ["⚪",["สุ่มทีม 6 ช่อง","Draw 6 slots"],["แต่ละช่องคือโปเกมอน 1 ตัวที่มีธาตุนั้น สุ่ม 1 ธาตุเป็น Knock Off (ห้ามถือไอเทม) ได้ธาตุเดียวกัน 4 ช่องขึ้นไปเป็นหัวหน้ายิมทันที","Each slot is one Pokémon of that type. One type is Knock Off (no items). Get 4+ of one type and you're a Gym Leader."]],
+ ["🎴",["สั่งการแบบลับ 2 ครั้ง","2 secret commands"],["ทุกคำสั่ง เลือก Protect 1 ช่อง + การ์ด 1 ใบ จากไพ่ในมือ ส่งเครื่องให้กันโดยให้อีกฝ่ายหันหน้าหนี ระบบจะพาเลือกทีละขั้น","Each command: Protect 1 slot + play 1 card from your hand. Pass the device while the other looks away. The game walks you through it step by step."]],
+ ["🃏",["เปิดไพ่พร้อมกัน","Reveal together"],["ไพ่ทั้งสองฝ่ายพลิกพร้อมกัน แล้วดูทีละฉากว่าเกิดอะไรขึ้น ถ้าเดา Protect ถูก การ์ดของอีกฝ่ายจะล้มเหลว ส่วน Mirror Coat ทำให้การ์ดเด้งกลับ","Both cards flip at once, then each effect plays out scene by scene. Guess the right Protect and their card fails; a Mirror Coat bounces it back."]],
+ ["⏱",["จัดทีม แล้วแบทเทิล","Build, then battle"],["จบคำสั่งแล้วเริ่มจับเวลาจัดทีม ไปสู้ในเกม แล้วกลับมากดว่าใครชนะ ไม่ต้องจำอะไร แค่กดปุ่มเหลืองด้านล่างจอ ระบบบอกเสมอว่าทำอะไรต่อ","After the commands, start the team timer, battle in the game, then record the winner. Nothing to memorise: just press the yellow button at the bottom."]]];
+let tourK=0;
+function renderTour(){
+  const t=TOUR[tourK];
+  $("tourStep").textContent=L("สอนเล่น ","TUTORIAL ")+(tourK+1)+"/"+TOUR.length;
+  $("tourArt").textContent=t[0];
+  $("tourTitle").textContent=L(t[1][0],t[1][1]); $("tourText").textContent=L(t[2][0],t[2][1]);
+  $("tourDots").innerHTML=TOUR.map((_,i)=>'<i class="'+(i===tourK?"on":"")+'"></i>').join("");
+  $("tourBack").textContent=tourK?L("‹ ย้อน","‹ Back"):L("ข้าม","Skip");
+  $("tourNext").textContent=tourK<TOUR.length-1?L("ต่อไป ›","Next ›"):L("เริ่มเล่น ✓","Start ✓");
+  $("tourNext").classList.toggle("go",tourK===TOUR.length-1);
+}
+function openTour(){tourK=0; renderTour(); modal("tourVeil",true); $("tourNext").focus();}
+function closeTour(){H.seenTour=true; store(); modal("tourVeil",false);}
 function openModes(){renderModes(); modal("modeVeil",true); $("modeGo").focus();}
 const DECKINFO=[
  [["คำสาปประจำรอบ","Every round"],[["ko","Knock Off",["ถือได้อย่างเดียวคือความหวัง","The only thing you can hold is hope."],["สุ่ม 1 ธาตุทุกรอบ ช่องที่เป็นธาตุนั้นห้ามถือไอเทม","One type each round: those slots can't hold items."],""]]],
@@ -826,7 +866,7 @@ function applyLang(){
   {const o=$("series").querySelector('option[value="bo1"]'); if(o) o.textContent=L("แมตช์เดียว","Single match");} set("#itemBtn","สุ่มไอเทม","Draw items");
   [["auto","อัตโนมัติ","Auto"],["h","แนวนอน","Landscape"],["v","แนวตั้ง","Portrait"]].forEach(([v,th,en])=>{const o=$("layout").querySelector('option[value="'+v+'"]'); if(o) o.textContent=L(th,en);});
   $("full").textContent=document.fullscreenElement?L("ออกจากเต็มจอ","Exit full screen"):L("เต็มจอ","Full screen");
-  set("#reset","รีเซ็ต","Reset"); set("#menuBtn","⚙ เมนู","⚙ Menu"); set("#menuTitle","เมนู","Menu"); set("#menuClose","ปิด","Close"); set("#deckH","สำรับคำสาป","the curse deck"); set("#rulesH","📖 วิธีเล่น · HOW TO PLAY","📖 How to play"); set("#copy","คัดลอกผล","Copy result"); set("#lang","English","ภาษาไทย");
+  set("#reset","รีเซ็ต","Reset"); set("#menuBtn","⚙ เมนู","⚙ Menu"); set("#menuTitle","เมนู","Menu"); set("#menuClose","ปิด","Close"); set("#tourBtn","📖 สอนเล่น","📖 Tutorial"); set("#deckH","สำรับคำสาป","the curse deck"); set("#rulesH","📖 วิธีเล่น · HOW TO PLAY","📖 How to play"); set("#copy","คัดลอกผล","Copy result"); set("#lang","English","ภาษาไทย");
   $("mute").textContent=L("เสียง: ","Sound: ")+(MUTE?L("ปิด","off"):L("เปิด","on"));
   set(".mid > .note","ช่องที่เป็นธาตุนี้ติดสถานะ Knock Off ห้ามถือไอเทม","Slots of this type have Knock Off: no held item");
   set("#win > span","แบทเทิลจบแล้ว ใครชนะ?","Battle over. Who won?");
@@ -1306,7 +1346,7 @@ function render(){
 }
 
 /* ---------- Command wizard: one big step at a time ---------- */
-const anyVeil=()=>["menuVeil","modeVeil","rvVeil","veil","teraVeil","chartVeil","imgVeil","fsVeil","cmdVeil"].some(id=>$(id)&&!$(id).hidden);
+const anyVeil=()=>["tourVeil","menuVeil","modeVeil","rvVeil","veil","teraVeil","chartVeil","imgVeil","fsVeil","cmdVeil"].some(id=>$(id)&&!$(id).hidden);
 function slotBtn(q,i,sel,dis,fn){
   const b=document.createElement("button"); b.type="button"; b.className="sbtn"+(sel?" sel":"");
   const t=S.team[q][i], hid=isHid(q,i);
@@ -1981,7 +2021,10 @@ $("fabUndo").addEventListener("click",undo);
 $("menuBtn").addEventListener("click",()=>{modal("menuVeil",true); $("menuClose").focus(); sfx("click");});
 $("menuClose").addEventListener("click",()=>modal("menuVeil",false));
 $("modeBtn").addEventListener("click",()=>{openModes(); sfx("click");});
-$("modeGo").addEventListener("click",()=>{H.seenModes=true; store(); modal("modeVeil",false); sfx("click");});
+$("modeGo").addEventListener("click",()=>{H.seenModes=true; store(); modal("modeVeil",false); sfx("click"); if(!H.seenTour) openTour();});
+$("tourNext").addEventListener("click",()=>{if(tourK<TOUR.length-1){tourK++; renderTour(); sfx("click");} else {closeTour(); sfx("click");}});
+$("tourBack").addEventListener("click",()=>{if(tourK){tourK--; renderTour();} else closeTour(); sfx("click");});
+$("tourBtn").addEventListener("click",()=>{modal("menuVeil",false); openTour();});
 $("fsGo").addEventListener("click",()=>{if(!($("betA").value&&$("betB").value)) return; modal("fsVeil",false); roll();});
 $("fsClose").addEventListener("click",()=>modal("fsVeil",false));
 $("betA").addEventListener("change",()=>renderSteps()); $("betB").addEventListener("change",()=>renderSteps());
