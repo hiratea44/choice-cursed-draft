@@ -1249,7 +1249,6 @@ const RULES={
   ["Swagger","ให้อีกฝ่ายได้การ์ด Terastal 1 ใบ แต่คำสั่งถัดไปเขาสับสน การ์ดเล็งศัตรูที่ใช้จะถูกสุ่มเป้า มีโอกาส 50% โดนทีมตัวเอง ใช้ในคำสั่งสุดท้ายไม่ได้"],
   ["Role Play","ช่องของเรา 1 ช่องกลายเป็นธาตุที่อีกฝ่ายมีมากที่สุด (นับเฉพาะช่องที่มองเห็น)"],
   ["🚫 แบนธาตุ","ในหน้าทาย Future Sight แต่ละคนแบนได้ 1 ธาตุ ธาตุนั้นจะไม่ออกตอนสุ่มทีมของอีกฝ่าย (การ์ดเปลี่ยนธาตุทีหลังยังทำให้ได้ธาตุนั้น)"],
-  ["⭐ ตัวเอก (Ace)","คำสั่งแรกของรอบ แต่ละคนเลือกลับ 1 ช่องเป็นตัวเอก ถ้าการ์ดของอีกฝ่ายทำให้ธาตุช่องนั้นเปลี่ยน อีกฝ่ายได้การ์ด Terastal 1 ใบ เปิดเผยตอนจบคำสั่ง (ไม่มีใน Starter และ Color Draft)"],
   ["🏳 ยอมแพ้","ระหว่างสั่งการหรือก่อนบันทึกผล กดยอมแพ้ได้ อีกฝ่ายได้ 1 แต้ม รอบหน้าคนยอมแพ้เป็น Underdog (จั่วเพิ่ม 1 ใบ + Terastal)"],
   ["Mystery Box","กล่อง 50 ใบ ทุกกล่องมีธาตุ ผลัดกันเปิดจนทั้งสองทีมครบ 6 ช่อง: 📦 เดี่ยว (เก็บเองหรือยัดให้) · 🤝 แบ่งกัน (2 ธาตุ เก็บ 1 อีกธาตุไปหาอีกฝ่าย) · 👯 แฝด (ธาตุเดียวกัน 2 ช่อง เก็บหรือยัดทั้งคู่) · 🎉 แจกทั้งคู่ (ทั้งสองทีมได้ธาตุนั้นคนละช่อง) · 🎊 สามธาตุ (ส่ง 1 ให้อีกฝ่าย เก็บ 2) ถ้าทีมไหนเต็มแล้ว ธาตุจะไปอีกทีมแทน"],
   ["Color Draft","ไม่สุ่มธาตุ แต่ละฝ่ายสุ่มได้ 1 สีจาก 10 สีของโปเกเด็กซ์ (แดง น้ำเงิน เหลือง เขียว ดำ น้ำตาล ม่วง เทา ขาว ชมพู) ทั้งทีมต้องเป็นโปเกมอนสีนั้น จากนั้นสั่งการลับ 1 ครั้ง: ป้องกันสี · สุ่มสีอีกฝ่ายใหม่ · สลับสีกัน · สุ่มสีตัวเองใหม่"],
@@ -1297,7 +1296,6 @@ const RULES={
   ["Swagger","The opponent gets a Terastal card, but next command they're confused: their enemy-target card gets random targets, with a 50% chance of hitting their own team. Not on the last command."],
   ["Role Play","1 of your slots becomes the opponent's most common visible type."],
   ["🚫 Type ban","In the Future Sight pop-up each player may ban 1 type; it won't appear in the other team's draw (cards can still bring it in later)."],
-  ["⭐ Ace","On command 1 each side secretly stars 1 slot. If the other side's card changes that slot's type, they earn a Terastal card. Revealed when commands end (not in Starter or Color Draft)."],
   ["🏳 Concede","During commands or before recording a result you can concede: the other side scores, and you are the Underdog next round (+1 card, +Terastal)."],
   ["Mystery Box","50 boxes, every one holds types. Take turns until both teams have 6: 📦 single (keep or give) · 🤝 share (2 types, keep 1, the other goes to them) · 👯 twins (2 of a type, keep or give both) · 🎉 for both (each team gets one) · 🎊 triple (send 1, keep 2). If a team is full, the type goes to the other."],
   ["Color Draft","No types: each side draws 1 of the 10 Pokédex colors (red, blue, yellow, green, black, brown, purple, gray, white, pink) and the whole team must be that color. Then one secret command: guard · reroll theirs · swap · reroll yours."],
@@ -2092,8 +2090,9 @@ function describeDraft(d){
       :c==="fore"?n+": "+L("ช่อง ","slot ")+(d.slot+1)+L(" ของ "+pname(o)," of "+pname(o)):n);}
   return a.join(" · ");
 }
-// Ace: each side secretly stars 1 slot on command 1. If the other side's card changes its type, they earn a Terastal.
-const ACEON=()=>!STARTER()&&!COLOR();
+// Ace (secretly starring 1 slot on command 1) is switched off: it added a step before anyone got to play.
+// Turning ACEON back on restores the step, the hunt bonus and its log lines.
+const ACEON=()=>false;
 const needAce=p=>ACEON()&&S.ace[p]==null;
 const firstStep=p=>BUILD()&&S.seal[p].length?"build":needAce(p)?"ace":BARE()?"card":"protect";
 let OUTC=null;
