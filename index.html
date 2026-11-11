@@ -247,7 +247,14 @@ body.mode-blind h1 em{color:#ffb35c}
 body.mode-blind .steps .st.cur{background:#ffcf9a}
 /* Command wizard, Future Sight pop-up and floating button */
 .wrap{padding-bottom:120px}
-.cw{max-width:560px;gap:10px}
+.cw{--pc:var(--red);max-width:560px;gap:10px;outline:6px solid var(--pc);outline-offset:-2px}
+.cw[data-p="B"]{--pc:var(--blue)}
+.cwwho{align-self:stretch;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:4px 10px;margin:-14px -8px 2px;padding:10px 14px;background:var(--pc);color:#fff;border:3px solid var(--ink);border-radius:10px}
+.cwwho b{font-family:var(--display);font-weight:700;font-size:clamp(22px,6vw,30px);line-height:1.15;text-align:left}
+.cwwho .px{font-size:9px;opacity:.95;color:#fff}
+#cmdVeil.handoff{background:#0b0f1c}
+.cw .hoName{font-family:var(--display);font-weight:700;font-size:clamp(34px,10vw,52px);line-height:1.1;color:var(--pc)}
+.cw #cwNext.go,.cw .hoGo{background:var(--pc);color:#fff}
 .cwbody{width:100%;display:flex;flex-direction:column;gap:10px}
 .cwsub{margin:4px 0 0;font-family:var(--display);font-weight:600;font-size:15px;text-align:left}
 .sgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
@@ -549,8 +556,8 @@ body.mode-chaos h1 em{color:#fff}
 </div>
 
 <div class="veil" id="cmdVeil" hidden role="dialog" aria-modal="true" aria-labelledby="cwTitle">
-  <div class="box card cw">
-    <div class="px lbl" id="cwStep"></div>
+  <div class="box card cw" id="cwBox">
+    <div class="cwwho"><b id="cwWho"></b><span class="px" id="cwStep"></span></div>
     <h2 id="cwTitle"></h2>
     <p id="cwText"></p>
     <div id="cwBody" class="cwbody"></div>
@@ -1336,7 +1343,7 @@ function render(){
   $("serLine").textContent=H.series==="koth"?"👑 KING OF THE HILL · "+(H.koth.champ?H.koth.champ+L(" ชนะติด "," streak ")+H.koth.streak:L("ยังไม่มีแชมป์","no champion yet"))+(H.koth.best.n?L(" · สถิติ: "," · record: ")+H.koth.best.name+" "+H.koth.best.n:"")
     :"BEST OF 3 · "+H.ser.A+" – "+H.ser.B+(H.ser.champ?L(" · แชมป์: "," · Champion: ")+pname(H.ser.champ):"");
   for(const p of P){
-    const o=other(p), mine=d&&d.p===p, need=d&&d.ci!=null&&d.ci!=="pass"?CARDS[S.hand[d.p][d.ci]].need:null;
+    const o=other(p), mine=d&&d.p===p&&d.step!=="handoff", need=d&&d.ci!=null&&d.ci!=="pass"?CARDS[S.hand[d.p][d.ci]].need:null;
     if(!rolling) els[p].forEach((el,i)=>{
       const t=S.team[p][i], hid=isHid(p,i)&&t!=null;
       if(t==null||hid) blank(el); else paint(el,t);
@@ -1448,11 +1455,23 @@ function renderWizard(){
   v.hidden=!on; $("wrap").inert=anyVeil();
   if(!on) return;
   const p=d.p, o=other(p), st=d.step||"protect", body=$("cwBody"); body.textContent="";
+  $("cwBox").dataset.p=p; $("cwWho").textContent=pname(p); v.classList.toggle("handoff",st==="handoff");
   const order4=["protect","card","target","confirm"];
   const ord=BARE()?order4.slice(1):order4;
-  $("cwStep").textContent=pname(p)+" · COMMAND "+S.cmdN+"/"+S.maxCmd+" · "+L("ขั้น ","STEP ")+(ord.indexOf(st)+1)+"/"+ord.length;
+  $("cwStep").textContent="COMMAND "+S.cmdN+"/"+S.maxCmd+" · "+L("ขั้น ","STEP ")+(ord.indexOf(st)+1)+"/"+ord.length;
   const next=$("cwNext"), back=$("cwBack"); next.classList.remove("go");
   back.textContent=st==="protect"?L("ปิด","Close"):L("‹ ย้อน","‹ Back");
+  if(st==="handoff"){
+    $("cwStep").textContent="COMMAND "+S.cmdN+"/"+S.maxCmd;
+    $("cwTitle").textContent=L("ตาของ","Your turn,");
+    const nm=document.createElement("div"); nm.className="hoName"; nm.textContent=pname(p); body.appendChild(nm);
+    $("cwText").textContent=L("ส่งเครื่องให้ "+pname(p)+" แล้วให้ "+pname(o)+" หันหน้าหนี","Pass the device to "+pname(p)+". "+pname(o)+", look away.");
+    body.appendChild(sub(S.plan[o]?L("คำสั่งของ "+pname(o)+" ถูกซ่อนไว้แล้ว","Command from "+pname(o)+" is hidden."):L("ไพ่จะเปิดหลังกดปุ่มด้านล่าง","Your cards show after you press the button below.")));
+    back.textContent=L("ปิด","Close"); next.textContent=L("ฉันคือ "+pname(p)+" · เริ่ม ›","I'm "+pname(p)+" · Start ›"); next.classList.add("go"); next.disabled=false;
+    next.onclick=()=>{d.step=BARE()?"card":"protect"; render(); sfx("click");};
+    back.onclick=()=>{S.draft=null; render();};
+    return;
+  }
   if(st==="protect"){
     $("cwTitle").textContent=L("เลือกช่องที่จะ Protect","Choose a slot to Protect");
     $("cwText").textContent=L("การ์ดของอีกฝ่ายที่เล็งช่องนี้ หรือเล็งธาตุของช่องนี้ จะล้มเหลว","Opponent cards aimed at this slot, or at its type, will fail.")+(S.lastLock[p]!=null?L(" (เลือกช่องเดิมไว้ให้แล้ว)"," (Your last pick is preselected.)"):"");
@@ -1500,7 +1519,7 @@ function renderWizard(){
     $("cwTitle").textContent=L("ยืนยันคำสั่ง","Confirm your command");
     $("cwText").textContent=L("กดยืนยันแล้วคำสั่งจะถูกซ่อน จากนั้นส่งเครื่องให้อีกฝ่าย","Once confirmed it's hidden. Then pass the device over.");
     const s=document.createElement("p"); s.className="cwsum"; s.textContent=describeDraft(d); body.appendChild(s);
-    next.textContent=L("ยืนยัน ✓","Confirm ✓"); next.classList.add("go"); next.disabled=!draftDone(); next.onclick=()=>confirmCmd(p);
+    next.textContent=S.plan[o]?L("ยืนยัน ✓ แล้วเปิดคำสั่ง!","Confirm ✓ and reveal!"):L("ยืนยัน ✓ แล้วส่งต่อให้ "+pname(o),"Confirm ✓, then pass to "+pname(o)); next.classList.add("go"); next.disabled=!draftDone(); next.onclick=()=>confirmCmd(p);
   }
   if(st==="card"&&BARE()) back.textContent=L("ปิด","Close");
   back.onclick=()=>{
@@ -1650,7 +1669,7 @@ $("tmin").addEventListener("change",()=>{TEAM_MS=+$("tmin").value*60000; H.mins=
 /* ---------- Gym Leader: 4+ of one type. The badge must be accepted. ---------- */
 function checkChosen(){
   const p=P.find(q=>S.mono[q]==null&&monoType(q)!=null), v=$("veil");
-  if(!p){v.hidden=true; $("wrap").inert=false; return}
+  if(!p){v.hidden=true; $("wrap").inert=false; autoHand(); return}
   const t=monoType(p), n=S.team[p].filter(x=>x===t).length, o=pname(other(p));
   v.dataset.p=p; $("chBadge").innerHTML=badgeSVG(t);
   $("chTitle").textContent=L("ได้รับเข็มกลัดยิมธาตุ"+tn(t)+"!","You got the "+tn(t)+" Gym Badge!");
@@ -1774,6 +1793,9 @@ function openPick(p){
   S.draft={p,protect:BARE()?-1:S.lastLock[p],ci:null,type:null,mine:null,theirs:null,slot:null,tt:null,self:null,step:BARE()?"card":"protect"}; S.flash="";
   render(); sfx("click");
 }
+// The pass-the-device screen: opens on its own whenever a side is due to command.
+function handoff(p){S.draft={p,protect:BARE()?-1:S.lastLock[p],ci:null,type:null,mine:null,theirs:null,slot:null,tt:null,self:null,step:"handoff"};}
+function autoHand(){if(S.phase==="cmd"&&S.picker&&!S.draft&&!anyVeil()){handoff(S.picker); render();}}
 function chooseCard(p,k){
   const d=S.draft; if(!d||d.p!==p) return;
   Object.assign(d,{ci:k,type:null,mine:null,theirs:null,slot:null,tt:null,self:null});
@@ -1802,8 +1824,10 @@ function confirmCmd(p){
   saveUndo();
   S.plan[p]=Object.assign({},d,{card:d.ci==="pass"?"pass":S.hand[p][d.ci]}); S.draft=null;
   sfx("protect");
-  if(!S.plan[other(p)]){S.picker=other(p); S.flash=L("คำสั่งของ "+pname(p)+" ถูกซ่อนแล้ว","Command from "+pname(p)+" is hidden.");render(); return;}
-  S.picker=null; reveal();
+  if(!S.plan[other(p)]){S.picker=other(p); S.flash=L("คำสั่งของ "+pname(p)+" ถูกซ่อนแล้ว","Command from "+pname(p)+" is hidden."); handoff(S.picker); render(); return;}
+  S.picker=null;
+  if(!hasF("open")) P.forEach(q=>$("hand"+q).querySelectorAll(".cardbtn").forEach(b=>{b.className="cardbtn back"; b.disabled=true; b.innerHTML="<b>?</b>";}));
+  reveal();
 }
 const failLine=()=>Q(QT.fail);
 // A picture of both teams at one moment, for the step-by-step replay.
