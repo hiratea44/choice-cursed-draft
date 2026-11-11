@@ -324,6 +324,52 @@ body.mode-blind .steps .st.cur{background:#ffcf9a}
 .sumrow p{margin:0;width:100%;font-size:14px;line-height:1.5}
 @media (prefers-reduced-motion:reduce){.mt.chg,.mt.shake,.scres{animation:none}}
 @media (prefers-reduced-motion:reduce){.fi{transition:none}.rvvs,.rvs{animation:none}}
+/* Menu, mode picker, curse deck, Future Sight odds */
+.modebtn{background:var(--yellow);font-weight:600}
+.menu{max-width:440px}
+.menugrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;width:100%}
+.menugrid .btn{padding:12px 8px}
+.menugrid .trow{grid-column:1/-1;justify-content:center}
+.modes{max-width:620px}
+.modegrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;width:100%}
+.modecard{cursor:pointer;display:flex;flex-direction:column;align-items:flex-start;gap:4px;text-align:left;padding:12px;border:3px solid var(--ink);border-radius:12px;background:#fff;color:var(--ink);box-shadow:0 4px 0 var(--ink);font-family:var(--body);font-size:13px;line-height:1.4}
+.modecard b{font-family:var(--display);font-weight:600;font-size:18px}
+.modecard em{font-style:normal;font-family:var(--display);font-size:12px;padding:0 8px;border-radius:99px;border:2px solid var(--ink);background:var(--screen2)}
+.modecard.sel{outline:4px solid var(--yellow);transform:translateY(-3px)}
+.modecard:disabled{opacity:.5;cursor:not-allowed}
+.mball{width:34px;height:34px;border-radius:50%;border:4px solid var(--ink);background:linear-gradient(180deg,var(--mb,#d92b34) 0 44%,var(--ink) 44% 56%,#fff 56%)}
+.m-cursed{--mb:#d92b34}.m-safari{--mb:#4d9e45}.m-blind{--mb:#3b3f5c}.m-double{--mb:#6a39c2}
+.m-double .mball{background:radial-gradient(circle at 28% 28%,#f06aa8 0 12%,transparent 13%),radial-gradient(circle at 72% 28%,#f06aa8 0 12%,transparent 13%),linear-gradient(180deg,#6a39c2 0 44%,var(--ink) 44% 56%,#fff 56%)}
+.serrow{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px;width:100%}
+.serrow b{font-family:var(--display)}
+#serBtns{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+#serBtns .btn.on{background:var(--yellow)}
+#modeGo{font-size:18px;padding:12px 30px;background:var(--yellow)}
+details.rules>summary{list-style:none;cursor:pointer}
+details.rules>summary::-webkit-details-marker{display:none}
+details.rules>summary h2{margin:0;padding:6px;border-radius:8px}
+details.rules:not([open])>summary h2{background:var(--screen2)}
+details.rules[open]>summary h2{margin-bottom:12px}
+.deckg{margin:16px 0 8px;font-family:var(--display);font-weight:600;font-size:16px;color:var(--ink)}
+.deckgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,220px),1fr));gap:10px}
+.dcard{display:flex;flex-direction:column;gap:4px;padding:10px 12px;border:3px solid var(--ink);border-left-width:10px;border-radius:10px;background:#fff;box-shadow:0 3px 0 var(--ink)}
+.dcard b{font-family:var(--display);font-weight:600;font-size:17px;color:var(--ink);display:flex;justify-content:space-between;gap:6px}
+.dcard b em{font-style:normal;font-family:var(--px);font-size:9px;color:var(--muted);align-self:center}
+.dcard q{font-family:var(--display);font-weight:500;font-size:14px;color:var(--red2)}
+.dcard span{font-size:13.5px;line-height:1.5;color:var(--ink)}
+.dcard.c-ko{border-left-color:#1f2638}.dcard.c-roar{border-left-color:#d9542b}.dcard.c-trick{border-left-color:#2c68d6}.dcard.c-present{border-left-color:#e05aa0}.dcard.c-tera{border-left-color:#b59cff}
+.dcard.c-mirror{border-left-color:#7fc6d9}.dcard.c-sub{border-left-color:#35b565}.dcard.c-conv{border-left-color:#f6c61c}.dcard.c-contract{border-left-color:#c8961e}.dcard.c-gym{border-left-color:#c8961e}
+.cardbtn.c-contract,.fb.front.c-contract{border-left-color:#c8961e;border-top-color:#c8961e}.cardbtn.c-contract{border-left:10px solid #c8961e}
+.schead.c-contract{border-left-color:#c8961e}
+.fsodds{width:100%;display:flex;flex-direction:column;gap:6px;padding:10px;border:3px dashed var(--edge);border-radius:10px;font-size:13px}
+.fsodds>b{font-family:var(--display);font-size:14px}
+.fsodds p{margin:0;line-height:1.5}
+.fsgrid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:4px}
+.fsc{display:flex;flex-direction:column;align-items:center;padding:4px 2px;border:2px solid var(--ink);border-radius:8px;background:#fff}
+.fsc b{font-family:var(--px);font-size:12px}
+.fsc span{font-family:var(--display);font-weight:600;font-size:14px}
+.fsc i{font-style:normal;font-size:9px;line-height:1.2;text-align:center}
+.fsc.hi{background:#fff3cf}
 .fan{margin:0;text-align:center;font-size:12px;color:#8e97b5}
 @media (prefers-reduced-motion:reduce){body.rolling #roll,body.rolling .plate,.dialog::after,.slot.land,.say,.card,.badge-stage::before,.badge-stage svg{animation:none}}
 </style>
@@ -340,20 +386,11 @@ body.mode-blind .steps .st.cur{background:#ffcf9a}
       <p class="note" style="margin:4px 0 0;font-size:15px">ดวงเลือกให้ พร้อมแถมคำสาปมา</p>
       <div class="bar">
         <span class="px" id="round">ROUND 0</span>
-        <button id="undo" class="btn" type="button" disabled>ย้อนกลับ 1 ขั้น</button>
-        <button id="copy" class="btn" type="button" disabled>คัดลอกผล</button>
-        <button id="shot" class="btn" type="button" disabled>บันทึกรูป</button>
-        <button id="chart" class="btn" type="button">ตารางธาตุ</button>
-        <button id="mute" class="btn" type="button">เสียง: เปิด</button>
-        <button id="lang" class="btn" type="button">English</button>
-        <button id="full" class="btn" type="button">เต็มจอ</button>
-        <label class="trow" for="layout"><span id="layoutL">จัดหน้า</span>
-          <select id="layout"><option value="auto">อัตโนมัติ</option><option value="h">แนวนอน</option><option value="v">แนวตั้ง</option></select></label>
-        <label class="trow" for="mode"><span id="modeL">โหมด</span>
-          <select id="mode"><option value="cursed">Cursed Draft</option><option value="double">Double Cursed</option><option value="safari">Safari Draft</option><option value="blind">Blind Draft</option></select></label>
-        <label class="trow" for="series"><span id="seriesL">ซีรีส์</span>
-          <select id="series"><option value="bo1">แมตช์เดียว</option><option value="bo3">Best of 3</option></select></label>
-        <button id="reset" class="btn" type="button" disabled>รีเซ็ต</button>
+        <button id="modeBtn" class="btn modebtn" type="button">🎮 Cursed Draft ▾</button>
+        <button id="menuBtn" class="btn" type="button">⚙ เมนู</button>
+        <button id="undo" class="btn" type="button" disabled hidden>ย้อนกลับ 1 ขั้น</button>
+        <div hidden><select id="mode"><option value="cursed">Cursed Draft</option><option value="double">Double Cursed</option><option value="safari">Safari Draft</option><option value="blind">Blind Draft</option></select>
+          <select id="series"><option value="bo1">แมตช์เดียว</option><option value="bo3">Best of 3</option></select></div>
       </div>
     </div>
   </header>
@@ -391,24 +428,14 @@ body.mode-blind .steps .st.cur{background:#ffcf9a}
     <div id="lanes"></div>
   </div>
 
-  <section class="box tcount" aria-label="TRAINER COUNT">
-    <h2>TRAINER COUNT</h2>
-    <div class="tcrow"><span>CURSED DRAFT</span><b id="statCursed">–</b></div>
-    <div class="tcrow cal"><span>DOUBLE CURSED</span><b id="statCalamity">–</b></div>
-    <div class="tcrow saf"><span>SAFARI DRAFT</span><b id="statSafari">–</b></div>
-    <div class="tcrow bli"><span>BLIND DRAFT</span><b id="statBlind">–</b></div>
-    <div class="tcrow tot"><span>TOTAL</span><b id="statTotal">–</b></div>
-    <p class="tcnote" id="tcNote">นับ 2 คนต่อการสุ่มทีม 1 ครั้ง · ยอดรวมจากทุกเครื่อง</p>
-  </section>
-
   <section class="box hist" aria-label="ประวัติรอบก่อนหน้า">
     <h2>BATTLE LOG</h2>
     <div id="hist"></div>
     <div class="hfoot"><button id="hclear" class="btn" type="button">ล้างคะแนนและประวัติ</button></div>
   </section>
 
-  <div class="box rules">
-    <h2>HOW TO PLAY</h2>
+  <details class="box rules" id="rulesBox">
+    <summary><h2 id="rulesH">📖 วิธีเล่น · HOW TO PLAY</h2></summary>
     <ol>
       <li><b>Future Sight (มองอนาคต):</b> ก่อนสุ่ม ทั้งสองฝ่ายต้องทายว่าในทีมตัวเองจะมีกี่ธาตุ ตั้งแต่ 1 ถึง 6 (ธาตุที่ซ้ำกันนับเป็นธาตุเดียว) ทายถูกได้ Terastal 1 ครั้ง</li>
       <li><b>สุ่มทีม:</b> แต่ละฝ่ายได้ธาตุ 6 ช่องจาก 18 ธาตุ ซ้ำกันได้ ธาตุเดียวกันออกได้สูงสุด 6 ช่อง 1 ช่องคือโปเกมอน 1 ตัวที่มีธาตุนั้น</li>
@@ -423,11 +450,9 @@ body.mode-blind .steps .st.cur{background:#ffcf9a}
       <li><b>Run (หนี):</b> สละสิทธิ์ที่เหลือทั้งหมดของตัวเอง</li>
       <li><b>Team Preview:</b> เมื่อใช้สิทธิ์ครบ กดเริ่มจับเวลา ทั้งสองฝ่ายมีเวลาจัดทีมตามที่ตั้งไว้ (ค่าเริ่มต้น 2 นาที) จบแบทเทิลแล้วกดบันทึกว่าใครชนะ</li>
     </ol>
-    <h2 class="ch2">THE FIVE CURSES</h2>
-    <div id="curses" class="curses"></div>
-    <h2 class="ch2">THE CURSE HAND</h2>
-    <div id="tools" class="curses"></div>
-  </div>
+    <h2 class="ch2">THE CURSE DECK · <span id="deckH">สำรับคำสาป</span></h2>
+    <div id="deck"></div>
+  </details>
   <div class="fab" id="fab"><button id="fabUndo" class="btn" type="button" aria-label="Undo">↶</button><button id="fabMain" class="btn" type="button"></button><button id="fabAlt" class="btn" type="button" hidden></button></div>
   <p class="fan">กติกาแฟนเมดสำหรับเล่นกับเพื่อน ไม่เกี่ยวข้องกับเจ้าของลิขสิทธิ์เกม</p>
 </div>
@@ -452,6 +477,36 @@ body.mode-blind .steps .st.cur{background:#ffcf9a}
     </div>
     <div class="rvscene box" id="rvScene" hidden></div>
     <div class="rvnav"><button id="rvSkip" class="btn" type="button" hidden>ข้ามไปสรุป</button><button id="rvOk" class="btn" type="button" hidden>ดูผล</button></div>
+  </div>
+</div>
+
+<div class="veil" id="menuVeil" hidden role="dialog" aria-modal="true" aria-labelledby="menuTitle">
+  <div class="box card menu">
+    <div class="px lbl">MENU</div>
+    <h2 id="menuTitle">เมนู</h2>
+    <div class="menugrid">
+      <button id="lang" class="btn" type="button">English</button>
+      <button id="mute" class="btn" type="button">เสียง: เปิด</button>
+      <button id="full" class="btn" type="button">เต็มจอ</button>
+      <button id="chart" class="btn" type="button">ตารางธาตุ</button>
+      <button id="shot" class="btn" type="button" disabled>บันทึกรูป</button>
+      <button id="copy" class="btn" type="button" disabled>คัดลอกผล</button>
+      <label class="trow" for="layout"><span id="layoutL">จัดหน้า</span>
+        <select id="layout"><option value="auto">อัตโนมัติ</option><option value="h">แนวนอน</option><option value="v">แนวตั้ง</option></select></label>
+      <button id="reset" class="btn" type="button" disabled>รีเซ็ต</button>
+    </div>
+    <button id="menuClose" class="btn" type="button">ปิด</button>
+  </div>
+</div>
+
+<div class="veil" id="modeVeil" hidden role="dialog" aria-modal="true" aria-labelledby="modeTitle">
+  <div class="box card modes">
+    <div class="px lbl">SELECT MODE</div>
+    <h2 id="modeTitle">เลือกโหมด</h2>
+    <p id="modeNote"></p>
+    <div id="modeGrid" class="modegrid"></div>
+    <div class="serrow"><b id="serL">ซีรีส์</b><div id="serBtns"></div></div>
+    <button id="modeGo" class="btn" type="button">เริ่มเลย ✓</button>
   </div>
 </div>
 
@@ -651,7 +706,57 @@ function drawTools(){
   const box=$("tools"); if(!box) return; box.textContent="";
   for(const c of TOOLS){const d=document.createElement("div"); d.className="ccard"; const h=document.createElement("h3"); const x=LANG==="en"?c.en:c.th; h.textContent=x[0]; const p=document.createElement("p"); p.textContent=x[1]; d.append(h,p); box.appendChild(d);}
 }
+const MODEINFO={
+ cursed:{n:"Cursed Draft",lv:["มือใหม่","Beginner"],d:["สุ่มทีม 6 ช่อง แล้วสาปกันด้วยการ์ด 2 คำสั่ง เริ่มจากโหมดนี้","Draw 6 slots, then curse each other over 2 commands. Start here."]},
+ safari:{n:"Safari Draft",lv:["วางแผน","Strategy"],d:["ไม่สุ่ม! ผลัดกันหยิบธาตุจากทุ่ง 14 ธาตุ ธาตุที่เหลือเป็น Knock Off","No draw! Take turns picking from 14 types. A leftover becomes Knock Off."]},
+ blind:{n:"Blind Draft",lv:["ปั่น","Chaos"],d:["ทุกทีมมี 2 ช่องถูกซ่อน เล็งแบบเดาดวง เปิดเผยตอนจบคำสั่ง","2 slots per team stay hidden. Aim blind; all revealed at the end."]},
+ double:{n:"Double Cursed",lv:["โหด","Hard"],d:["สาปซ้อน: จบคำสั่งแล้วทุกช่องถูกยัดไอเทม + Mega Stone ห้ามเปลี่ยน","Every slot is forced to hold an item, plus a Mega Stone. No swaps."]}};
+function renderModes(){
+  const can=S.phase==="idle"||S.phase==="done";
+  $("modeTitle").textContent=L("เลือกโหมด","Choose a mode");
+  $("modeNote").textContent=can?L("แตะโหมดที่อยากเล่น เปลี่ยนได้ทุกครั้งที่จบรอบ","Tap a mode. You can switch whenever a round ends."):L("กำลังเล่นอยู่ เปลี่ยนโหมดได้ตอนจบรอบ","A round is in progress. Switch modes when it ends.");
+  const g=$("modeGrid"); g.textContent="";
+  ["cursed","safari","blind","double"].forEach(k=>{
+    const m=MODEINFO[k], b=document.createElement("button"); b.type="button"; b.className="modecard m-"+k+(H.mode===k?" sel":""); b.disabled=!can;
+    b.innerHTML='<i class="mball"></i><b>'+m.n+'</b><em>'+L(m.lv[0],m.lv[1])+'</em><span>'+L(m.d[0],m.d[1])+'</span>';
+    b.addEventListener("click",()=>{setMode(k); renderModes(); sfx("click");}); g.appendChild(b);
+  });
+  $("serL").textContent=L("ซีรีส์","Series");
+  const sb=$("serBtns"); sb.textContent="";
+  [["bo1",L("แมตช์เดียว","Single match")],["bo3",L("Best of 3 + Underdog","Best of 3 + Underdog")]].forEach(([v,t])=>{
+    const b=document.createElement("button"); b.type="button"; b.className="btn"+(H.series===v?" on":""); b.textContent=t; b.disabled=!can;
+    b.addEventListener("click",()=>{setSeries(v); renderModes(); sfx("click");}); sb.appendChild(b);});
+  $("modeGo").textContent=L("เริ่มเลย ✓","Let's go ✓");
+}
+function openModes(){renderModes(); modal("modeVeil",true); $("modeGo").focus();}
+const DECKINFO=[
+ [["คำสาปประจำรอบ","Every round"],[["ko","Knock Off",["ถือได้อย่างเดียวคือความหวัง","The only thing you can hold is hope."],["สุ่ม 1 ธาตุทุกรอบ ช่องที่เป็นธาตุนั้นห้ามถือไอเทม","One type each round: those slots can't hold items."],""]]],
+ [["การ์ดโจมตี","Attack cards"],[
+   ["roar","Roar",["เสียงเดียว ทั้งธาตุต้องถอย","One roar, and a whole type retreats."],["เลือกธาตุของอีกฝ่าย ทุกช่องธาตุนั้นสุ่มใหม่","Every opponent slot of a chosen type is redrawn."],"×2"],
+   ["trick","Trick",["สิ่งที่เจ้าให้ไป คือสิ่งที่เจ้าไม่อยากได้","What you give away is what you never wanted."],["แลกช่องของเรากับช่องของอีกฝ่าย ได้มาแล้วเอาคืนไม่ได้","Swap a slot with theirs. Taken slots can't be taken back."],"×2"],
+   ["present","Present",["ของขวัญที่ไม่ได้ขอ ห้ามคืน","An unasked-for gift. No returns."],["ยัดไอเทมสุ่มให้ทุกช่องของธาตุที่เลือก","Force random items onto every slot of a type."],"×2"],
+   ["tera","Terastal",["มงกุฎที่สวมให้ ไม่ใช่ของขวัญ","A crown placed on your head is no gift."],["เปลี่ยนธาตุอีกฝ่าย 1 ช่องเป็นธาตุที่เลือก ได้จากโชค 1/6 หรือทาย 4–6 ถูก","Change 1 opponent slot's type. From 1/6 luck or a correct 4–6 guess."],"★"]]],
+ [["การ์ดป้องกันและแก้ทีม","Defense and fixes"],[
+   ["mirror","Mirror Coat",["สิ่งที่ส่งมา จะกลับไปหาเจ้าของ","What you send comes back to you."],["ถ้าอีกฝ่ายโจมตีในคำสั่งเดียวกัน การ์ดเด้งกลับ (Trick แค่ล้มเหลว)","If they attack the same command, it bounces back (Trick just fails)."],"×1"],
+   ["sub","Substitute",["ตัวจริงอยู่ข้างหลัง","The real one hides behind."],["ช่องที่เลือกถูกป้องกันถาวรจนจบรอบ","The chosen slot stays protected all round."],"×1"],
+   ["conv","Conversion",["ไม่ชอบธาตุนี้ ก็เปลี่ยนซะ","Don't like it? Change it."],["สุ่มธาตุใหม่ให้ช่องของตัวเอง 1 ช่อง","Redraw one of your own slots."],"×1"]]],
+ [["การ์ดพิเศษ","Special"],[
+   ["contract","League Contract",["เซ็นแล้ว ห้ามลาออก","Signed. No resigning."],["ได้เมื่อทาย Future Sight 1–3 ถูก เป็นหัวหน้ายิมของธาตุที่มี 2 ช่องขึ้นไป ทำงานเป็นอย่างสุดท้าย","From a correct 1–3 guess. Become Gym Leader of a type you hold 2+ of. Resolves last."],"★"],
+   ["gym","Gym Leader",["ไม่มีปุ่มปฏิเสธ","There is no decline button."],["ได้ธาตุเดียวกัน 4 ช่องขึ้นไป ทั้งทีมเป็นธาตุนั้น ไม่โดน Roar, Present, Knock Off แต่แบทเทิลจริงมีจุดอ่อนเดียว","4+ of one type: the whole team turns into it. Immune to Roar, Present, Knock Off, but one weakness in battle."],""]]]];
 function drawCurses(){
+  const box=$("deck"); if(!box) return; box.textContent="";
+  for(const [gt,items] of DECKINFO){
+    const h=document.createElement("h3"); h.className="deckg"; h.textContent=L(gt[0],gt[1]); box.appendChild(h);
+    const g=document.createElement("div"); g.className="deckgrid";
+    for(const [k,n,tag,rule,cnt] of items){
+      const d=document.createElement("div"); d.className="dcard c-"+k;
+      d.innerHTML="<b>"+n+(cnt?"<em>"+cnt+"</em>":"")+"</b><q></q><span></span>";
+      d.querySelector("q").textContent=L(tag[0],tag[1]); d.querySelector("span").textContent=L(rule[0],rule[1]); g.appendChild(d);
+    }
+    box.appendChild(g);
+  }
+}
+function drawCursesOld(){
   drawTools();
   const box=$("curses"); box.textContent="";
   for(const c of CURSES){
@@ -667,8 +772,8 @@ function drawCurses(){
 const RULES={
  th:[
   ["โหมด","Cursed Draft สุ่มทีมปกติ · Double Cursed สุ่มไอเทมให้ทุกช่องด้วย · Safari Draft ผลัดกันหยิบธาตุเอง · Blind Draft ทีมถูกซ่อนไว้ฝ่ายละ 2 ช่อง เลือกได้ที่ช่องโหมด และเปิดซีรีส์ Best of 3 ได้ทุกโหมด"],
-  ["Future Sight (มองอนาคต)","ก่อนสุ่ม ทั้งสองฝ่ายทายว่าในทีมตัวเองจะมีกี่ธาตุ 1 ถึง 6 (ธาตุซ้ำนับเป็นธาตุเดียว) ทายถูกได้การ์ด Terastal 1 ใบ (Safari Draft ไม่ต้องทาย)"],
-  ["สุ่มทีม","แต่ละฝ่ายได้ธาตุ 6 ช่องจาก 18 ธาตุ ซ้ำกันได้ ธาตุเดียวกันออกได้สูงสุด 6 ช่อง 1 ช่องคือโปเกมอน 1 ตัวที่มีธาตุนั้น"],
+  ["Future Sight (มองอนาคต)","ก่อนสุ่ม ทั้งสองฝ่ายทายว่าในทีมตัวเองจะมีกี่ธาตุ 1 ถึง 6 (ธาตุซ้ำนับเป็นธาตุเดียว) รางวัล 2 ระดับ: ทาย 4–6 ถูกได้การ์ด Terastal · ทาย 1–3 ถูกได้การ์ด League Contract โอกาสโดยประมาณ: 1 ธาตุ <0.1% · 2 ธาตุ 1% · 3 ธาตุ 9% · 4 ธาตุ 31% · 5 ธาตุ 41% · 6 ธาตุ 18% (Safari Draft ไม่ต้องทาย)"],
+  ["สุ่มทีม","แต่ละฝ่ายได้ธาตุ 6 ช่องจาก 18 ธาตุ ซ้ำกันได้ ธาตุเดียวกันออกได้สูงสุด 6 ช่อง มีธาตุดึงดูด: แต่ละช่องมีโอกาส 15% ที่จะออกซ้ำกับธาตุที่ทีมมีอยู่แล้ว 1 ช่องคือโปเกมอน 1 ตัวที่มีธาตุนั้น"],
   ["Knock Off","สุ่ม 1 ธาตุกลางต่อรอบ ช่องที่เป็นธาตุนั้นห้ามถือไอเทม"],
   ["Gym Leader (หัวหน้ายิม)","ได้ธาตุเดียวกัน 4 ช่องขึ้นไปเมื่อไร ต้องรับเข็มกลัดทันที ทั้งทีมกลายเป็นธาตุนั้น ไม่ติด Knock Off ไม่รับ Present และอีกฝ่ายใช้ Roar ไม่ได้"],
   ["ไพ่คำสาป (Curse Hand)","หลังสุ่ม แต่ละฝ่ายจั่วการ์ด 3 ใบจากกอง Roar ×2, Trick ×2, Present ×2, Mirror Coat, Substitute, Conversion บวกการ์ด Terastal ที่ได้ (สูงสุด 2 ใบ) ไพ่ในมือคว่ำไว้ อีกฝ่ายมองไม่เห็น"],
@@ -681,6 +786,7 @@ const RULES={
   ["Mirror Coat","ถ้าอีกฝ่ายใช้การ์ดโจมตีในคำสั่งเดียวกัน Roar, Present, Terastal สะท้อนกลับใส่เจ้าของ ส่วน Trick ล้มเหลว"],
   ["Substitute","เลือกช่องของตัวเอง ช่องนั้นถูกป้องกันถาวรจนจบรอบ"],
   ["Conversion","สุ่มธาตุใหม่ให้ช่องของตัวเอง 1 ช่อง"],
+  ["League Contract","ได้เมื่อทาย Future Sight 1–3 ถูก ใช้แทนการ์ด 1 คำสั่ง เลือกธาตุในทีมที่มี 2 ช่องขึ้นไป ทำงานเป็นอย่างสุดท้ายของคำสั่ง ถ้าตอนนั้นธาตุนั้นยังเหลือ 2 ช่องขึ้นไป ทั้งทีมกลายเป็นธาตุนั้นและเป็นหัวหน้ายิม ไม่อย่างนั้นสัญญาเป็นโมฆะ ถ้าเป็นหัวหน้ายิมอยู่แล้ว การ์ดนี้เปลี่ยนเป็น Terastal ถ้าทั้งสองฝ่ายเป็นหัวหน้ายิม = GYM BATTLE!"],
   ["Double Cursed (สาปซ้อน)","โหมดที่โหดกว่า จบคำสั่งแล้วทุกช่องได้ไอเทมสุ่มจาก Pokémon Champions ตามธาตุอัตโนมัติ ไม่ซ้ำกันในทีม ช่อง Knock Off ไม่ได้ ไอเทมจาก Present คงอยู่ และทุกทีมได้ Mega Stone 1 ช่อง พร้อมไอเทมสำรอง ห้ามเปลี่ยน"],
   ["Safari Draft","เปิดทุ่ง 14 ธาตุ ผลัดกันหยิบแบบงู (A B B A A B B A …) จนได้คนละ 6 ช่อง ธาตุที่เหลือ 2 อัน สุ่ม 1 อันเป็น Knock Off"],
   ["Blind Draft","หลังสุ่ม แต่ละทีมมี 2 ช่องที่ถูกซ่อนจากทุกคน การ์ดยังเล็งช่องที่ซ่อนได้ (เสี่ยงดวง) และเปิดเผยทั้งหมดเมื่อจบคำสั่ง"],
@@ -688,8 +794,8 @@ const RULES={
   ["Team Preview","จบคำสั่งแล้ว กดเริ่มจับเวลา จัดทีมตามเวลาที่ตั้งไว้ จบแบทเทิลแล้วกดบันทึกว่าใครชนะ"]],
  en:[
   ["Modes","Cursed Draft: the classic draw · Double Cursed: every slot also gets an item · Safari Draft: take turns picking types · Blind Draft: 2 slots per team stay hidden. Best of 3 can be switched on in any mode."],
-  ["Future Sight","Before the draw, both sides guess how many different types their team will have, 1 to 6 (repeats count once). A correct guess earns a Terastal card. (Not used in Safari Draft.)"],
-  ["The draw","Each side gets 6 slots drawn from the 18 types. Repeats are allowed, up to all 6 slots of the same type. One slot is one Pokémon that has that type."],
+  ["Future Sight","Before the draw, both sides guess how many different types their team will have, 1 to 6 (repeats count once). Two reward tiers: a correct 4–6 guess earns a Terastal card; a correct 1–3 guess earns a League Contract. Rough odds: 1 type <0.1% · 2: 1% · 3: 9% · 4: 31% · 5: 41% · 6: 18%. (Not used in Safari Draft.)"],
+  ["The draw","Each side gets 6 slots drawn from the 18 types. Repeats are allowed, up to all 6 slots of the same type. Type attraction: each slot has a 15% chance to repeat a type the team already has. One slot is one Pokémon that has that type."],
   ["Knock Off","One type is drawn for the round. Slots of that type can't hold an item."],
   ["Gym Leader","Get 4 or more slots of the same type and the badge is yours, no refusals. The whole team becomes that type, ignores Knock Off, refuses Present, and can't be roared at."],
   ["Curse Hand","After the draw each side draws 3 cards from a deck of Roar ×2, Trick ×2, Present ×2, Mirror Coat, Substitute and Conversion, plus any Terastal cards earned (up to 2). Hands stay face-down."],
@@ -702,6 +808,7 @@ const RULES={
   ["Mirror Coat","If the opponent attacks in the same command, Roar, Present and Terastal bounce back onto their own team, and Trick fails."],
   ["Substitute","Pick one of your own slots: it stays protected for the rest of the round."],
   ["Conversion","Redraw the type of one of your own slots."],
+  ["League Contract","From a correct 1–3 Future Sight guess. Costs one command. Pick a type you hold 2+ of. It resolves last in the command: if 2+ of that type remain, the whole team becomes that type and you are Gym Leader; otherwise the contract is void. Already a Gym Leader? It becomes a Terastal card. Both sides Gym Leaders = GYM BATTLE!"],
   ["Double Cursed","The harsher mode. After the commands every slot automatically gets a type-matched item from the Pokémon Champions pool, no duplicates within a team. Knock Off slots get nothing, Present items stay, and each team gets one Mega Stone slot with a backup item. No swaps."],
   ["Safari Draft","14 types appear on the field. Take turns picking in snake order (A B B A A B B A …) until both have 6. One of the 2 leftovers becomes the Knock Off type."],
   ["Blind Draft","After the draw, 2 slots on each team are hidden from everyone. Cards can still target hidden slots (a gamble). Everything is revealed when the commands end."],
@@ -719,7 +826,7 @@ function applyLang(){
   {const o=$("series").querySelector('option[value="bo1"]'); if(o) o.textContent=L("แมตช์เดียว","Single match");} set("#itemBtn","สุ่มไอเทม","Draw items");
   [["auto","อัตโนมัติ","Auto"],["h","แนวนอน","Landscape"],["v","แนวตั้ง","Portrait"]].forEach(([v,th,en])=>{const o=$("layout").querySelector('option[value="'+v+'"]'); if(o) o.textContent=L(th,en);});
   $("full").textContent=document.fullscreenElement?L("ออกจากเต็มจอ","Exit full screen"):L("เต็มจอ","Full screen");
-  set("#reset","รีเซ็ต","Reset"); set("#copy","คัดลอกผล","Copy result"); set("#lang","English","ภาษาไทย");
+  set("#reset","รีเซ็ต","Reset"); set("#menuBtn","⚙ เมนู","⚙ Menu"); set("#menuTitle","เมนู","Menu"); set("#menuClose","ปิด","Close"); set("#deckH","สำรับคำสาป","the curse deck"); set("#rulesH","📖 วิธีเล่น · HOW TO PLAY","📖 How to play"); set("#copy","คัดลอกผล","Copy result"); set("#lang","English","ภาษาไทย");
   $("mute").textContent=L("เสียง: ","Sound: ")+(MUTE?L("ปิด","off"):L("เปิด","on"));
   set(".mid > .note","ช่องที่เป็นธาตุนี้ติดสถานะ Knock Off ห้ามถือไอเทม","Slots of this type have Knock Off: no held item");
   set("#win > span","แบทเทิลจบแล้ว ใครชนะ?","Battle over. Who won?");
@@ -980,6 +1087,7 @@ function setMode(v){
   $("mode").value=H.mode;
   for(const k in MODES) document.body.classList.toggle("mode-"+k,H.mode===k);
   $("modeName").textContent=MODES[H.mode];
+  if($("modeBtn")) $("modeBtn").textContent="🎮 "+MODEINFO[H.mode].n+" ▾";
   if(typeof S!=="undefined"){applyLang(); render();}
 }
 function setSeries(v){H.series=v==="bo3"?"bo3":"bo1"; store(); $("series").value=H.series; if(typeof S!=="undefined") render();}
@@ -989,7 +1097,7 @@ const fresh=round=>({phase:"idle",round,flash:"",koi:pick(KO_TH.length),items:{A
   lock:{A:null,B:null},sub:{A:[],B:[]},taken:{A:[],B:[]},gift:{A:Array(N).fill(null),B:Array(N).fill(null)},
   winner:null,id:0,noBan:{A:false,B:false},mono:{A:null,B:null},teraN:{A:0,B:0},teraT:{A:0,B:0},teraMark:{A:[],B:[]},uniq0:{A:0,B:0},betHit:{A:false,B:false},
   hand:{A:[],B:[]},used:{A:[],B:[]},cmdN:0,picker:null,plan:{A:null,B:null},draft:null,coin:pick(2),hid:{A:[],B:[]},
-  pool:[],poolTaken:[],sOrder:[],spick:0,under:null,pendItems:false,lastLock:{A:null,B:null}});
+  pool:[],poolTaken:[],sOrder:[],spick:0,under:null,pendItems:false,lastLock:{A:null,B:null},contract:{A:0,B:0},gb:false});
 let S=fresh(0);
 const els={A:[],B:[]};
 for(const p of P) for(let i=0;i<N;i++){
@@ -1026,13 +1134,16 @@ const CARDS={
  mirror:{n:"Mirror Coat",need:null,atk:0,th:"สะท้อนการ์ดโจมตีของอีกฝ่ายในคำสั่งนี้กลับไปหาเจ้าของ",en:"Reflects the opponent's attack this command back at them"},
  sub:{n:"Substitute",need:"self",atk:0,th:"ตัวแทน: ช่องที่เลือกถูกป้องกันถาวรจนจบรอบ",en:"A stand-in: the chosen slot stays protected for the rest of the round"},
  conv:{n:"Conversion",need:"self",atk:0,th:"สุ่มธาตุใหม่ให้ช่องของตัวเอง 1 ช่อง",en:"Redraw the type of one of your own slots"}};
+CARDS.contract={n:"League Contract",need:"own",atk:0,th:"เซ็นสัญญาเป็นหัวหน้ายิมของธาตุที่มี 2 ช่องขึ้นไป ทำงานเป็นอย่างสุดท้าย",en:"Sign on as Gym Leader of a type you hold 2+ of. Resolves last"};
 const DECK=["roar","roar","trick","trick","present","present","mirror","sub","conv"];
+// Future Sight odds with the 15% type attraction (simulated), and the reward for each guess.
+const FS_ODDS=["<0.1%","1%","9%","31%","41%","18%"];
 const CAL=()=>H.mode==="double", SAFARI=()=>H.mode==="safari", BLIND=()=>H.mode==="blind";
 const isHid=(p,i)=>S.hid[p].includes(i)&&S.phase!=="done";
 const guarded=(p,i)=>i===S.lock[p]||S.sub[p].includes(i);
 const visTypes=p=>[...new Set(S.team[p].filter((t,i)=>t!=null&&!isHid(p,i)))];
-const typeOpts=(p,card)=>{const o=other(p); if(card==="roar") return S.noBan[p]?[]:visTypes(o); if(card==="present") return S.mono[o]!=null?[]:visTypes(o).filter(t=>t!==S.curse); return [];};
-const canPlay=(p,card)=>CARDS[card].need!=="type"||typeOpts(p,card).length>0;
+const typeOpts=(p,card)=>{const o=other(p); if(card==="contract"){ if(S.mono[p]!=null) return []; const c=counts(S.team[p].filter((t,i)=>!isHid(p,i))); return Object.keys(c).filter(k=>c[k]>=2).map(Number);} if(card==="roar") return S.noBan[p]?[]:visTypes(o); if(card==="present") return S.mono[o]!=null?[]:visTypes(o).filter(t=>t!==S.curse); return [];};
+const canPlay=(p,card)=>(CARDS[card].need!=="type"&&CARDS[card].need!=="own")||typeOpts(p,card).length>0;
 // The item a slot holds: Double Cursed items once drawn, otherwise a Present gift (Knock Off still strips it).
 const itemAt=(p,i)=>{if(S.items&&S.items[p]) return S.items[p][i]; const g=S.gift&&S.gift[p]?S.gift[p][i]:null; if(!g) return null; if(S.team[p][i]===S.curse&&S.mono[p]==null) return null; return g;};
 const cardName=c=>c==="pass"?L("ไม่ใช้การ์ด","No card"):CARDS[c].n;
@@ -1081,6 +1192,7 @@ function draftHint(){
   if(d.ci==="pass") return L("พร้อมแล้ว กด CONFIRM","Ready. Press CONFIRM");
   const c=S.hand[d.p][d.ci], need=CARDS[c].need;
   if(need==="type") return L("③ เลือกธาตุของ "+o+" ในช่องเลือก แล้วกด CONFIRM","③ Choose one of "+o+"'s types in the box, then CONFIRM");
+  if(need==="own") return L("③ เลือกธาตุของตัวเองที่จะเป็นธาตุยิม","③ Choose your own type for the Gym");
   if(need==="swap"){ if(d.mine==null) return L("③ แตะช่องของตัวเองที่จะให้","③ Tap your slot to give"); if(d.theirs==null) return L("④ แตะช่องของ "+o+" ที่จะเอา","④ Tap "+o+"'s slot to take"); }
   if(need==="tera"&&(d.slot==null||d.tt==null)) return L("③ แตะช่องของ "+o+" แล้วเลือกธาตุใหม่","③ Tap one of "+o+"'s slots, then choose its new type");
   if(need==="self"&&d.self==null) return L("③ แตะช่องของตัวเองที่จะใช้การ์ดนี้ (แตะช่อง Protect ไม่ได้)","③ Tap your own slot for this card (not your Protect slot)");
@@ -1089,7 +1201,7 @@ function draftHint(){
 function draftDone(){
   const d=S.draft; if(!d||d.protect==null||d.ci==null) return false; if(d.ci==="pass") return true;
   const need=CARDS[S.hand[d.p][d.ci]].need;
-  return need==="type"?d.type!=null:need==="swap"?d.mine!=null&&d.theirs!=null:need==="tera"?d.slot!=null&&d.tt!=null:need==="self"?d.self!=null:true;
+  return need==="type"||need==="own"?d.type!=null:need==="swap"?d.mine!=null&&d.theirs!=null:need==="tera"?d.slot!=null&&d.tt!=null:need==="self"?d.self!=null:true;
 }
 
 function render(){
@@ -1157,7 +1269,7 @@ function render(){
       });
     }
     $("open"+p).hidden=!(myPick&&!mine);
-    const ts=$("tsel"+p), showT=mine&&need==="type";
+    const ts=$("tsel"+p), showT=mine&&(need==="type"||need==="own");
     ts.hidden=!showT;
     if(showT){const c2=S.hand[p][d.ci], opts=typeOpts(p,c2), keep=d.type; ts.innerHTML="";
       opts.forEach(t=>{const op=document.createElement("option"); op.value=t; op.textContent=tn(t); ts.appendChild(op)});
@@ -1194,7 +1306,7 @@ function render(){
 }
 
 /* ---------- Command wizard: one big step at a time ---------- */
-const anyVeil=()=>["rvVeil","veil","teraVeil","chartVeil","imgVeil","fsVeil","cmdVeil"].some(id=>$(id)&&!$(id).hidden);
+const anyVeil=()=>["menuVeil","modeVeil","rvVeil","veil","teraVeil","chartVeil","imgVeil","fsVeil","cmdVeil"].some(id=>$(id)&&!$(id).hidden);
 function slotBtn(q,i,sel,dis,fn){
   const b=document.createElement("button"); b.type="button"; b.className="sbtn"+(sel?" sel":"");
   const t=S.team[q][i], hid=isHid(q,i);
@@ -1214,7 +1326,8 @@ function describeDraft(d){
     a.push(c==="roar"||c==="present"?n+" → "+L("ธาตุ","")+tn(d.type)+L(" ของ "+pname(o)," of "+pname(o))
       :c==="trick"?n+": "+L("ให้ ","give ")+slotName(d.p,d.mine)+L(" แลก ",", take ")+slotName(o,d.theirs)
       :c==="tera"?n+": "+slotName(o,d.slot)+" → "+tn(d.tt)
-      :c==="sub"||c==="conv"?n+" → "+slotName(d.p,d.self):n);}
+      :c==="sub"||c==="conv"?n+" → "+slotName(d.p,d.self)
+      :c==="contract"?n+" → "+L("ยิมธาตุ","Gym: ")+tn(d.type):n);}
   return a.join(" · ");
 }
 function afterCard(d){
@@ -1268,6 +1381,11 @@ function renderWizard(){
       const g2=grid("tgrid"); TYPES.forEach((_,t)=>{const b=document.createElement("button"); b.type="button"; b.className="tbtn"+(d.tt===t?" sel":"");
         b.style.background=TYPES[t][2]; b.style.color=TYPES[t][3]?"#fff":"#1f2638"; b.textContent=tn(t);
         b.addEventListener("click",()=>{d.tt=t; sfx("click"); done();}); g2.appendChild(b);}); body.appendChild(g2);
+    }else if(need==="own"){
+      body.appendChild(sub(L("ธาตุในทีมคุณที่มี 2 ช่องขึ้นไป (สัญญาทำงานเป็นอย่างสุดท้าย ถ้าถึงตอนนั้นเหลือไม่ถึง 2 ช่อง สัญญาเป็นโมฆะ)","Your types with 2+ slots (it resolves last; if fewer than 2 remain by then, the contract is void)")));
+      const g=grid("tgrid"); typeOpts(p,c).forEach(t=>{const b=document.createElement("button"); b.type="button"; b.className="tbtn"+(d.type===t?" sel":"");
+        b.style.background=TYPES[t][2]; b.style.color=TYPES[t][3]?"#fff":"#1f2638"; b.textContent=tn(t);
+        b.addEventListener("click",()=>{d.type=t; sfx("click"); done();}); g.appendChild(b);}); body.appendChild(g);
     }else if(need==="self"){
       body.appendChild(sub(L("ช่องของคุณ (ไม่ใช่ช่อง Protect)","Your slot (not the Protect slot)")));
       const g=grid("sgrid"); for(let i=0;i<N;i++) g.appendChild(slotBtn(p,i,d.self===i,i===d.protect,()=>{d.self=i; done();})); body.appendChild(g);
@@ -1307,8 +1425,15 @@ function renderFab(){
 function openFS(){ modal("fsVeil",true); renderFS(); }
 function renderFS(){
   $("fsTitle").textContent=L("ทายว่าในทีมจะมีกี่ธาตุ","How many types will your team have?");
-  $("fsText").textContent=L("ทายถูกได้การ์ด Terastal 1 ใบ ธาตุที่ซ้ำกันนับเป็นธาตุเดียว","Guess right for a Terastal card. Repeats count once.");
+  $("fsText").textContent=L("ธาตุที่ซ้ำกันนับเป็นธาตุเดียว","Repeats count once.");
   const rows=$("fsRows"); rows.textContent="";
+  const od=document.createElement("div"); od.className="fsodds";
+  od.innerHTML="<b>"+L("โอกาสที่ทีมจะมีกี่ธาตุ และรางวัลถ้าทายถูก","Chance of each count, and the reward for a correct guess")+"</b>";
+  const og=document.createElement("div"); og.className="fsgrid";
+  FS_ODDS.forEach((pc,k)=>{const c=document.createElement("div"); c.className="fsc"+(k<3?" hi":""); c.innerHTML="<b>"+(k+1)+"</b><span>"+pc+"</span><i>"+(k<3?"📜 Contract":"💎 Terastal")+"</i>"; og.appendChild(c);});
+  od.appendChild(og);
+  const nt=document.createElement("p"); nt.textContent=L("ทาย 1–3 ถูก = League Contract (เป็นหัวหน้ายิมได้ทันที) · ทาย 4–6 ถูก = Terastal · ทายต่ำเสี่ยงกว่า แต่รางวัลใหญ่กว่า","Guess 1–3 right = League Contract (become a Gym Leader) · 4–6 right = Terastal · Lower is riskier, but pays more"); od.appendChild(nt);
+  rows.appendChild(od);
   for(const p of P){const r=document.createElement("div"); r.className="fsrow"; const n=document.createElement("b"); n.textContent=pname(p); r.appendChild(n);
     for(let k=1;k<=6;k++){const b=document.createElement("button"); b.type="button"; b.className="btn"+($("bet"+p).value===String(k)?" on":""); b.textContent=k;
       b.addEventListener("click",()=>{$("bet"+p).value=String(k); renderFS(); renderSteps(); sfx("click");}); r.appendChild(b);}
@@ -1435,6 +1560,8 @@ function chosen(p){
   addLog(p,L("ได้เข็มกลัดหัวหน้ายิมธาตุ"+tn(t)+" ทั้ง 6 ช่องเป็นธาตุ"+tn(t)+" · "+pname(other(p))+" ใช้ Roar ไม่ได้ · ไม่ติด Knock Off · ไม่รับ Present",
     "Got the "+tn(t)+" Gym Badge. All 6 slots are "+tn(t)+" · "+pname(other(p))+" can't use Roar · ignores Knock Off · refuses Present"));
   say(p,Q(QT.leader,t));
+  const ci=S.hand[p].indexOf("contract"); if(ci>=0){S.hand[p][ci]="tera"; addLog(p,L("เป็นหัวหน้ายิมแล้ว League Contract เปลี่ยนเป็น Terastal","Already a Gym Leader: League Contract became a Terastal card"));}
+  gymBattle();
   render(); els[p].forEach(bump);
   if(S.pendItems&&!P.some(q=>S.mono[q]==null&&monoType(q)!=null)){S.pendItems=false; rollItems(true);}
 }
@@ -1450,6 +1577,7 @@ function seriesStart(){
 function deal(p){
   const n=3+(S.under===p?1:0), h=shuffle(DECK.slice()).slice(0,n);
   for(let k=0;k<S.teraN[p];k++) h.push("tera");
+  if(S.contract[p]) h.push(monoType(p)!=null?"tera":"contract");
   S.hand[p]=h;
 }
 // Shared ending of the draw and of the Safari: Future Sight, Terastal, Underdog, Knock Off, first lines.
@@ -1457,9 +1585,10 @@ function settle(bets){
   for(const p of P){
     const u=summary(S.team[p]).uniq; S.uniq0[p]=u;
     S.betHit[p]=!SAFARI()&&+bets[p]===u;
-    const bonus=S.under===p?1:0;
-    S.teraT[p]=S.teraN[p]=Math.min(2,(S.wild[p]?1:0)+(S.betHit[p]?1:0)+bonus);
-    if(!SAFARI()) addLog(p,L("Future Sight ทาย "+bets[p]+" ได้จริง "+u+" → ","Future Sight guessed "+bets[p]+", got "+u+" → ")+(S.betHit[p]?Q(QT.betHit)+L(" ได้ Terastal +1"," +1 Terastal"):Q(QT.betMiss)));
+    const bonus=S.under===p?1:0, low=S.betHit[p]&&+bets[p]<=3;
+    S.contract[p]=low?1:0;
+    S.teraT[p]=S.teraN[p]=Math.min(2,(S.wild[p]?1:0)+(S.betHit[p]&&!low?1:0)+bonus);
+    if(!SAFARI()) addLog(p,L("Future Sight ทาย "+bets[p]+" ได้จริง "+u+" → ","Future Sight guessed "+bets[p]+", got "+u+" → ")+(low?Q(QT.betHit)+L(" ทายต่ำถูกเป๊ะ! ได้การ์ด League Contract"," A low guess, spot on! League Contract card"):S.betHit[p]?Q(QT.betHit)+L(" ได้ Terastal +1"," +1 Terastal"):Q(QT.betMiss)));
     if(S.wild[p]) addLog(p,"Terastal → "+Q(QT.tera)+L(" ได้การ์ด Terastal เพิ่มในมือ"," A Terastal card joins your hand."));
     if(bonus) addLog(p,L("UNDERDOG: จั่วไพ่เพิ่ม 1 ใบ และได้ Terastal +1","UNDERDOG: 1 extra card and +1 Terastal"));
     deal(p);
@@ -1490,7 +1619,8 @@ function roll(){
     render(); return;
   }
   S.phase="rolling";
-  const draw=()=>{const a=[]; while(a.length<N) a.push(pick()); return a;};
+  // Type attraction: each slot after the first has a 15% chance to repeat a type the team already has.
+  const draw=()=>{const a=[]; while(a.length<N) a.push(a.length&&pick(100)<15?a[pick(a.length)]:pick()); return a;};
   const team={A:draw(),B:draw()}, curse=pick();
   render();
   const done=()=>{
@@ -1661,7 +1791,22 @@ function reveal(){
     }
     effect(p,o,x,false,out);
   }
+  // League Contracts resolve last, after every attack
+  for(const p of ord){
+    const x=pl[p]; if(x.card!=="contract") continue;
+    const t=x.type, b0=snap(), cnt=S.team[p].filter(y=>y===t).length;
+    if(S.mono[p]!=null||cnt<2){
+      out.ev.push({p,v:p,card:"contract",rows:[p],before:b0,after:b0,hit:[],block:[],ok:false,why:L("ตอนเซ็นสัญญา ธาตุ"+tn(t)+"ของ "+pname(p)+" เหลือ "+cnt+" ช่อง (ต้องมี 2 ช่องขึ้นไป) สัญญาจึงเป็นโมฆะ","At signing, "+pname(p)+" had "+cnt+" "+tn(t)+" slot(s) (2+ needed), so the contract is void.")});
+      out.res[p]="fail"; out.sfx.push("fail"); out.lines.push("League Contract ("+pname(p)+"): "+L("สัญญาเป็นโมฆะ! ","Contract void! ")+failLine()); addLog(p,L("League Contract เป็นโมฆะ","League Contract void")); continue;
+    }
+    S.team[p].fill(t); S.taken[p]=[]; S.teraMark[p]=[]; S.hid[p]=[]; S.mono[p]=t; S.noBan[other(p)]=true;
+    out.ev.push({p,v:p,card:"contract",rows:[p],before:b0,after:snap(),hit:S.team[p].map((_,i)=>[p,i]),block:[],ok:true,why:L(pname(p)+" เซ็นสัญญาจ้าง! ทั้ง 6 ช่องกลายเป็นธาตุ"+tn(t)+" เป็นหัวหน้ายิม: ไม่ติด Knock Off ไม่รับ Present และ "+pname(other(p))+" ห้ามใช้ Roar ใส่ผู้บริหาร",pname(p)+" signed the contract! All 6 slots became "+tn(t)+". As Gym Leader: ignores Knock Off, refuses Present, and "+pname(other(p))+" can't Roar at management.")});
+    out.res[p]="hit"; out.sfx.push("badge"); out.lines.push(L(pname(p)+" เซ็น League Contract! หัวหน้ายิมธาตุ"+tn(t)+"คนใหม่!",pname(p)+" signed the League Contract! New "+tn(t)+" Gym Leader!")); say(p,Q(QT.leader,t));
+    for(let i=0;i<N;i++) out.bump.push([p,i]);
+    addLog(p,L("League Contract: เป็นหัวหน้ายิมธาตุ"+tn(t),"League Contract: became the "+tn(t)+" Gym Leader"));
+  }
   S.flash=out.lines.join(" ");
+  gymBattle();
   S.cmdN++;
   if(S.cmdN>2) finishCmds(); else beginCmd();
   for(const p of P) if(show[p].card==="mirror") out.res[p]=out.res[other(p)]==="reflect"?"mirror":"miss";
@@ -1736,7 +1881,7 @@ function playScene(ev,k,total){
     box.appendChild(g);
   }
   const why=document.createElement("p"); why.className="scwhy"; why.textContent=ev.why; box.appendChild(why);
-  const kind=ev.kind==="protect"||!CARDS[ev.card]||!CARDS[ev.card].atk?"info":!ev.ok?"fail":ev.refl?"reflect":"ok";
+  const kind=ev.card==="contract"?(ev.ok?"ok":"fail"):ev.kind==="protect"||!CARDS[ev.card]||!CARDS[ev.card].atk?"info":!ev.ok?"fail":ev.refl?"reflect":"ok";
   const r=document.createElement("div"); r.className="scres "+kind; r.textContent=L(RES[kind][0],RES[kind][1]); r.hidden=true; box.appendChild(r);
   const fast=still();
   setTimeout(()=>{
@@ -1754,7 +1899,7 @@ function summaryScene(n,ord,show,out){
   for(const p of ord){
     const card=show[p].card, atk=CARDS[card]&&CARDS[card].atk;
     const ev=out.ev.filter(e=>e.p===p&&e.card===card).pop();
-    const res=card==="pass"?"info":card==="mirror"?(out.res[p]==="mirror"?"ok":"fail"):!atk?"ok":out.res[p]==="hit"?"ok":out.res[p]==="reflect"?"reflect":"fail";
+    const res=card==="pass"?"info":card==="contract"?(out.res[p]==="hit"?"ok":"fail"):card==="mirror"?(out.res[p]==="mirror"?"ok":"fail"):!atk?"ok":out.res[p]==="hit"?"ok":out.res[p]==="reflect"?"reflect":"fail";
     const row=document.createElement("div"); row.className="sumrow";
     const t=document.createElement("b"); t.textContent=pname(p)+" · "+cardName(card);
     const st=document.createElement("span"); st.className="scres "+res;
@@ -1763,6 +1908,9 @@ function summaryScene(n,ord,show,out){
     row.append(t,st,w); box.appendChild(row);
   }
   sfx("stamp");
+}
+function gymBattle(){
+  if(S.mono.A!=null&&S.mono.B!=null&&!S.gb){S.gb=true; S.flash=(S.flash?S.flash+" ":"")+L("⚔ GYM BATTLE! หัวหน้ายิมปะทะหัวหน้ายิม!","⚔ GYM BATTLE! Gym Leader versus Gym Leader!"); P.forEach(p=>addLog(p,"GYM BATTLE!"));}
 }
 function finishCmds(){
   S.phase="done"; S.draft=null; S.picker=null;
@@ -1790,7 +1938,7 @@ $("roll").addEventListener("click",roll);
 /* ---------- Global trainer count: shared by every device through /api/stats ---------- */
 let GS=null, GLOCAL={cursed:0,calamity:0,safari:0,blind:0};
 try{GLOCAL=Object.assign(GLOCAL,JSON.parse(localStorage.getItem("choiceTC")||"{}"))}catch(e){}
-function showStats(){
+function showStats(){ if(!$("statTotal")) return;
   const s=GS||Object.assign({total:GLOCAL.cursed+GLOCAL.calamity+GLOCAL.safari+GLOCAL.blind},GLOCAL);
   const f=n=>Number(n).toLocaleString()+L(" คน"," trainers");
   $("statCursed").textContent=f(s.cursed); $("statCalamity").textContent=f(s.calamity); $("statSafari").textContent=f(s.safari||0); $("statBlind").textContent=f(s.blind||0); $("statTotal").textContent=f(s.total);
@@ -1806,7 +1954,7 @@ async function countDraw(mode){
   try{const r=await fetch("/api/stats",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({mode})}); if(r.ok){GS=await r.json()}}catch(e){}
   showStats();
 }
-loadStats(); setInterval(loadStats,60000);
+
 $("reset").addEventListener("click",()=>{
   if(S.phase==="rolling") return;
   stopTimer(); archive(); U=null; S=fresh(0); H.ser={A:0,B:0,last:null,champ:null}; store();
@@ -1830,14 +1978,18 @@ for(const p of P){
 }
 $("undo").addEventListener("click",undo);
 $("fabUndo").addEventListener("click",undo);
+$("menuBtn").addEventListener("click",()=>{modal("menuVeil",true); $("menuClose").focus(); sfx("click");});
+$("menuClose").addEventListener("click",()=>modal("menuVeil",false));
+$("modeBtn").addEventListener("click",()=>{openModes(); sfx("click");});
+$("modeGo").addEventListener("click",()=>{H.seenModes=true; store(); modal("modeVeil",false); sfx("click");});
 $("fsGo").addEventListener("click",()=>{if(!($("betA").value&&$("betB").value)) return; modal("fsVeil",false); roll();});
 $("fsClose").addEventListener("click",()=>modal("fsVeil",false));
 $("betA").addEventListener("change",()=>renderSteps()); $("betB").addEventListener("change",()=>renderSteps());
-$("shot").addEventListener("click",saveImage);
+$("shot").addEventListener("click",()=>{modal("menuVeil",false); saveImage();});
 $("imClose").addEventListener("click",()=>modal("imgVeil",false));
 $("tcGrid").innerHTML=typeBtns();
 $("tcGrid").addEventListener("click",e=>{const b=e.target.closest(".tbtn"); if(b){showChart(+b.dataset.t); sfx("click");}});
-$("chart").addEventListener("click",()=>{modal("chartVeil",true); $("tcClose").focus();});
+$("chart").addEventListener("click",()=>{modal("menuVeil",false); modal("chartVeil",true); $("tcClose").focus();});
 $("tcClose").addEventListener("click",()=>modal("chartVeil",false));
 $("winA").addEventListener("click",()=>setWinner("A"));
 $("winB").addEventListener("click",()=>setWinner("B"));
@@ -1888,6 +2040,7 @@ if(H.autofs&&document.fullscreenEnabled){
 }
 if([1,2,3,5,10].includes(+H.mins)){$("tmin").value=String(H.mins); TEAM_MS=H.mins*60000;}
 applyLang(); drawHist(); stopTimer(); render();
+if(!H.seenModes) openModes();
 </script>
 
 </body></html>
