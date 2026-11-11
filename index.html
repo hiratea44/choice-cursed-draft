@@ -272,6 +272,30 @@ body.mode-blind .steps .st.cur{background:#ffcf9a}
 #fabMain{font-size:18px;padding:13px 22px;background:var(--yellow);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 #fabAlt{font-size:16px;padding:13px 16px}
 #fabUndo{font-size:20px;padding:10px 14px}
+/* Reveal animation */
+.rvveil{background:radial-gradient(circle at 50% 45%,rgba(246,198,28,.25),transparent 55%),rgba(10,12,22,.92)}
+.rv{display:flex;flex-direction:column;align-items:center;gap:18px;width:100%;max-width:560px}
+.rvt{color:#fff;font-size:12px;letter-spacing:.08em;text-align:center}
+.rvrow{display:flex;align-items:center;justify-content:center;gap:10px;width:100%}
+.rvvs{color:var(--yellow);font-size:22px;text-shadow:3px 3px 0 var(--red2);animation:pulse .8s ease-in-out infinite alternate}
+@keyframes pulse{to{transform:scale(1.25)}}
+.flip{perspective:900px;width:min(42vw,210px);aspect-ratio:3/4.2}
+.fi{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .6s cubic-bezier(.3,1.4,.5,1)}
+.flip.on .fi{transform:rotateY(180deg)}
+.fb{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border:4px solid var(--ink);border-radius:14px;box-shadow:0 6px 0 #0b0f1c}
+.fb.back{display:grid;place-items:center;background:repeating-linear-gradient(45deg,#d92b34 0 12px,#a3141f 12px 24px)}
+#rvB .fb.back{background:repeating-linear-gradient(45deg,#2c68d6 0 12px,#1d4aa0 12px 24px)}
+.fb.back span{width:56px;height:56px;display:grid;place-items:center;border-radius:50%;background:#fff;border:6px solid var(--ink);color:var(--ink);font-size:18px}
+.fb.front{transform:rotateY(180deg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:12px 10px;text-align:center;background:var(--screen);border-top:14px solid var(--edge)}
+.fb.front.c-roar{border-top-color:#d9542b}.fb.front.c-trick{border-top-color:#2c68d6}.fb.front.c-present{border-top-color:#e05aa0}.fb.front.c-tera{border-top-color:#b59cff}.fb.front.c-mirror{border-top-color:#7fc6d9}.fb.front.c-sub{border-top-color:#35b565}.fb.front.c-conv{border-top-color:#f6c61c}
+.rvn{font-family:var(--display);font-weight:500;font-size:13px;color:var(--muted)}
+.rvc{font-family:var(--display);font-weight:600;font-size:clamp(18px,5vw,26px);line-height:1.15}
+.rvd{font-size:12px;line-height:1.4;color:var(--ink)}
+.rvs{position:absolute;bottom:14px;left:50%;transform:translateX(-50%) rotate(-8deg);font-style:normal;font-family:var(--display);font-weight:600;font-size:18px;padding:2px 12px;border:3px solid currentColor;border-radius:8px;background:rgba(255,255,255,.9);white-space:nowrap;animation:stamp .3s cubic-bezier(.2,1.8,.4,1)}
+.rvs.hit,.rvs.mirror{color:#1f8a46}.rvs.fail,.rvs.reflect{color:var(--red)}.rvs.miss,.rvs.self{color:var(--muted)}
+@keyframes stamp{from{transform:translateX(-50%) rotate(-8deg) scale(2.2);opacity:0}}
+#rvOk{font-size:18px;padding:12px 30px;background:var(--yellow)}
+@media (prefers-reduced-motion:reduce){.fi{transition:none}.rvvs,.rvs{animation:none}}
 .fan{margin:0;text-align:center;font-size:12px;color:#8e97b5}
 @media (prefers-reduced-motion:reduce){body.rolling #roll,body.rolling .plate,.dialog::after,.slot.land,.say,.card,.badge-stage::before,.badge-stage svg{animation:none}}
 </style>
@@ -387,6 +411,18 @@ body.mode-blind .steps .st.cur{background:#ffcf9a}
     <h2 id="chTitle">ได้รับเข็มกลัดหัวหน้ายิม!</h2>
     <p id="chText"></p>
     <button id="chOk" class="btn" type="button">รับเข็มกลัด</button>
+  </div>
+</div>
+
+<div class="veil rvveil" id="rvVeil" hidden role="dialog" aria-modal="true" aria-labelledby="rvTitle">
+  <div class="rv">
+    <div class="px rvt" id="rvTitle">REVEAL</div>
+    <div class="rvrow">
+      <div class="flip" id="rvA"><div class="fi"><div class="fb back"><span class="px">A</span></div><div class="fb front"><small class="rvn"></small><b class="rvc"></b><span class="rvd"></span><i class="rvs" hidden></i></div></div></div>
+      <div class="rvvs px">VS</div>
+      <div class="flip" id="rvB"><div class="fi"><div class="fb back"><span class="px">B</span></div><div class="fb front"><small class="rvn"></small><b class="rvc"></b><span class="rvd"></span><i class="rvs" hidden></i></div></div></div>
+    </div>
+    <button id="rvOk" class="btn" type="button" hidden>ดูผล</button>
   </div>
 </div>
 
@@ -1129,7 +1165,7 @@ function render(){
 }
 
 /* ---------- Command wizard: one big step at a time ---------- */
-const anyVeil=()=>["veil","teraVeil","chartVeil","imgVeil","fsVeil","cmdVeil"].some(id=>$(id)&&!$(id).hidden);
+const anyVeil=()=>["rvVeil","veil","teraVeil","chartVeil","imgVeil","fsVeil","cmdVeil"].some(id=>$(id)&&!$(id).hidden);
 function slotBtn(q,i,sel,dis,fn){
   const b=document.createElement("button"); b.type="button"; b.className="sbtn"+(sel?" sel":"");
   const t=S.team[q][i], hid=isHid(q,i);
@@ -1301,7 +1337,9 @@ function vib(f,at,dur,type,vol,f2,rate,depth){
     o.connect(g); g.connect(AC.destination); o.start(t); l.start(t); o.stop(t+dur+.05); l.stop(t+dur+.05);
   }catch(e){}
 }
-const SFX_EXTRA={mirror:()=>{[2637,1976,2637,3136].forEach((f,i)=>tone(f,i*.07,.18,"sine",.07)); noise(0,.4,.1,5000,1500,2)},
+const SFX_EXTRA={flip:()=>{noise(0,.18,.12,1800,5200,1.5); tone(1320,.12,.08,"triangle",.06)},
+  stamp:()=>{noise(0,.12,.22,500,200,.8,"lowpass"); tone(160,0,.14,"square",.08,90)},
+  mirror:()=>{[2637,1976,2637,3136].forEach((f,i)=>tone(f,i*.07,.18,"sine",.07)); noise(0,.4,.1,5000,1500,2)},
   sub:()=>{tone(392,0,.1,"square",.06); tone(523,.1,.1,"square",.06); tone(392,.2,.18,"triangle",.07)},
   conv:()=>{for(let i=0;i<6;i++) tone(400+i*160,i*.05,.08,"triangle",.06); tone(1200,.32,.25,"sine",.06,600)},
   fail:()=>{tone(300,0,.18,"square",.07,180); tone(200,.2,.3,"square",.06,120)},
@@ -1499,7 +1537,7 @@ const failLine=()=>Q(QT.fail);
 // Card effects. p = who played it, v = whose team it lands on (the opponent, or p itself when reflected).
 function effect(p,v,pl,refl,out){
   const c=pl.card, nm=CARDS[c].n, who=refl?L("สะท้อนใส่ "+pname(v)+" เอง! ","reflected onto "+pname(v)+"! "):"";
-  const fail=why=>{out.lines.push(nm+" ("+pname(p)+"): "+who+why); addLog(p,L("คำสั่ง "+S.cmdN+": ","Command "+S.cmdN+": ")+nm+" → "+who+why); out.sfx.push("fail");};
+  const fail=why=>{out.lines.push(nm+" ("+pname(p)+"): "+who+why); addLog(p,L("คำสั่ง "+S.cmdN+": ","Command "+S.cmdN+": ")+nm+" → "+who+why); out.sfx.push("fail"); out.res[p]="fail";};
   if(c==="roar"||c==="present"){
     const t=pl.type;
     if(c==="roar"&&S.mono[v]!=null) return fail(L("หัวหน้ายิมไม่สะทกสะท้าน "+failLine(),"The Gym Leader doesn't flinch. "+failLine()));
@@ -1517,7 +1555,7 @@ function effect(p,v,pl,refl,out){
       idx.forEach(i=>{let it,n=0; do{it=itemFor(t); n++}while(used.has(it)&&n<60); used.add(it); S.gift[v][i]=it; got.push(L("ช่อง "+(i+1)+" ได้ ","slot "+(i+1)+" got ")+(isHid(v,i)?"?":it));});
       out.lines.push(CT("present")+" "+L(pname(p)+" ใช้ Present! ",pname(p)+" used Present! ")+who+Q(QT.present,t)); out.sfx.push("present"); say(v,Q(QT.presentGot));
     }
-    idx.forEach(i=>out.bump.push([v,i]));
+    idx.forEach(i=>out.bump.push([v,i])); out.res[p]=refl?"reflect":"hit";
     addLog(p,L("คำสั่ง "+S.cmdN+": ","Command "+S.cmdN+": ")+nm+L(" ใส่ธาตุ"+tn(t)+" ของ "+pname(v)+" → "," on "+pname(v)+"'s "+tn(t)+" → ")+got.join(", "));
   }else if(c==="trick"){
     const a=pl.mine, b=pl.theirs;
@@ -1530,21 +1568,22 @@ function effect(p,v,pl,refl,out){
     if(!S.taken[p].includes(a)) S.taken[p].push(a);
     S.teraMark[p]=S.teraMark[p].filter(x=>x!==a); S.teraMark[v]=S.teraMark[v].filter(x=>x!==b);
     out.lines.push(CT("trick")+" "+L(pname(p)+" ใช้ Trick สำเร็จ!",pname(p)+"'s Trick worked!")); out.sfx.push("trick"); say(v,Q(QT.trick));
-    out.bump.push([p,a],[v,b]);
+    out.bump.push([p,a],[v,b]); out.res[p]="hit";
     addLog(p,L("คำสั่ง "+S.cmdN+": Trick เอาช่อง "+(b+1)+" ของ "+pname(v)+" มาใส่ช่อง "+(a+1),"Command "+S.cmdN+": Trick took slot "+(b+1)+" of "+pname(v)+" into slot "+(a+1)));
   }else if(c==="tera"){
     const i=pl.slot, t=pl.tt;
     if(guarded(v,i)) return fail(L("โดน Protect ดักทาง! ","Blocked by Protect! ")+failLine());
     const was=S.team[v][i], line=Q(QT.teraUse);
     S.team[v][i]=t; S.hid[v]=S.hid[v].filter(x=>x!==i); if(!S.teraMark[v].includes(i)) S.teraMark[v].push(i);
-    say(p,line); out.bump.push([v,i]);
+    say(p,line); out.bump.push([v,i]); out.res[p]=refl?"reflect":"hit";
     out.tera={line,t,text:CT("tera")+" "+who+L(pname(p)+" ใช้ Terastal! ช่อง "+(i+1)+" ของ "+pname(v)+" กลายเป็นธาตุ"+tn(t)+"!",pname(p)+" used Terastal! Slot "+(i+1)+" of "+pname(v)+" became "+tn(t)+"!")};
     out.lines.push(L(pname(p)+" ใช้ Terastal! ",pname(p)+" used Terastal! ")+who);
     addLog(p,L("คำสั่ง "+S.cmdN+": Terastal ช่อง "+(i+1)+" ของ "+pname(v)+": ","Command "+S.cmdN+": Terastal on slot "+(i+1)+" of "+pname(v)+": ")+tn(was)+" → "+tn(t));
   }
 }
 function reveal(){
-  const ord=order(), pl=S.plan, out={lines:[],bump:[],sfx:[],tera:null};
+  const ord=order(), pl=S.plan, out={lines:[],bump:[],sfx:[],tera:null,res:{A:"self",B:"self"}}, n=S.cmdN;
+  const show={}; for(const p of P) show[p]={card:pl[p].card,desc:describeDraft(pl[p])};
   for(const p of P){
     S.lock[p]=pl[p].protect;
     if(pl[p].card!=="pass") S.hand[p].splice(pl[p].ci,1);
@@ -1565,7 +1604,7 @@ function reveal(){
   for(const p of ord){
     const x=pl[p], o=other(p); if(!CARDS[x.card]||!CARDS[x.card].atk) continue;
     if(pl[o].card==="mirror"){
-      if(x.card==="trick"){ out.lines.push(L("Mirror Coat ของ "+pname(o)+" ทำให้ Trick ล้มเหลว! ","Mirror Coat from "+pname(o)+" foiled the Trick! ")+failLine()); addLog(p,L("Trick ถูก Mirror Coat สกัด","Trick foiled by Mirror Coat")); out.sfx.push("mirror"); continue; }
+      if(x.card==="trick"){ out.lines.push(L("Mirror Coat ของ "+pname(o)+" ทำให้ Trick ล้มเหลว! ","Mirror Coat from "+pname(o)+" foiled the Trick! ")+failLine()); addLog(p,L("Trick ถูก Mirror Coat สกัด","Trick foiled by Mirror Coat")); out.sfx.push("mirror"); out.res[p]="fail"; continue; }
       out.sfx.push("mirror"); effect(p,p,Object.assign({},x,x.card==="tera"?{}:{}),true,out); continue;
     }
     effect(p,o,x,false,out);
@@ -1573,6 +1612,8 @@ function reveal(){
   S.flash=out.lines.join(" ");
   S.cmdN++;
   if(S.cmdN>2) finishCmds(); else beginCmd();
+  for(const p of P) if(show[p].card==="mirror") out.res[p]=out.res[other(p)]==="reflect"?"mirror":"miss";
+  showReveal(n,ord,show,out,()=>{
   render(); out.bump.forEach(([q,i])=>bump(els[q][i]));
   out.sfx.forEach((n,k)=>setTimeout(()=>sfx(n),k*450));
   if(!out.sfx.length) sfx("reveal");
@@ -1582,6 +1623,31 @@ function reveal(){
     $("tvGrid").hidden=true; $("tvCancel").hidden=true; $("tvGem").hidden=false; $("tvOk").hidden=false;
     teraVeil(true); $("tvOk").focus(); setTimeout(()=>sfx("teraDone"),300);
   }else checkChosen();
+  });
+}
+/* ---------- Reveal: both commands flip over at once, like turning cards in a duel ---------- */
+const STAMP={hit:["สำเร็จ!","HIT!"],fail:["ล้มเหลว!","FAILED!"],reflect:["โดนสะท้อน!","REFLECTED!"],mirror:["สะท้อนได้!","BOUNCED!"],miss:["เสียเปล่า","WASTED"],self:["ทำงาน","DONE"]};
+function showReveal(n,ord,show,out,done){
+  $("cmdVeil").hidden=true;
+  $("rvTitle").textContent="COMMAND "+n+"/2 · "+L("เปิดคำสั่ง!","REVEAL!");
+  const fill=p=>{
+    const el=$("rv"+p), x=show[p];
+    el.classList.remove("on"); el.querySelector(".front").className="fb front c-"+x.card;
+    el.querySelector(".rvn").textContent=pname(p);
+    el.querySelector(".rvc").textContent=cardName(x.card);
+    el.querySelector(".rvd").textContent=x.desc;
+    const st=el.querySelector(".rvs"), r=x.card==="pass"?"self":out.res[p];
+    st.textContent=L(STAMP[r][0],STAMP[r][1]); st.className="rvs "+r; st.hidden=true;
+  };
+  P.forEach(fill);
+  const ok=$("rvOk"); ok.hidden=true; ok.textContent=L("ดูผล ›","See result ›");
+  $("rvVeil").hidden=false; $("wrap").inert=true;
+  let closed=false;
+  const close=()=>{if(closed) return; closed=true; $("rvVeil").hidden=true; $("wrap").inert=anyVeil(); done();};
+  ok.onclick=close;
+  const fast=still(), t0=fast?0:450, gap=fast?0:650;
+  ord.forEach((p,k)=>setTimeout(()=>{$("rv"+p).classList.add("on"); sfx("flip");},t0+k*gap));
+  setTimeout(()=>{P.forEach(p=>{const st=$("rv"+p).querySelector(".rvs"); st.hidden=false;}); sfx("stamp"); ok.hidden=false; ok.focus();},t0+2*gap+(fast?0:350));
 }
 function finishCmds(){
   S.phase="done"; S.draft=null; S.picker=null;
