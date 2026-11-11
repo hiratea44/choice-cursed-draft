@@ -1470,10 +1470,7 @@ function renderFS(){
   $("fsText").textContent=L("ธาตุที่ซ้ำกันนับเป็นธาตุเดียว","Repeats count once.");
   const rows=$("fsRows"); rows.textContent="";
   const od=document.createElement("div"); od.className="fsodds";
-  od.innerHTML="<b>"+L("โอกาสที่ทีมจะมีกี่ธาตุ และรางวัลถ้าทายถูก","Chance of each count, and the reward for a correct guess")+"</b>";
-  const og=document.createElement("div"); og.className="fsgrid";
-  FS_ODDS.forEach((pc,k)=>{const c=document.createElement("div"); c.className="fsc"+(k<3?" hi":""); c.innerHTML="<b>"+(k+1)+"</b><span>"+pc+"</span><i>"+(k<3?"📜 Contract":"💎 Terastal")+"</i>"; og.appendChild(c);});
-  od.appendChild(og);
+  od.innerHTML="<b>"+L("รางวัลถ้าทายถูก","Reward for a correct guess")+"</b>";
   const nt=document.createElement("p"); nt.textContent=L("ทาย 1–3 ถูก = League Contract (เป็นหัวหน้ายิมได้) · ทาย 4–6 ถูก = Terastal · ทายต่ำเสี่ยงกว่า แต่รางวัลใหญ่กว่า","Guess 1–3 right = League Contract (become a Gym Leader) · 4–6 right = Terastal · Lower is riskier, but pays more"); od.appendChild(nt);
   rows.appendChild(od);
   for(const p of P){const r=document.createElement("div"); r.className="fsrow"; const n=document.createElement("b"); n.textContent=pname(p); r.appendChild(n);
