@@ -553,8 +553,35 @@ body.playing #roll{width:84px;height:84px;border-width:8px;font-size:15px}
   body.turnB .arena{grid-template-areas:"b" "mid" "a"}
   .slot{min-height:80px}
 }
-/* Wide screens: the floating button sits in the corner instead of over the middle panel */
-@media (min-width:1040px){.fab{left:auto;right:24px;transform:none}}
+/* Bottom action bar: full width with a solid backdrop, so nothing hides behind it unnoticed */
+.fab{left:0;right:0;transform:none;width:auto;max-width:none;justify-content:center;bottom:0;padding:10px 12px calc(10px + env(safe-area-inset-bottom,0px));background:rgba(14,18,32,.94);border-top:3px solid #2a3150;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.fab .btn{box-shadow:0 4px 0 var(--ink)}
+.fab .btn{white-space:nowrap;min-width:0}
+#fabMain{flex:1 1 auto;max-width:460px;overflow:hidden;text-overflow:ellipsis}
+#fabAlt{flex:0 0 auto;font-size:14px;padding-inline:12px}
+@media (max-width:480px){.fab{gap:6px;padding-inline:8px} #fabMain{font-size:15px;padding-inline:10px} #fabAlt{font-size:13px;padding-inline:8px}}
+/* Command window: compact cards, and Back / Next always in reach */
+.cw .cardbtn span{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.cw .cwnav{position:sticky;bottom:-26px;z-index:3;margin-bottom:-26px;padding:10px 0 26px;background:linear-gradient(transparent,var(--screen) 22%)}
+#fsGo:disabled{background:#d9dbe3;color:#5a6381;border-color:#9aa1b8}
+/* Card colors follow the card's kind */
+.cardbtn.kk.k-atk{border-left:10px solid #d92b34}.cardbtn.kk.k-field{border-left:10px solid #2f7d5b}.cardbtn.kk.k-ahead{border-left:10px solid #6b4bb5}.cardbtn.kk.k-support{border-left:10px solid #6a7390}
+.cardbtn .etag.k-atk{background:#d92b34}
+.dcard.kk.k-atk{border-left-color:#d92b34}.dcard.kk.k-field{border-left-color:#2f7d5b}.dcard.kk.k-ahead{border-left-color:#6b4bb5}.dcard.kk.k-support{border-left-color:#6a7390}
+.fb.front.k-atk{border-top-color:#d92b34;background:linear-gradient(180deg,#ffe3e1,var(--screen) 70%)}
+.fb.front.k-field{border-top-color:#2f7d5b;background:linear-gradient(180deg,#dcf3e6,var(--screen) 70%)}
+.fb.front.k-ahead{border-top-color:#6b4bb5;background:linear-gradient(180deg,#ebe3ff,var(--screen) 70%)}
+.fb.front.k-support{border-top-color:#6a7390;background:linear-gradient(180deg,#e7eaf2,var(--screen) 70%)}
+.rvi{font-style:normal;font-size:clamp(40px,12vw,64px);line-height:1;filter:drop-shadow(0 3px 0 rgba(0,0,0,.15))}
+.rvk{font-style:normal;font-family:var(--display);font-weight:600;font-size:12px;padding:3px 10px;border-radius:99px;color:#fff;background:#6a7390}
+.k-atk .rvk{background:#d92b34}.k-field .rvk{background:#2f7d5b}.k-ahead .rvk{background:#6b4bb5}
+.rvd{font-size:13px}
+/* Dialog: one event per line; logs fold away */
+.dialog{white-space:pre-line}
+.logd{border-top:3px dotted var(--edge);padding-top:8px}
+.logd summary{cursor:pointer;font-family:var(--display);font-weight:600;font-size:14px;color:var(--muted);min-height:32px;display:flex;align-items:center}
+.logd .log{border-top:0;padding-top:4px}
+.slot small.hint2{font-size:12px}
 </style>
 
 <div class="wrap" id="wrap">
@@ -588,14 +615,14 @@ body.playing #roll{width:84px;height:84px;border-width:8px;font-size:15px}
       <div class="px lbl" id="serLine" hidden></div>
       <div class="pool" id="pool" hidden></div>
       <div class="fields" id="fieldLine" hidden></div>
-      <div class="px lbl">KNOCK OFF</div>
+      <div class="px lbl" data-l="ko">KNOCK OFF</div>
       <span class="plate" id="curse">?</span>
       <div class="note">ช่องที่เป็นธาตุนี้ติดสถานะ Knock Off ห้ามถือไอเทม</div>
       <div class="ctag" id="koTag"></div>
       <p class="verdict" id="verdict" hidden></p>
-      <div class="hlbox" id="hlBox" hidden><div class="px lbl">HIGHLIGHTS</div><ul id="hlList"></ul><button id="hlShot" class="btn" type="button">📸 บันทึกรูปสรุป</button></div>
+      <div class="hlbox" id="hlBox" hidden><div class="px lbl" data-l="hl">HIGHLIGHTS</div><ul id="hlList"></ul><button id="hlShot" class="btn" type="button">📸 บันทึกรูปสรุป</button></div>
       <div class="timer" id="timer" hidden>
-        <div class="px lbl">TEAM PREVIEW</div>
+        <div class="px lbl" data-l="tp">TEAM PREVIEW</div>
         <div class="hp"><b class="px">TIME</b><div class="hpbar"><i id="hpfill"></i></div></div>
         <span class="clock px" id="clock">2:00</span>
         <label class="trow" for="tmin">เวลาจัดทีม
@@ -1039,7 +1066,7 @@ function drawCurses(){
     const h=document.createElement("h3"); h.className="deckg"; h.textContent=L(gt[0],gt[1]); box.appendChild(h);
     const g=document.createElement("div"); g.className="deckgrid";
     for(const [k,n,tag,rule,cnt] of items){
-      const d=document.createElement("div"); d.className="dcard c-"+k;
+      const d=document.createElement("div"); d.className="dcard c-"+k+(CARDS[k]?" kk k-"+kindOf(k):"");
       d.innerHTML="<b>"+n+(cnt?"<em>"+cnt+"</em>":"")+"</b><q></q><span></span>";
       d.querySelector("q").textContent=L(tag[0],tag[1]); d.querySelector("span").textContent=L(rule[0],rule[1]); g.appendChild(d);
     }
@@ -1180,6 +1207,8 @@ function applyLang(){
   if($("tcOut").hidden) $("tcHint").textContent=L("แตะธาตุเพื่อดูว่าชนะหรือแพ้ทางธาตุไหน","Tap a type to see what it beats and what beats it");
   drawCurses(); $("koTag").textContent=CT("ko");
   document.querySelector(".rules ol").innerHTML=RULES[LANG].map(r=>"<li><b>"+r[0]+":</b> "+r[1]+"</li>").join("");
+  const LB={fs:["Future Sight","Future Sight"],tera:["Terastal","Terastal"],ko:["Knock Off","Knock Off"],hl:["ไฮไลต์รอบนี้","Highlights"],tp:["จัดทีม","Team preview"]};
+  document.querySelectorAll("[data-l]").forEach(e=>{const k=e.dataset.l; if(k==="side"){const p=e.closest(".lane").dataset.p; e.textContent=L("ฝั่ง ","SIDE ")+p;} else if(LB[k]) e.textContent=L(LB[k][0],LB[k][1]);});
   for(const p of P){
     $("betL"+p).textContent=L(" ทายว่าในทีมจะมีกี่ธาตุ"," Guess how many types");
     $("bet"+p).options[0].textContent=L("เลือก","Pick");
@@ -1217,12 +1246,12 @@ function badgeSVG(t){
 
 $("lanes").innerHTML=P.map(p=>`
   <section class="box lane" id="lane${p}" data-p="${p}">
-    <div class="lane-head"><span class="px">TRAINER ${p}</span><span class="ud px" id="ud${p}" hidden>UNDERDOG</span><input id="name${p}" value="ผู้เล่น ${p}" aria-label="ชื่อผู้เล่น ${p}" maxlength="24"><span class="crown" id="crown${p}"></span><span class="gb" id="gb${p}"></span></div>
-    <div class="row"><label for="bet${p}"><b class="px">FUTURE SIGHT</b><span id="betL${p}"> ทายว่าในทีมจะมีกี่ธาตุ</span></label>
+    <div class="lane-head"><span class="px" data-l="side">TRAINER ${p}</span><span class="ud px" id="ud${p}" hidden>UNDERDOG</span><input id="name${p}" value="ผู้เล่น ${p}" aria-label="ชื่อผู้เล่น ${p}" maxlength="24"><span class="crown" id="crown${p}"></span><span class="gb" id="gb${p}"></span></div>
+    <div class="row"><label for="bet${p}"><b class="px" data-l="fs">FUTURE SIGHT</b><span id="betL${p}"> ทายว่าในทีมจะมีกี่ธาตุ</span></label>
       <select id="bet${p}"><option value="">เลือก</option>${[1,2,3,4,5,6].map(n=>`<option>${n}</option>`).join("")}</select></div>
     <div class="slots" id="slots${p}"></div>
     <p class="say" id="say${p}" hidden></p>
-    <div class="row"><b class="px">TERASTAL</b><span class="chip" id="wild${p}">?</span>
+    <div class="row"><b class="px" data-l="tera">TERASTAL</b><span class="chip" id="wild${p}">?</span>
 </div>
     <p class="stat" id="stat${p}"></p>
     <p class="rights" id="rights${p}"></p>
@@ -1236,7 +1265,7 @@ $("lanes").innerHTML=P.map(p=>`
     </div>
     <p class="hint" id="hint${p}"></p>
     <div class="ilist" id="ilist${p}" hidden></div>
-    <p class="log" id="log${p}"></p>
+    <details class="logd" id="logd${p}" hidden><summary id="logs${p}">📜 บันทึก</summary><p class="log" id="log${p}"></p></details>
   </section>`).join("");
 
 // Original faceted-crystal mark for the Terastal status.
@@ -1583,6 +1612,16 @@ CARDS.doom={n:"Doom Desire",need:null,atk:0,th:"คำสั่งถัดไ�
 CARDS.destiny={n:"Destiny Bond",need:null,atk:0,th:"ถ้าอีกฝ่ายใช้การ์ดเล็งศัตรูสำเร็จในคำสั่งนี้ ทีมของอีกฝ่ายโดนผลเดียวกันด้วย",en:"If the opponent lands an enemy-target card this command, their team gets the same effect"};
 CARDS.swagger={n:"Swagger",need:null,atk:0,th:"ให้อีกฝ่ายได้การ์ด Terastal 1 ใบ แต่คำสั่งถัดไปเขาสับสน เป้าการ์ดถูกสุ่ม อาจโดนทีมตัวเอง",en:"Give the opponent a Terastal card, but next command they're confused: random targets, maybe their own team"};
 CARDS.roleplay={n:"Role Play",need:"self",atk:0,th:"ช่องของเรา 1 ช่องกลายเป็นธาตุที่อีกฝ่ายมีมากที่สุด",en:"1 of your slots becomes the opponent's most common type"};
+// One-line card text for the hand, and an icon for each card.
+const CSHORT={roar:["ไล่ธาตุที่เลือกของอีกฝ่ายไปสุ่มใหม่","Redraw an enemy type"],trick:["สลับช่องเรากับช่องอีกฝ่าย","Swap a slot with theirs"],present:["ยัดไอเทมให้ธาตุที่เลือกของอีกฝ่าย","Force items on an enemy type"],
+ tera:["เปลี่ยนธาตุอีกฝ่าย 1 ช่อง","Change 1 enemy slot's type"],mirror:["สะท้อนการ์ดเล็งศัตรูกลับ","Bounce enemy cards back"],sub:["กันช่องหนึ่งไว้ทั้งรอบ","Guard a slot all round"],
+ conv:["สุ่มธาตุใหม่ให้ช่องตัวเอง","Redraw one of your slots"],copycat:["ใช้การ์ดเดียวกับอีกฝ่าย","Copy their card now"],wish:["คำสั่งหน้าได้ Terastal","A Terastal next command"],
+ raindance:["สุ่ม Knock Off ใหม่","Redraw the Knock Off"],sandstorm:["ธาตุที่ซ้ำมากสุดโดนสุ่มใหม่ ทั้งสองทีม","Both teams lose a repeat"],entrain:["ธาตุเดี่ยวกลายเป็นธาตุหลัก ทั้งสองทีม","Both teams gain a repeat"],
+ sketch:["คัดลอกการ์ดอีกฝ่ายเข้ามือ","Copy their card into your hand"],doom:["คำสั่งหน้า ช่องสุ่มของอีกฝ่ายโดนสุ่มใหม่","A random enemy slot is redrawn next command"],
+ destiny:["อีกฝ่ายโจมตีสำเร็จ โดนเองด้วย","Their hit lands on them too"],swagger:["ให้ Terastal แต่คำสั่งหน้าสับสน","Gift a Terastal, then confuse them"],
+ roleplay:["ช่องเรากลายเป็นธาตุหลักของอีกฝ่าย","Copy their main type"],perish:["ทั้งสองทีมสุ่มใหม่ 2 ช่อง","Both teams redraw 2 slots"],fore:["เปิดดูช่องซ่อนของอีกฝ่าย","Reveal a hidden enemy slot"]};
+const CICON={roar:"🦁",trick:"🔀",present:"🎁",tera:"💎",mirror:"🪞",sub:"🧸",conv:"🔄",copycat:"🐱",wish:"🌠",raindance:"☔",sandstorm:"🌪",entrain:"🔗",sketch:"🎨",doom:"☄️",destiny:"👻",swagger:"😵",roleplay:"🎭",perish:"🎵",fore:"👁",pass:"🏃"};
+const cShort=c=>CSHORT[c]?L(CSHORT[c][0],CSHORT[c][1]):L(CARDS[c].th,CARDS[c].en);
 // What kind of card each one is, shown as a tag on the card.
 const CARDKIND={raindance:"field",sandstorm:"field",entrain:"field",perish:"field",sketch:"ahead",doom:"ahead",wish:"ahead",swagger:"ahead"};
 const kindOf=c=>CARDS[c]&&CARDS[c].atk?"atk":CARDKIND[c]||"support";
@@ -1629,7 +1668,7 @@ const typeOpts=(p,card)=>{const o=other(p); if(card==="roar") return S.noBan[p]?
 const canPlay=(p,card)=>{ if((card==="sketch"||card==="swagger")&&S.cmdN>=S.maxCmd) return false; if(card==="fore"&&!S.hid[other(p)].some(i=>isHid(other(p),i))) return false; if(card==="wish"&&S.cmdN>=S.maxCmd) return false; if(card==="mirror"&&hasF("shatter")) return false; if(card==="sub"&&BARE()) return false; return (CARDS[card].need!=="type"&&CARDS[card].need!=="own")||typeOpts(p,card).length>0; };
 // The item a slot holds: Double Cursed items once drawn, otherwise a Present gift (Knock Off still strips it).
 const itemAt=(p,i)=>{if(S.items&&S.items[p]) return S.items[p][i]; const g=S.gift&&S.gift[p]?S.gift[p][i]:null; if(!g) return null; if(isKO(S.team[p][i])&&S.mono[p]==null) return null; return g;};
-const cardHead=c=>{const k=kindOf(c); return "<b>"+CARDS[c].n+"</b>"+'<i class="etag k-'+k+'">'+L(KINDNAME[k][0],KINDNAME[k][1])+"</i>";};
+const cardHead=c=>{const k=kindOf(c); return "<b>"+(CICON[c]?CICON[c]+" ":"")+CARDS[c].n+"</b>"+'<i class="etag k-'+k+'">'+L(KINDNAME[k][0],KINDNAME[k][1])+"</i>";};
 const cardName=c=>c==="pass"?L("ไม่ใช้การ์ด","No card"):CARDS[c].n;
 const AND=()=>L(" และ "," and ");
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=pick(i+1); [a[i],a[j]]=[a[j],a[i]];} return a;}
@@ -1752,12 +1791,13 @@ function render(){
     w.innerHTML=S.wild[p]==null?"?":!S.teraT[p]?L("ไม่ได้","None"):GEM+(nT?"Terastal ×"+nT:L("ใช้แล้ว","Used")); w.classList.toggle("on",nT>0);
     $("gb"+p).innerHTML=S.mono[p]!=null?badgeSVG(S.mono[p]):"";
     $("ud"+p).hidden=S.under!==p;
+    $("logd"+p).hidden=!$("log"+p).textContent; $("logs"+p).textContent=L("📜 บันทึกของ ","📜 Log for ")+pname(p);
     $("lane"+p).classList.toggle("lost",S.phase==="done"&&!!S.winner&&S.winner!==p);
     {const cr=$("crown"+p), k=H.series==="koth"&&H.koth&&H.koth.champ&&H.koth.champ===pname(p); cr.textContent=k?"👑":""; cr.classList.toggle("g2",!!k&&H.koth.streak===2); cr.classList.toggle("g3",!!k&&H.koth.streak>=3);}
     if(p==="B"){const tb=$("tradeBtn"); tb.hidden=!(CAL()&&S.phase==="done"&&S.items.A&&!S.winner&&!(S.traded.A&&S.traded.B)); tb.textContent=L("🔁 ตลาดแลกของ","🔁 Trade market");}
     {const il=$("ilist"+p), rows=live?S.team[p].map((t,i)=>{const it=isHid(p,i)?null:itemAt(p,i); if(!it) return "";
       const cu=S.cursedIt[p].includes(i)&&S.items[p]; return "<div"+(cu?' class="cur"':"")+"><b>"+L("ช่อง ","Slot ")+(i+1)+" · "+(cu?"💀 ":"")+it+"</b> — "+itemDesc(it)+"</div>";}).join(""):"";
-     il.hidden=!rows; il.innerHTML=rows?"<b class=\"px\" style=\"font-size:9px\">ITEMS</b>"+rows:"";}
+     il.hidden=!rows; il.innerHTML=rows?"<b class=\"px\">"+L("ไอเทมในทีม","Items")+"</b>"+rows:"";}
     const nh=S.hid[p].filter(i=>isHid(p,i)).length;
     $("stat"+p).textContent=live?(nh?L("มองเห็น "+visTypes(p).length+" ธาตุ · ซ่อน "+nh+" ช่อง",visTypes(p).length+" types visible · "+nh+" hidden"):summary(S.team[p]).text)+(S.mono[p]!=null?L(" · หัวหน้ายิมธาตุ"+tn(S.mono[p])," · "+tn(S.mono[p])+" Gym Leader"):""):"";
     if(live){const ex=[]; if(S.phase==="cmd"&&S.conf[p]===S.cmdN) ex.push(L("😵 สับสน (Swagger)","😵 Confused (Swagger)")); if(S.doom[other(p)]) ex.push(L("☄️ Doom Desire กำลังตกลงมา","☄️ Doom Desire incoming")); if(ex.length) $("stat"+p).textContent+=" · "+ex.join(" · ");}
@@ -1771,8 +1811,8 @@ function render(){
     if(live&&S.hand[p].length){
       S.hand[p].forEach((cd,k)=>{
         const b=document.createElement("button"); b.type="button";
-        if(mine){b.className="cardbtn c-"+cd+(d.ci===k?" sel":""); b.innerHTML=cardHead(cd)+"<span>"+L(CARDS[cd].th,CARDS[cd].en)+"</span>"; b.disabled=!canPlay(p,cd); b.addEventListener("click",()=>chooseCard(p,k));}
-        else if(hasF("open")&&S.phase==="cmd"){b.className="cardbtn c-"+cd; b.disabled=true; b.innerHTML=cardHead(cd)+"<span>"+L(CARDS[cd].th,CARDS[cd].en)+"</span>";}
+        if(mine){b.className="cardbtn kk k-"+kindOf(cd)+" c-"+cd+(d.ci===k?" sel":""); b.innerHTML=cardHead(cd)+"<span>"+cShort(cd)+"</span>"; b.disabled=!canPlay(p,cd); b.addEventListener("click",()=>chooseCard(p,k));}
+        else if(hasF("open")&&S.phase==="cmd"){b.className="cardbtn kk k-"+kindOf(cd)+" c-"+cd; b.disabled=true; b.innerHTML=cardHead(cd)+"<span>"+cShort(cd)+"</span>";}
         else{b.className="cardbtn back"; b.disabled=true; b.innerHTML="<b>?</b>"; b.setAttribute("aria-label",L("ไพ่คว่ำ","Face-down card"));}
         hand.appendChild(b);
       });
@@ -1895,8 +1935,8 @@ function renderWizard(){
     $("cwTitle").textContent=L("เลือกการ์ด 1 ใบ","Choose 1 card");
     $("cwText").textContent=L("การ์ดที่ใช้ไม่ได้ตอนนี้จะเป็นสีจาง","Cards you can't play right now are faded.");
     const g=grid("hand cwhand");
-    S.hand[p].forEach((cd,k)=>{const b=document.createElement("button"); b.type="button"; b.className="cardbtn c-"+cd+(d.ci===k?" sel":"");
-      b.innerHTML=cardHead(cd)+"<span>"+L(CARDS[cd].th,CARDS[cd].en)+"</span>"; b.disabled=!canPlay(p,cd);
+    S.hand[p].forEach((cd,k)=>{const b=document.createElement("button"); b.type="button"; b.className="cardbtn kk k-"+kindOf(cd)+" c-"+cd+(d.ci===k?" sel":"");
+      b.innerHTML=cardHead(cd)+"<span>"+cShort(cd)+"</span>"; b.disabled=!canPlay(p,cd);
       b.addEventListener("click",()=>{chooseCard(p,k); d.step=afterCard(d); render();}); g.appendChild(b);});
     const ps=document.createElement("button"); ps.type="button"; ps.className="cardbtn"+(d.ci==="pass"?" sel":""); ps.innerHTML="<b>"+L("ไม่ใช้การ์ด","No card")+"</b><span>"+(BARE()?L("เก็บไพ่ไว้ ไม่ทำอะไร","Keep your cards, do nothing"):L("เก็บไพ่ไว้ ใช้ Protect อย่างเดียว","Keep your cards, Protect only"))+"</span>";
     ps.addEventListener("click",()=>{Object.assign(d,{ci:"pass",type:null,mine:null,theirs:null,slot:null,tt:null,self:null}); d.step="confirm"; render(); sfx("click");});
@@ -1982,7 +2022,7 @@ function renderFS(){
       b.addEventListener("click",()=>{$("bet"+p).value=String(k); renderFS(); renderSteps(); sfx("click");}); r.appendChild(b);}
     rows.appendChild(r);}
   $("fsGo").disabled=!($("betA").value&&$("betB").value);
-  $("fsGo").textContent=L("🎲 สุ่มทีม","🎲 Draw"); $("fsClose").textContent=L("ปิด","Close");
+  $("fsGo").textContent=$("fsGo").disabled?L("เลือกให้ครบทั้ง 2 คนก่อน","Both players pick first"):L("🎲 สุ่มทีม","🎲 Draw"); $("fsClose").textContent=L("ปิด","Close");
 }
 
 /* ---------- Team Preview timer, drawn as an HP bar ---------- */
@@ -2529,7 +2569,7 @@ function reveal(){
   // Sketch copies the other side's card; Doom Desire set on the last command lands right away.
   for(const p of ord) if(pl[p].card==="sketch") doSketch(p,pl[other(p)].card,out);
   if(n===S.maxCmd) for(const p of ord) if(S.doom[p]===n+1){S.doom[p]=0; doomHit(p,out,true);}
-  S.flash=out.lines.join(" ");
+  S.flash=out.lines.slice(0,4).join("\n")+(out.lines.length>4?"\n…":"");
   gymBattle();
   S.cmdN++;
   if(S.cmdN>S.maxCmd) finishCmds(); else beginCmd();
@@ -2553,7 +2593,10 @@ function showReveal(n,ord,show,out,done){
   $("rvTitle").textContent="COMMAND "+n+"/"+S.maxCmd+" · "+L("เปิดคำสั่ง!","REVEAL!");
   P.forEach(p=>{
     const el=$("rv"+p), x=show[p];
-    el.classList.remove("on"); el.querySelector(".front").className="fb front c-"+x.card;
+    el.classList.remove("on"); const fr=el.querySelector(".front"); fr.className="fb front c-"+x.card+(x.card!=="pass"&&CARDS[x.card]?" k-"+kindOf(x.card):"");
+    if(!fr.querySelector(".rvi")){fr.insertAdjacentHTML("afterbegin",'<i class="rvi"></i>'); fr.querySelector(".rvc").insertAdjacentHTML("afterend",'<em class="rvk"></em>');}
+    fr.querySelector(".rvi").textContent=CICON[x.card]||"❔";
+    {const k=x.card!=="pass"&&CARDS[x.card]?kindOf(x.card):null, rk=fr.querySelector(".rvk"); rk.hidden=!k; if(k) rk.textContent=L(KINDNAME[k][0],KINDNAME[k][1]);}
     el.querySelector(".rvn").textContent=pname(p);
     el.querySelector(".rvc").textContent=cardName(x.card);
     el.querySelector(".rvd").textContent=x.desc;
@@ -2584,7 +2627,7 @@ function miniTile(c,i){
   const d=document.createElement("div"); d.className="mt";
   if(c.h||c.t==null){d.classList.add("hidd"); d.innerHTML="<small>"+(i+1)+"</small>?";}
   else{d.style.background=TYPES[c.t][2]; d.style.color=TYPES[c.t][3]?"#fff":"#1f2638"; d.innerHTML="<small>"+(i+1)+"</small>"+tn(c.t);}
-  if(c.g){d.classList.add("bar"); d.insertAdjacentHTML("beforeend",'<i class="sh">'+L("กัน","P")+'</i>');}
+  if(c.g){d.classList.add("bar"); d.insertAdjacentHTML("beforeend",'<i class="sh">'+L("ป้องกัน","Protect")+'</i>');}
   if(c.it&&!c.h) d.insertAdjacentHTML("beforeend",'<em>'+c.it+'</em>');
   return d;
 }
