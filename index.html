@@ -479,7 +479,33 @@ details.rules[open]>summary h2{margin-bottom:12px}
 .fb.front.c-copycat{border-top-color:#8e7cc3}.fb.front.c-wish{border-top-color:#ffb3d1}
 .schead.c-copycat{border-left-color:#8e7cc3}.schead.c-wish{border-left-color:#ffb3d1}
 .dcard.c-copycat{border-left-color:#8e7cc3}.dcard.c-wish{border-left-color:#ffb3d1}
-.m-mirror{--mb:#9aa7c7}.m-starter{--mb:#5cc98a}.m-chaos{--mb:#ff7a3d}
+.m-mirror{--mb:#9aa7c7}.m-chaos{--mb:#ff7a3d}
+/* Each mode gets its own ball: Starter = Great Ball, Build-up = bricks, Push Your Luck = gold coin, Mystery Box = gift ribbon, Color = Pokédex color stripes */
+.m-starter .mball{background:linear-gradient(180deg,transparent 0 44%,var(--ink) 44% 56%,#fff 56%),linear-gradient(90deg,#3a8ee8 0 18%,#e3342f 18% 30%,#3a8ee8 30% 70%,#e3342f 70% 82%,#3a8ee8 82%)}
+.m-buildup .mball{background:linear-gradient(180deg,transparent 0 44%,var(--ink) 44% 56%,#fff 56%),repeating-linear-gradient(0deg,#c8612a 0 5px,#7a3412 5px 6px)}
+.m-luck .mball{background:radial-gradient(circle at 50% 25%,#fff7c2 0 10%,transparent 11%),linear-gradient(180deg,#f2c230 0 44%,var(--ink) 44% 56%,#fff 56%)}
+.m-box .mball{background:linear-gradient(90deg,transparent 0 42%,#ffd84a 42% 58%,transparent 58%),linear-gradient(180deg,#d6337a 0 44%,var(--ink) 44% 56%,#fff 56%)}
+.m-color .mball{background:linear-gradient(180deg,transparent 0 44%,var(--ink) 44% 56%,#fff 56%),linear-gradient(90deg,#e3342f 0 10%,#f6c61c 10% 20%,#35b565 20% 30%,#2c68d6 30% 40%,#8e44ad 40% 50%,#f78fb3 50% 60%,#8b5a2b 60% 70%,#9aa1b8 70% 80%,#2a2a2a 80% 90%,#f4f4f4 90%)}
+body.mode-starter{background:#101b2e radial-gradient(#1d2f4d 1.2px,transparent 1.6px) 0 0/14px 14px}
+body.mode-starter .ball-top{background:linear-gradient(90deg,transparent 0 16%,rgba(227,52,47,.95) 16% 26%,transparent 26% 74%,rgba(227,52,47,.95) 74% 84%,transparent 84%),linear-gradient(180deg,#5aa8f0,#2f7fd8 55%,#1c5aa8)}
+body.mode-starter h1 em{color:#ffe08a}
+body.mode-starter .steps .st.cur{background:#bfe0ff}
+body.mode-buildup{background:#1f140e radial-gradient(#3a2418 1.2px,transparent 1.6px) 0 0/14px 14px}
+body.mode-buildup .ball-top{background:repeating-linear-gradient(0deg,transparent 0 22px,rgba(60,22,8,.55) 22px 25px),repeating-linear-gradient(90deg,transparent 0 46px,rgba(60,22,8,.35) 46px 49px),linear-gradient(180deg,#e0823f,#c8612a 55%,#8e3c15)}
+body.mode-buildup h1 em{color:#ffe0b0}
+body.mode-buildup .steps .st.cur{background:#ffcfa6}
+body.mode-luck{background:#1e1806 radial-gradient(#3a300c 1.2px,transparent 1.6px) 0 0/14px 14px}
+body.mode-luck .ball-top{background:radial-gradient(circle at 20% 40%,rgba(255,255,255,.55) 0 3px,transparent 4px),radial-gradient(circle at 75% 65%,rgba(255,255,255,.5) 0 3px,transparent 4px),radial-gradient(circle at 55% 25%,rgba(255,255,255,.45) 0 2px,transparent 3px),linear-gradient(180deg,#ffd75a,#f2b51c 55%,#b8800a)}
+body.mode-luck h1,body.mode-luck .eyebrow{color:#2a1d00;text-shadow:.06em .06em 0 #fff3b0}
+body.mode-luck h1 em{color:#7a1d10;text-shadow:none}
+body.mode-luck .steps .st.cur{background:#ffe48a}
+body.mode-box{background:#220d18 radial-gradient(#3f1a2d 1.2px,transparent 1.6px) 0 0/14px 14px}
+body.mode-box .ball-top{background:linear-gradient(90deg,transparent 0 45%,#ffd84a 45% 55%,transparent 55%),linear-gradient(180deg,#ee5a98,#d6337a 55%,#9c1750)}
+body.mode-box h1 em{color:#fff2a8}
+body.mode-box .steps .st.cur{background:#ffc0dc}
+body.mode-color{background:#151520 radial-gradient(#26263a 1.2px,transparent 1.6px) 0 0/14px 14px}
+body.mode-color .ball-top{background:linear-gradient(180deg,rgba(0,0,0,0) 60%,rgba(0,0,0,.25)),linear-gradient(90deg,#e3342f 0 10%,#f6a01c 10% 20%,#f6c61c 20% 30%,#35b565 30% 40%,#2c68d6 40% 50%,#8e44ad 50% 60%,#f78fb3 60% 70%,#8b5a2b 70% 80%,#9aa1b8 80% 90%,#3a3a3a 90%)}
+body.mode-color h1 em{color:#fff}
 .m-mirror .mball{background:linear-gradient(135deg,rgba(255,255,255,.8),transparent 40%),linear-gradient(180deg,#9aa7c7 0 44%,var(--ink) 44% 56%,#fff 56%)}
 .m-chaos .mball{background:linear-gradient(180deg,transparent 0 44%,var(--ink) 44% 56%,#fff 56%),conic-gradient(#ff5a5a,#ffb000,#3fc35f,#3aa0ff,#a55bff,#ff5a5a)}
 body.mode-mirror{background:#141822 radial-gradient(#2a3142 1.2px,transparent 1.6px) 0 0/14px 14px}
