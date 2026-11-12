@@ -124,6 +124,22 @@ body.rolling .plate{animation:blink .4s steps(2) infinite}
 
 /* Gym badge pop-up */
 .linkbtn{background:#d6f0ff}
+.m-gym .mball{background:radial-gradient(circle at 50% 50%,#fff 0 13%,var(--ink) 13% 19%,transparent 19.5%),linear-gradient(180deg,#e8833a 0 44%,var(--ink) 44% 56%,#f6e7c8 56%)}
+body.mode-gym{background:#1f150b radial-gradient(#3b2914 1.2px,transparent 1.6px) 0 0/14px 14px}
+body.mode-gym .ball-top{background:linear-gradient(90deg,transparent 0 46%,#ffd36b 46% 54%,transparent 54%),linear-gradient(180deg,#f59a4b,#e8833a 55%,#a9521b)}
+body.mode-gym h1 em{color:#ffd36b}
+body.mode-gym .steps .st.cur{background:#ffcf9a}
+.gymtx{margin:4px 0 8px;font-size:15px;text-align:center}
+.gymopts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%}
+.gymopt{display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 6px;border:3px solid var(--ink);border-radius:14px;box-shadow:0 4px 0 var(--ink);font:inherit;font-weight:700;font-size:16px;cursor:pointer}
+.gymopt:disabled{cursor:default;opacity:.9}
+.gymopt:not(:disabled):active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
+.gymb svg{width:42px;height:42px;display:block}
+.gymsec{margin:8px 0 0;font-weight:700}
+.gymgrid{margin:4px 0 10px}
+.gybox{max-width:400px}
+.gybadge svg{width:96px;height:96px;display:block;margin:0 auto;animation:pop .45s ease-out}
+.gyres{font-weight:700;font-size:17px;margin:0}.gyres.ok{color:#1d8a4c}.gyres.bad{color:#c62828}
 .resetbtn{background:#ffd9d4}
 .rsbox{max-width:380px}
 .rsbtns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;width:100%}
@@ -694,7 +710,7 @@ body.playing #roll{width:84px;height:84px;border-width:8px;font-size:15px}
         <button id="resetTop" class="btn resetbtn" type="button" hidden>🔄 เริ่มใหม่</button>
         <button id="linkBtn" class="btn linkbtn" type="button">🔗 Link Battle</button>
         <button id="undo" class="btn" type="button" disabled hidden>ย้อนกลับ 1 ขั้น</button>
-        <div hidden><select id="mode"><option value="starter">Starter Draft</option><option value="cursed">Cursed Draft</option><option value="double">Double Cursed</option><option value="safari">Safari Draft</option><option value="blind">Blind Draft</option><option value="mirror">Mirror Draft</option><option value="chaos">Wild Field</option><option value="box">Mystery Box</option><option value="color">Color Draft</option></select>
+        <div hidden><select id="mode"><option value="starter">Starter Draft</option><option value="cursed">Cursed Draft</option><option value="double">Double Cursed</option><option value="safari">Safari Draft</option><option value="blind">Blind Draft</option><option value="mirror">Mirror Draft</option><option value="chaos">Wild Field</option><option value="box">Mystery Box</option><option value="color">Color Draft</option><option value="gym">Gym Leader</option></select>
           <select id="series"><option value="bo1">แมตช์เดียว</option><option value="bo3">Best of 3</option><option value="koth">King of the Hill</option><option value="tour">Tournament</option></select></div>
       </div>
     </div>
@@ -830,6 +846,17 @@ body.playing #roll{width:84px;height:84px;border-width:8px;font-size:15px}
       <button id="reset" class="btn resetbtn" type="button" disabled>🔄 เริ่มใหม่ (รีเซ็ต)</button>
     </div>
     <button id="menuClose" class="btn" type="button">ปิด</button>
+  </div>
+</div>
+
+<div class="veil" id="gymVeil" hidden role="dialog" aria-modal="true" aria-labelledby="gyTitle">
+  <div class="box card gybox">
+    <div class="px lbl">GYM REVEAL</div>
+    <div id="gyBadge" class="gybadge"></div>
+    <h2 id="gyTitle"></h2>
+    <p id="gyText"></p>
+    <p id="gyRes" class="gyres"></p>
+    <button id="gyOk" class="btn go" type="button">ไปต่อ ›</button>
   </div>
 </div>
 
@@ -1120,6 +1147,9 @@ const MODEINFO={
  mirror:{n:"Mirror Draft",lv:0,s:["เริ่มด้วยทีมเหมือนกันเป๊ะ วัดกันที่ฝีมือ","Same team for both, pure skill"],d:["สองฝ่ายเริ่มด้วยทีมเหมือนกันเป๊ะ แล้วสาปกันจนต่าง วัดกันที่ฝีมือ","Both start with the exact same team, then curse it apart. Pure skill."]},
  chaos:{n:"Wild Field",lv:2,s:["ทุกรอบสุ่มสนามพิเศษ 2 อย่าง","2 random field effects each round"],d:["สนามป่วน: ทุกรอบสุ่มสนามพิเศษ 2 อย่างจาก 11 แบบ เช่น โลกกลับหัว ดวลนัดเดียว ไพ่หงาย","Two random field effects each round from 11, like Upside Down, Sudden Death or Open Hand."]},
  box:{n:"Mystery Box",lv:1,s:["เปิดกล่องปริศนา เก็บเองหรือยัดให้อีกฝ่าย","Open boxes: keep them or give them away"],d:["กล่องปริศนา 50 ใบ ทุกกล่องมีธาตุ บางกล่องได้ 2–3 ธาตุ เลือกเก็บเองหรือยัดให้อีกฝ่าย ทีมครบไว","50 mystery boxes, all holding types, some 2–3 at once. Keep or force them on the other side."]},
+ gym:{n:"Gym Leader",lv:1,s:["ฝ่ายหนึ่งเป็นหัวหน้ายิมทีมธาตุเดียว อีกฝ่ายทายธาตุยิม","One side is a mono-type Gym Leader, the other guesses the type"],
+   d:["สลับกันเป็นหัวหน้ายิมทุกรอบ · หัวหน้ายิมเลือกธาตุยิมแบบลับจาก 3 ธาตุ ทั้งทีมต้องมีธาตุนั้น · ผู้ท้าชิงสุ่มทีม แล้วทายว่ายิมเป็นธาตุไหน ทายถูกได้เปลี่ยนธาตุทีมตัวเอง 2 ช่อง · ธาตุยิมถูกล็อก โดนการ์ดโจมตีจะติด Knock Off แทน · หัวหน้ายิมได้การ์ดเพิ่ม 1 ใบ",
+     "Take turns being the Gym Leader · the leader secretly picks the gym type from 3, and the whole team must have it · the Challenger draws a team and guesses the gym type; a correct guess lets them change 2 of their slots · the gym type is locked, so attack cards leave Knock Off instead · the leader holds 1 extra card"]},
  color:{n:"Color Draft",lv:1,s:["สุ่มสี ทั้งทีมต้องเป็นโปเกมอนสีนั้น","Draw a color; the whole team must match"],d:["ไม่สุ่มธาตุ สุ่มสีให้แต่ละฝ่าย ทั้งทีมต้องเป็นโปเกมอนสีนั้น แล้วสาปกันด้วยการ์ดสี","No types: each side draws a Pokédex color; the whole team must be that color."]},
  double:{n:"Double Cursed",lv:2,s:["จบแล้วทุกช่องโดนยัดไอเทม ห้ามเปลี่ยน","Every slot ends up with a forced item"],d:["สาปซ้อน: จบคำสั่งแล้วทุกช่องถูกยัดไอเทม + Mega Stone ห้ามเปลี่ยน","Every slot is forced to hold an item, plus a Mega Stone. No swaps."]}};
 const HARDINFO={
@@ -1131,10 +1161,11 @@ const HARDINFO={
  mirror:["Shadow: การ์ดเล็งศัตรูที่สำเร็จ ส่งผลกับทีมตัวเองด้วย 1 ช่อง","Shadow: every enemy-target card that lands also hits 1 slot of your own team"],
  chaos:["สนามซ้อน: มีโอกาส 10% ที่ออก 3 สนาม","Stacked fields: a 10% chance of 3 fields"],
  box:["Mystery Box ไม่มีกติกาโหดเฉพาะโหมด","Mystery Box has no mode-specific hard rule"],
- color:["สีที่ป้องกันไว้ยังโดนสลับได้","Swaps go through even a guarded color"]};
+ color:["สีที่ป้องกันไว้ยังโดนสลับได้","Swaps go through even a guarded color"],
+ gym:["ผู้ท้าชิงทายผิด หัวหน้ายิมได้การ์ดเพิ่มอีก 1 ใบ","A wrong guess gives the Gym Leader 1 more card"]};
 // The mode picker: one list from easiest to hardest. Tap a row to pick it (it opens its full description);
 // series and hard rules live in a folded "more options" section so a first-timer only has to pick and press start.
-const MODEORDER=["starter","cursed","mirror","safari","box","color","blind","chaos","double"];
+const MODEORDER=["starter","cursed","mirror","safari","gym","box","color","blind","chaos","double"];
 const DIFF=[["ง่าย","Easy"],["กลาง","Medium"],["ยาก","Hard"]];
 const SERNAME={bo1:["แมตช์เดียว","Single match"],bo3:["Best of 3","Best of 3"],koth:["👑 King of the Hill","👑 King of the Hill"],tour:["🏆 ทัวร์นาเมนต์","🏆 Tournament"]};
 function renderModes(){
@@ -1739,7 +1770,7 @@ function rollItems(auto){
   S.flash=(auto&&S.flash?S.flash+" ":"")+L("สุ่มไอเทมแล้ว! ต้องใช้ตามนี้ แลกได้แค่ที่ตลาดแลกของ","Items drawn! Use exactly these; the only way to swap is the trade market.");
   render(); P.forEach(p=>els[p].forEach(bump)); sfx("items");
 }
-const MODES={starter:"STARTER DRAFT",cursed:"CURSED DRAFT",double:"DOUBLE CURSED",safari:"SAFARI DRAFT",blind:"BLIND DRAFT",mirror:"MIRROR DRAFT",chaos:"WILD FIELD",box:"MYSTERY BOX",color:"COLOR DRAFT"};
+const MODES={starter:"STARTER DRAFT",cursed:"CURSED DRAFT",double:"DOUBLE CURSED",safari:"SAFARI DRAFT",blind:"BLIND DRAFT",mirror:"MIRROR DRAFT",chaos:"WILD FIELD",box:"MYSTERY BOX",color:"COLOR DRAFT",gym:"GYM LEADER"};
 function setMode(v){
   if(v==="cal") v="double";
   H.mode=MODES[v]?v:"cursed"; store();
@@ -1760,7 +1791,7 @@ const fresh=round=>({phase:"idle",round,flash:"",koi:pick(KO_TH.length),items:{A
   hand:{A:[],B:[]},used:{A:[],B:[]},cmdN:0,picker:null,plan:{A:null,B:null},draft:null,coin:pick(2),hid:{A:[],B:[]},
   pool:[],poolTaken:[],sOrder:[],spick:0,under:null,pendItems:false,lastLock:{A:null,B:null},gb:false,maxCmd:2,fields:[],curse2:null,wish:{A:false,B:false},ace:{A:null,B:null},aceDone:{A:false,B:false},seal:{A:[],B:[]},offer:{A:[],B:[]},doom:{A:0,B:0},conf:{A:0,B:0},bond:{A:false,B:false},
   hl:{A:{read:0,lost:0,refl:0,stole:0},B:{read:0,lost:0,refl:0,stole:0}},ditto:{A:null,B:null},dittoQ:[],koX:[],traded:{A:false,B:false},cursedIt:{A:[],B:[]},
-  sUsed:{A:{rock:false,bait:false},B:{rock:false,bait:false}},sTool:null,bait:null,hint:{A:[0,0,0,0,0,0],B:[0,0,0,0,0,0]},nextKO:null,lastStand:{A:false,B:false}});
+  sUsed:{A:{rock:false,bait:false},B:{rock:false,bait:false}},sTool:null,gym:null,gko:{A:[],B:[]},bait:null,hint:{A:[0,0,0,0,0,0],B:[0,0,0,0,0,0]},nextKO:null,lastStand:{A:false,B:false}});
 let S=fresh(0);
 const els={A:[],B:[]};
 for(const p of P) for(let i=0;i<N;i++){
@@ -1863,10 +1894,12 @@ const BARE=()=>hasF("bare");
 const TYPE_ODDS=[1,5,15,30,32,17];
 const FS_ODDS=TYPE_ODDS.map(x=>x+"%");
 const STARTER=()=>H.mode==="starter", HARD=()=>!!H.hard;
-const BUILD=()=>H.mode==="buildup", LUCK=()=>H.mode==="luck", BOX=()=>H.mode==="box", COLOR=()=>H.mode==="color";
-const NOFS=()=>STARTER()||SAFARI()||BUILD()||LUCK()||BOX()||COLOR();
+const BUILD=()=>H.mode==="buildup", LUCK=()=>H.mode==="luck", BOX=()=>H.mode==="box", COLOR=()=>H.mode==="color", GYM=()=>H.mode==="gym";
+const NOFS=()=>STARTER()||SAFARI()||BUILD()||LUCK()||BOX()||COLOR()||GYM();
 const sealed=(p,i)=>!!(S.seal&&S.seal[p]&&S.seal[p].includes(i));
-const DRAFTPH=["safari","luck","box"];
+const DRAFTPH=["safari","luck","box","gymPick","gymGuess","gymFix"];
+const GYMPH=["gymPick","gymGuess","gymFix"];   // Gym Leader set-up phases (see the Gym Leader section)
+let GSEL=null;   // the Challenger's chosen slot while changing types (kept off the shared state)
 const CAL=()=>H.mode==="double", SAFARI=()=>H.mode==="safari", BLIND=()=>H.mode==="blind", MIRROR=()=>H.mode==="mirror", CHAOS=()=>H.mode==="chaos";
 const isHid=(p,i)=>S.hid[p].includes(i)&&S.phase!=="done";
 const guarded=(p,i)=>i===S.lock[p]||S.sub[p].includes(i);
@@ -1874,7 +1907,7 @@ const visTypes=p=>[...new Set(S.team[p].filter((t,i)=>t!=null&&!isHid(p,i)))];
 const typeOpts=(p,card)=>{const o=other(p); if(card==="roar") return S.noBan[p]?[]:visTypes(o); if(card==="present") return S.mono[o]!=null?[]:visTypes(o).filter(t=>!isKO(t)); return [];};
 const canPlay=(p,card)=>{ if((card==="sketch"||card==="swagger")&&S.cmdN>=S.maxCmd) return false; if(card==="fore"&&!S.hid[other(p)].some(i=>isHid(other(p),i))) return false; if(card==="wish"&&S.cmdN>=S.maxCmd) return false; if(card==="mirror"&&hasF("shatter")) return false; if(card==="sub"&&BARE()) return false; return (CARDS[card].need!=="type"&&CARDS[card].need!=="own")||typeOpts(p,card).length>0; };
 // The item a slot holds: Double Cursed items once drawn, otherwise a Present gift (Knock Off still strips it).
-const itemAt=(p,i)=>{if(S.items&&S.items[p]) return S.items[p][i]; const g=S.gift&&S.gift[p]?S.gift[p][i]:null; if(!g) return null; if(isKO(S.team[p][i])&&S.mono[p]==null) return null; return g;};
+const itemAt=(p,i)=>{if(S.items&&S.items[p]) return S.items[p][i]; const g=S.gift&&S.gift[p]?S.gift[p][i]:null; if(!g||gkoAt(p,i)) return null; if(isKO(S.team[p][i])&&S.mono[p]==null) return null; return g;};
 const cardHead=c=>{const k=kindOf(c); return "<b>"+(CICON[c]?CICON[c]+" ":"")+CARDS[c].n+"</b>"+'<i class="etag k-'+k+'">'+L(KINDNAME[k][0],KINDNAME[k][1])+"</i>";};
 const cardName=c=>c==="pass"?L("ไม่ใช้การ์ด","No card"):CARDS[c].n;
 const AND=()=>L(" และ "," and ");
@@ -1883,7 +1916,7 @@ function shuffle(a){for(let i=a.length-1;i>0;i--){const j=pick(i+1); [a[i],a[j]]
 function order(){const a=summary(S.team.A).uniq, b=summary(S.team.B).uniq, o=a<b?["A","B"]:b<a?["B","A"]:(S.coin?["B","A"]:["A","B"]); return hasF("flip")&&a!==b?o.reverse():o;}
 
 /* ---------- Phase tracker ---------- */
-const STEPS=()=>[NOFS()?["เตรียม","Ready"]:["ทายธาตุ","Guess"],SAFARI()?["หยิบธาตุ","Safari"]:LUCK()?["เปิดช่อง","Push luck"]:BOX()?["เปิดกล่อง","Boxes"]:COLOR()?["สุ่มสี","Colors"]:["สุ่มทีม","Draw"],["คำสั่ง 1","Command 1"],S.maxCmd>2?["คำสั่ง 2–"+S.maxCmd,"Commands 2–"+S.maxCmd]:S.maxCmd<2?["จบคำสั่ง","Commands done"]:["คำสั่ง 2","Command 2"],["จัดทีม","Team build"],["แบทเทิล","Battle"]];
+const STEPS=()=>[NOFS()?["เตรียม","Ready"]:["ทายธาตุ","Guess"],SAFARI()?["หยิบธาตุ","Safari"]:GYM()?["ท้ายิม","Gym"]:LUCK()?["เปิดช่อง","Push luck"]:BOX()?["เปิดกล่อง","Boxes"]:COLOR()?["สุ่มสี","Colors"]:["สุ่มทีม","Draw"],["คำสั่ง 1","Command 1"],S.maxCmd>2?["คำสั่ง 2–"+S.maxCmd,"Commands 2–"+S.maxCmd]:S.maxCmd<2?["จบคำสั่ง","Commands done"]:["คำสั่ง 2","Command 2"],["จัดทีม","Team build"],["แบทเทิล","Battle"]];
 function curStep(){
   const ph=S.phase;
   if(ph==="idle") return (NOFS()||($("betA").value&&$("betB").value))?2:1;
@@ -1905,7 +1938,7 @@ function renderSteps(){
   const missing=P.filter(p=>!$("bet"+p).value).map(pname).join(AND());
   const tx={
     1:L("ทั้งสองฝ่ายเลือกตัวเลข Future Sight ว่าในทีมจะมีกี่ธาตุ"+(missing?" (ยังไม่เลือก: "+missing+")":""),"Both sides pick a Future Sight number"+(missing?" (still to pick: "+missing+")":"")),
-    2:S.phase==="safari"?L("ผลัดกันแตะธาตุในกล่องกลางจนได้คนละ 6 ช่อง","Take turns tapping types in the middle panel until both have 6"):S.phase==="rolling"?L("กำลังสุ่มทีม...","Drawing teams..."):SAFARI()?L("กดปุ่มกลางลูกบอลเพื่อเปิดทุ่ง Safari","Press the button in the ball to open the Safari"):L("กดปุ่มกลางลูกบอลเพื่อสุ่มทีม","Press the button in the ball to draw"),
+    2:GYMPH.includes(S.phase)?L("หัวหน้ายิมเลือกธาตุลับ → ผู้ท้าชิงทายธาตุยิม → เปิดยิม","The leader picks a secret type → the Challenger guesses → the gym opens"):S.phase==="safari"?L("ผลัดกันแตะธาตุในกล่องกลางจนได้คนละ 6 ช่อง","Take turns tapping types in the middle panel until both have 6"):S.phase==="rolling"?L("กำลังสุ่มทีม...","Drawing teams..."):SAFARI()?L("กดปุ่มกลางลูกบอลเพื่อเปิดทุ่ง Safari","Press the button in the ball to open the Safari"):L("กดปุ่มกลางลูกบอลเพื่อสุ่มทีม","Press the button in the ball to draw"),
     3:L("ทั้งสองฝ่ายสั่งการแบบลับ: Protect 1 ช่อง + การ์ด 1 ใบ แล้วเปิดพร้อมกัน","Both sides secretly pick: Protect 1 slot + 1 card, then reveal together"),
     4:L("คำสั่งสุดท้าย: สั่งการแบบลับอีกครั้ง","Last command: pick in secret once more"),
     5:T.id?L("กำลังจับเวลา จัดทีมให้ทันก่อนหมดเวลา","Timer running. Build your team before it ends"):L("กดเริ่มจับเวลาในกล่องกลาง แล้วจัดทีมตามธาตุที่ได้","Start the timer in the middle panel, then build your team"),
@@ -1946,7 +1979,7 @@ function render(){
   $("itemBtn").hidden=true;
   $("autoNote").textContent=CAL()?(S.items.A?L("Double Cursed: ไอเทมถูกกำหนดแล้ว แลกได้ที่ตลาดแลกของเท่านั้น","Double Cursed: items are set. Only the trade market can swap them."):L("Double Cursed: ไอเทมจะสุ่มให้อัตโนมัติเมื่อจบคำสั่ง","Double Cursed: items are drawn automatically after the commands.")):L("เพื่อความสนุกมากขึ้นเมื่อจัดทีม สามารถสุ่มไอเทมแบบ auto ในตัวเกม","For extra fun while building teams, use the game's auto random item option.");
   // Safari pool
-  const pool=$("pool"); pool.hidden=!DRAFTPH.includes(S.phase); pool.textContent=""; if(S.phase==="luck") renderLuck(pool); if(S.phase==="box") renderBox(pool);
+  const pool=$("pool"); pool.hidden=!DRAFTPH.includes(S.phase); pool.textContent=""; if(S.phase==="luck") renderLuck(pool); if(S.phase==="box") renderBox(pool); if(GYMPH.includes(S.phase)) renderGym(pool);
   if(S.phase==="safari"){
     const who=S.sOrder[S.spick];
     const h=document.createElement("div"); h.className="px lbl"; h.textContent="SAFARI · "+L("ตาของ ","TURN: ")+pname(who); pool.appendChild(h);
@@ -1986,7 +2019,7 @@ function render(){
       const taken=S.taken[p].includes(i);
       const prot=mine?d.protect===i:S.lock[p]===i;
       const marks=(prot?'<b class="seal">'+L("ป้องกัน","Protect")+'</b>':"")+(S.sub[p].includes(i)?'<b class="seal">'+L("ตัวแทน","Substitute")+'</b>':"")+(taken?'<b class="stolen">'+L("ของกลาง","Stolen")+'</b>':"")
-        +(!hid&&S.teraMark[p].includes(i)?'<b class="tera">'+GEM+'Terastal</b>':"")+(!hid&&isKO(t)&&S.mono[p]==null?'<b class="curse">Knock Off</b>':"")+(!hid&&S.ditto[p]===i?'<b class="ditto">Ditto</b>':"")+(S.phase==="done"&&S.ace[p]===i?'<b class="acem">⭐ '+L("ตัวเอก","Ace")+'</b>':"");
+        +(!hid&&S.teraMark[p].includes(i)?'<b class="tera">'+GEM+'Terastal</b>':"")+(!hid&&((isKO(t)&&S.mono[p]==null)||gkoAt(p,i))?'<b class="curse">Knock Off</b>':"")+(!hid&&S.ditto[p]===i?'<b class="ditto">Ditto</b>':"")+(S.phase==="done"&&S.ace[p]===i?'<b class="acem">⭐ '+L("ตัวเอก","Ace")+'</b>':"");
       if(!hid&&itemAt(p,i)) {const mg=S.items[p]&&S.megaSlot&&S.megaSlot[p]===i, gf=S.gift[p][i]&&S.gift[p][i]===itemAt(p,i);
         el.insertAdjacentHTML("beforeend",'<span class="item'+(mg?" mega":gf?" gift":S.cursedIt[p].includes(i)&&S.items[p]?" cursed":"")+'">'+(gf?"🎁 ":"@ ")+itemAt(p,i)+"</span>"+(mg&&S.backup[p]?'<span class="item">'+L("สำรอง: ","Backup: ")+S.backup[p]+"</span>":""));}
       if(marks) el.insertAdjacentHTML("beforeend",'<span class="marks">'+marks+"</span>");
@@ -2051,6 +2084,9 @@ function render(){
     :L("ทั้งสองฝ่ายต้องใช้ Future Sight ทายว่าในทีมตัวเองจะมีกี่ธาตุก่อน แล้วกดปุ่มกลางลูกบอลเพื่อสุ่ม","Both sides must use Future Sight to guess how many types their team will have. Then press the button in the middle of the ball to draw.");
   else if(rolling) s=L("ลูกบอลกำลังสั่น...","The ball is shaking...");
   else if(S.phase==="luck") s=L("Push Your Luck: ตาของ "+pname(S.lk.turn)+" กดเปิดช่องถัดไป หรือพอแล้ว","Push Your Luck: "+pname(S.lk.turn)+", open the next slot or stop");
+  else if(S.phase==="gymPick") s=L("🏟 "+pname(S.gym.L)+" เป็นหัวหน้ายิม! เลือกธาตุยิมแบบลับ 1 ใน 3 ธาตุ","🏟 "+pname(S.gym.L)+" is the Gym Leader! Pick 1 of 3 types in secret");
+  else if(S.phase==="gymGuess") s=L("🔮 "+pname(S.gym.C)+" ทายว่าหัวหน้ายิมเลือกธาตุไหน","🔮 "+pname(S.gym.C)+", guess the gym type");
+  else if(S.phase==="gymFix") s=L("✨ "+pname(S.gym.C)+" ทายถูก! เปลี่ยนธาตุทีมตัวเองได้อีก "+S.gym.fix+" ช่อง","✨ "+pname(S.gym.C)+" guessed right! "+S.gym.fix+" slot change"+(S.gym.fix>1?"s":"")+" left");
   else if(S.phase==="box") s=S.bopen!=null?L(pname(S.bturn)+" เปิดได้"+BOXK[S.pool[S.bopen].k][1]+": "+S.pool[S.bopen].t.map(tn).join(", ")+" เลือกว่าจะเอายังไง",pname(S.bturn)+" opened a "+BOXK[S.pool[S.bopen].k][2]+" box: "+S.pool[S.bopen].t.map(tn).join(", ")+". Choose what to do"):L("Mystery Box: ตาของ "+pname(S.bturn)+" แตะกล่อง 1 ใบ","Mystery Box: "+pname(S.bturn)+", tap a box");
   else if(S.phase==="ccmd"&&NET.on) s=L("Color Draft: ทั้งสองฝ่ายเลือกคำสั่งสีแบบลับบนเครื่องตัวเอง","Color Draft: both sides pick a color command in secret on their own device");
   else if(S.phase==="ccmd") s=L("Color Draft: "+pname(S.picker)+" เลือกคำสั่งสีแบบลับ","Color Draft: "+pname(S.picker)+" picks a color command in secret");
@@ -2079,7 +2115,7 @@ function render(){
 }
 
 /* ---------- Command wizard: one big step at a time ---------- */
-const anyVeil=()=>["resetVeil","lobbyVeil","colorVeil","tourVeil2","dittoVeil","trophyVeil","tradeVeil","fieldVeil","tourVeil","menuVeil","modeVeil","rvVeil","veil","teraVeil","chartVeil","imgVeil","fsVeil","cmdVeil"].some(id=>$(id)&&!$(id).hidden);
+const anyVeil=()=>["gymVeil","resetVeil","lobbyVeil","colorVeil","tourVeil2","dittoVeil","trophyVeil","tradeVeil","fieldVeil","tourVeil","menuVeil","modeVeil","rvVeil","veil","teraVeil","chartVeil","imgVeil","fsVeil","cmdVeil"].some(id=>$(id)&&!$(id).hidden);
 function slotBtn(q,i,sel,dis,fn){
   dis=dis||sealed(q,i);
   const b=document.createElement("button"); b.type="button"; b.className="sbtn"+(sel?" sel":"");
@@ -2265,6 +2301,9 @@ function renderFab(){
   if(ph==="idle") return SAFARI()?fabSet(L("🌿 เปิด Safari","🌿 Open the Safari"),roll):NOFS()?fabSet(L("🎲 สุ่มทีม","🎲 Draw"),roll):fabSet(L("🔮 Future Sight แล้วสุ่ม","🔮 Future Sight & draw"),openFS);
   if(ph==="luck") return fabSet(L("🎲 "+pname(S.lk.turn)+": เปิดช่องถัดไป","🎲 "+pname(S.lk.turn)+": open next"),luckOpen,L("✋ พอแล้ว","✋ Stop"),luckStop);
   if(ph==="box"){ if(S.bopen!=null){const o=boxOpts(); return fabSet(o[0][0],()=>boxPick(0),o[1]?o[1][0]:null,o[1]?()=>boxPick(1):null);} return fabSet(L("🎁 "+pname(S.bturn)+": แตะกล่อง","🎁 "+pname(S.bturn)+": tap a box"),()=>$("pool").scrollIntoView({behavior:"smooth",block:"center"})); }
+  if(ph==="gymPick") return fabSet(L("🏟 "+pname(S.gym.L)+": เลือกธาตุยิม (ลับ)","🏟 "+pname(S.gym.L)+": pick the gym type"),()=>$("pool").scrollIntoView({behavior:"smooth",block:"center"}));
+  if(ph==="gymGuess") return fabSet(L("🔮 "+pname(S.gym.C)+": ทายธาตุยิม","🔮 "+pname(S.gym.C)+": guess the gym type"),()=>$("pool").scrollIntoView({behavior:"smooth",block:"center"}));
+  if(ph==="gymFix") return fabSet(L("✨ เปลี่ยนธาตุ (เหลือ "+S.gym.fix+")","✨ Change types ("+S.gym.fix+" left)"),()=>$("pool").scrollIntoView({behavior:"smooth",block:"center"}),L("ข้าม","Skip"),()=>gymFixSkip());
   if(ph==="ccmd") return fabSet(L("🎨 สั่งการสี: ","🎨 Color command: ")+pname(S.picker),()=>openColorCmd(S.picker));
   if(ph==="safari") return fabSet(L("🌿 ตาของ "+pname(S.sOrder[S.spick])+": แตะธาตุ","🌿 "+pname(S.sOrder[S.spick])+": tap a type"),()=>$("pool").scrollIntoView({behavior:"smooth",block:"center"}));
   if(ph==="cmd") return fabSet(L("🎴 สั่งการ: "+pname(S.picker)+" ("+S.cmdN+"/"+S.maxCmd+")","🎴 Command: "+pname(S.picker)+" ("+S.cmdN+"/"+S.maxCmd+")"),()=>openPick(S.picker));
@@ -2443,7 +2482,8 @@ function bgSong(){
   if(!$("lobbyVeil").hidden) return "lounge";
   if(T.id) return "countdown";
   if(S.phase==="cmd"||S.phase==="ccmd") return "rival";
-  if(["safari","box","luck"].includes(S.phase)) return "bazaar";
+  if(["safari","box","luck","gymFix"].includes(S.phase)) return "bazaar";
+  if(S.phase==="gymPick"||S.phase==="gymGuess") return "rival";
   if(S.phase==="done"&&S.winner) return "champion";
   return "meadow";
 }
@@ -2529,7 +2569,8 @@ function buzz(p){try{if(!MUTE&&navigator.vibrate) navigator.vibrate(p)}catch(e){
 function swipe(p){
   sfx("swoosh"); if(still()) return;
   const d=document.createElement("div"); d.className="swipe"; d.style.setProperty("--pc",p==="A"?"var(--red)":"var(--blue)");
-  d.innerHTML="<div><small>COMMAND "+S.cmdN+"/"+S.maxCmd+"</small></div>"; d.firstChild.appendChild(document.createTextNode(pname(p))); document.body.appendChild(d); setTimeout(()=>d.remove(),1000);
+  const lab=S.phase==="gymPick"?"GYM LEADER":GYMPH.includes(S.phase)?"CHALLENGER":"COMMAND "+S.cmdN+"/"+S.maxCmd;
+  d.innerHTML="<div><small>"+lab+"</small></div>"; d.firstChild.appendChild(document.createTextNode(pname(p))); document.body.appendChild(d); setTimeout(()=>d.remove(),1000);
 }
 function confetti(cols,n=80){
   if(still()) return;
@@ -2623,7 +2664,7 @@ function chosen(p){
 }
 $("chOk").addEventListener("click",()=>{chosen($("veil").dataset.p); if(NET.on&&NET.role!=="host"){$("veil").hidden=true; $("wrap").inert=anyVeil();} else checkChosen();});
 
-const modeKey=()=>BUILD()?"buildup":LUCK()?"luck":BOX()?"box":COLOR()?"color":STARTER()?"starter":CAL()?"calamity":SAFARI()?"safari":BLIND()?"blind":MIRROR()?"mirror":CHAOS()?"chaos":"cursed";
+const modeKey=()=>BUILD()?"buildup":LUCK()?"luck":BOX()?"box":GYM()?"gym":COLOR()?"color":STARTER()?"starter":CAL()?"calamity":SAFARI()?"safari":BLIND()?"blind":MIRROR()?"mirror":CHAOS()?"chaos":"cursed";
 // Best of 3: the loser of the last round in a running series is the Underdog.
 function seriesStart(){
   if(H.series!=="bo3") return null;
@@ -2633,8 +2674,10 @@ function seriesStart(){
 function deal(p){
   const deck=STARTER()?["roar","roar","trick","trick"]:BLIND()?DECK.concat(["fore","fore"]):DECK;
   const tax=HARD()&&H.series==="koth"&&H.koth.champ&&H.koth.champ===pname(p)?1:0;
-  const n=(STARTER()?3:4)+(S.under===p?1:0)+(hasF("rain")?1:0)-tax, h=shuffle(deck.slice()).slice(0,n);
+  const gy=GYM()&&S.gym&&S.gym.L===p?1+(S.gym.bonus||0):0;
+  const n=(STARTER()?3:4)+(S.under===p?1:0)+(hasF("rain")?1:0)+gy-tax, h=shuffle(deck.slice()).slice(0,n);
   if(tax) addLog(p,L("ภาษีแชมป์: แชมป์จั่วไพ่น้อยลง 1 ใบ","Champion's tax: the champion draws 1 card fewer"));
+  if(gy) addLog(p,L("🏟 หัวหน้ายิม: จั่วไพ่เพิ่ม "+gy+" ใบ","🏟 Gym Leader: "+gy+" extra card"+(gy>1?"s":"")));
   if(lastStand(p)){h.push("perish"); S.lastStand[p]=true; addLog(p,L("LAST STAND: แพ้ 2 รอบติด ได้การ์ด Perish Song","LAST STAND: 2 losses in a row, a Perish Song card"));}
   for(let k=0;k<S.teraN[p];k++) h.push("tera");
   S.hand[p]=h;
@@ -2682,6 +2725,7 @@ function roll(){
     S.flash=L("สุ่มสีแล้ว! "+pname("A")+" ได้สี"+cn(S.col.A)+" · "+pname("B")+" ได้สี"+cn(S.col.B),"Colors drawn! "+pname("A")+": "+cn(S.col.A)+" · "+pname("B")+": "+cn(S.col.B));
     render(); P.forEach(q=>els[q].forEach(bump)); sfx("land"); return;
   }
+  if(GYM()){gymRoll(preKO); return;}
   if(LUCK()||BOX()){
     S.curse=preKO!=null?preKO:pick();
     const dr=()=>{let r=pick(100), k=0; while(r>=TYPE_ODDS[k]){r-=TYPE_ODDS[k]; k++;} k++; const ts=shuffle([...Array(TYPES.length).keys()]).slice(0,k), a=ts.slice(); while(a.length<N) a.push(ts[pick(k)]); return shuffle(a);};
@@ -2917,6 +2961,7 @@ function chooseCard(p,k){
   render(); sfx("card");
 }
 function slotPick(q,i){
+  if(S.phase==="gymFix"){ if(S.gym&&q===S.gym.C) gymSel(i); return; }
   const d=S.draft; if(S.phase!=="cmd"||!d) return;
   const p=d.p, need=d.ci!=null&&d.ci!=="pass"?CARDS[S.hand[p][d.ci]].need:null; let snd="target";
   if(q===p){
@@ -3108,6 +3153,7 @@ function reveal(){
   // Sketch copies the other side's card; Doom Desire set on the last command lands right away.
   for(const p of ord) if(pl[p].card==="copycat"&&pl[p].type==="keep") doSketch(p,pl[other(p)].card,out);
   if(n===S.maxCmd) for(const p of ord) if(S.doom[p]===n+1){S.doom[p]=0; doomHit(p,out,true);}
+  gymLock(out,show);
   S.flash=out.lines.slice(0,4).join("\n")+(out.lines.length>4?"\n…":"");
   gymBattle();
   S.cmdN++;
@@ -3552,6 +3598,106 @@ if(H.autofs&&document.fullscreenEnabled){
   document.addEventListener("pointerdown",go,true);
 }
 if([1,2,3,5,10].includes(+H.mins)){$("tmin").value=String(H.mins); TEAM_MS=H.mins*60000;}
+/* ---------- Gym Leader: one side is a mono-type Gym Leader, the other a Challenger ----------
+   1. The Gym Leader secretly picks the gym type from 3 random types.
+   2. The Challenger's team is drawn, then they see the same 3 types and guess which one the leader picked.
+   3. The gym type is revealed: the leader's whole team becomes that type. A correct guess lets the
+      Challenger change 2 of their own slots to any type. Then commands run as usual, except the gym type
+      is locked: a slot changed by the Challenger's attack card snaps back and gets Knock Off instead.
+   Roles swap every round. */
+function drawTeam(){let r=pick(100), k=0; while(r>=TYPE_ODDS[k]){r-=TYPE_ODDS[k]; k++;} k++;
+  const ts=shuffle([...Array(TYPES.length).keys()]).slice(0,k), a=ts.slice(); while(a.length<N) a.push(ts[pick(k)]); return shuffle(a);}
+function gkoAt(p,i){return !!(S.gko&&S.gko[p]&&S.gko[p].includes(i));}
+function gymRoll(preKO){
+  const Ld=P.includes(H.gymNext)?H.gymNext:P[pick(2)]; H.gymNext=other(Ld); store();
+  S.gym={L:Ld,C:other(Ld),opts:shuffle([...Array(TYPES.length).keys()]).slice(0,3),t:null,guess:null,rev:false,hit:false,fix:0,bonus:0};
+  S.curse=preKO!=null?preKO:pick(); S.phase="gymPick"; S.picker=Ld; GSEL=null;
+  addLog(Ld,L("🏟 รอบนี้เป็นหัวหน้ายิม","🏟 Gym Leader this round")); addLog(other(Ld),L("🔮 รอบนี้เป็นผู้ท้าชิง","🔮 Challenger this round"));
+  S.flash=L("🏟 "+pname(Ld)+" เป็นหัวหน้ายิม! เลือกธาตุยิมแบบลับ · "+pname(other(Ld))+" หันหน้าหนีก่อน","🏟 "+pname(Ld)+" is the Gym Leader! Pick the gym type in secret · "+pname(other(Ld))+", look away");
+  render(); sfx("vs"); if(!NET.on) swipe(Ld);
+}
+function gymChoose(t){
+  const g=S.gym; if(S.phase!=="gymPick"||!g||!g.opts.includes(t)) return;
+  saveUndo(); g.t=t; S.team[g.C]=drawTeam(); S.phase="gymGuess"; S.picker=g.C;
+  S.flash=L("หัวหน้ายิมเลือกธาตุแล้ว (ลับ) · สุ่มทีมของ "+pname(g.C)+" แล้ว ทายว่ายิมเป็นธาตุไหน","The gym type is set (secret) · "+pname(g.C)+"'s team is drawn. Guess the gym type.");
+  addLog(g.C,L("สุ่มทีม: ","Team drawn: ")+S.team[g.C].map(tn).join(", "));
+  render(); els[g.C].forEach(bump); sfx("seal"); setTimeout(()=>sfx("land"),300); if(!NET.on) swipe(g.C);
+}
+function gymGuessPick(t){
+  const g=S.gym; if(S.phase!=="gymGuess"||!g||!g.opts.includes(t)) return;
+  saveUndo(); g.guess=t; g.rev=true; g.hit=t===g.t; if(!g.hit&&HARD()) g.bonus=1;
+  S.team[g.L]=Array(N).fill(g.t); S.mono[g.L]=g.t; S.noBan[g.C]=true; S.gko={A:[],B:[]};
+  addLog(g.L,L("🏟 ธาตุยิม: "+tn(g.t)+" · ทั้งทีมต้องมีธาตุ"+tn(g.t)+" (ธาตุคู่ได้)","🏟 Gym type: "+tn(g.t)+" · every team member must have "+tn(g.t)+" (dual types allowed)"));
+  addLog(g.C,L("🔮 ทายธาตุ"+tn(t)+(g.hit?" → ทายถูก! เปลี่ยนธาตุทีมตัวเองได้ 2 ช่อง":" → ทายผิด"),"🔮 Guessed "+tn(t)+(g.hit?" → correct! Change 2 of your slots":" → wrong")));
+  if(g.bonus) addLog(g.L,L("💀 กติกาโหด: ผู้ท้าชิงทายผิด หัวหน้ายิมได้การ์ดเพิ่มอีก 1 ใบ","💀 Hard rules: wrong guess, the Gym Leader gets 1 more card"));
+  say(g.L,Q(QT.leader,g.t));
+  if(g.hit){g.fix=2; S.phase="gymFix"; S.picker=g.C; GSEL=null;
+    S.flash=L("ทายถูก! "+pname(g.C)+" แตะช่องในทีมตัวเอง แล้วเลือกธาตุใหม่ได้ 2 ช่อง","Correct! "+pname(g.C)+", tap your slots and pick new types (2 slots)");
+    render();}
+  else gymStart();
+  els[g.L].forEach(bump); showGymReveal();
+}
+function gymSel(i){ if(S.phase!=="gymFix"||!S.gym||(NET.on&&ME()!==S.gym.C)) return; GSEL=GSEL===i?null:i; render(); sfx("target"); }
+function gymFixPick(i,t){
+  const g=S.gym; if(S.phase!=="gymFix"||!g||!(i>=0&&i<N)||!(t>=0&&t<TYPES.length)) return;
+  saveUndo(); const was=S.team[g.C][i]; S.team[g.C][i]=t; g.fix--; GSEL=null;
+  addLog(g.C,L("✨ เปลี่ยนช่อง "+(i+1)+": "+tn(was)+" → "+tn(t),"✨ Changed slot "+(i+1)+": "+tn(was)+" → "+tn(t)));
+  bump(els[g.C][i]); sfx("typePick");
+  if(g.fix<=0) gymStart(); else render();
+}
+function gymFixSkip(){ const g=S.gym; if(S.phase!=="gymFix"||!g) return; saveUndo(); g.fix=0; GSEL=null; addLog(g.C,L("ข้ามการเปลี่ยนช่องที่เหลือ","Skipped the rest of the changes")); gymStart(); }
+// Into the usual commands; the Gym Leader holds 1 extra card (2 under hard rules after a wrong guess).
+function gymStart(){ settle({A:"",B:""}); render(); checkChosen(); }
+// After each command: any leader slot that changed snaps back to the gym type; an attack from the Challenger leaves Knock Off on one of them.
+function gymLock(out,show){
+  const g=S.gym; if(!GYM()||!g||!g.rev) return;
+  const ch=[]; S.team[g.L].forEach((x,i)=>{if(x!==g.t) ch.push(i)}); if(!ch.length) return;
+  ch.forEach(i=>{S.team[g.L][i]=g.t; S.teraMark[g.L]=S.teraMark[g.L].filter(x=>x!==i); S.gift[g.L][i]=null; out.bump.push([g.L,i]);});
+  const c=show[g.C]&&show[g.C].card, atk=CARDS[c]&&CARDS[c].atk; let ko=null;
+  if(atk){ko=ch.find(i=>!S.gko[g.L].includes(i)); if(ko!=null) S.gko[g.L].push(ko);}
+  const m=L("🏟 ธาตุยิมถูกล็อก! ช่อง "+ch.map(i=>i+1).join(", ")+" กลับเป็นธาตุ"+tn(g.t)+(ko!=null?" · ช่อง "+(ko+1)+" ติด Knock Off (ห้ามถือไอเทม)":""),
+    "🏟 The gym type is locked! Slot "+ch.map(i=>i+1).join(", ")+" snapped back to "+tn(g.t)+(ko!=null?" · slot "+(ko+1)+" gets Knock Off (no held item)":""));
+  out.lines.push(m); addLog(g.L,m);
+}
+function showGymReveal(){
+  const g=S.gym; if(!g||!g.rev) return;
+  $("gyBadge").innerHTML=badgeSVG(g.t);
+  $("gyTitle").textContent=L("ยิมธาตุ"+tn(g.t)+"!",tn(g.t)+" Gym!");
+  $("gyText").textContent=L("หัวหน้ายิม "+pname(g.L)+" เลือกธาตุ"+tn(g.t)+" จาก "+g.opts.map(tn).join(" / ")+" · ทั้งทีมต้องมีธาตุ"+tn(g.t)+" (ธาตุคู่ได้)",
+    "Gym Leader "+pname(g.L)+" picked "+tn(g.t)+" from "+g.opts.map(tn).join(" / ")+" · every team member must have "+tn(g.t)+" (dual types allowed)");
+  const r=$("gyRes"); r.className="gyres "+(g.hit?"ok":"bad");
+  r.textContent=g.hit?L("🔮 "+pname(g.C)+" ทายถูก! ได้เปลี่ยนธาตุทีมตัวเอง 2 ช่อง","🔮 "+pname(g.C)+" guessed right! Change 2 of your slots")
+    :L("🔮 "+pname(g.C)+" ทาย"+tn(g.guess)+" ผิด!","🔮 "+pname(g.C)+" guessed "+tn(g.guess)+". Wrong!");
+  $("gyOk").textContent=L("ไปต่อ ›","Continue ›");
+  modal("gymVeil",true); $("gyOk").focus(); sfx("vs"); setTimeout(()=>sfx(g.hit?"badge":"fail"),500); if(g.hit&&!still()) confetti([TYPES[g.t][2],"#ffd36b","#fff"]);
+}
+$("gyOk").addEventListener("click",()=>{modal("gymVeil",false); if(S.phase==="cmd") checkChosen();});
+function renderGym(pool){
+  const g=S.gym; if(!g) return;
+  const h=document.createElement("div"); h.className="px lbl"; h.textContent="GYM CHALLENGE · "+L("ตาของ ","")+pname(S.picker); pool.appendChild(h);
+  const tx=document.createElement("p"); tx.className="gymtx"; pool.appendChild(tx);
+  const mine=w=>!NET.on||ME()===w;
+  if(S.phase==="gymPick"||S.phase==="gymGuess"){
+    const pickPh=S.phase==="gymPick", who=pickPh?g.L:g.C;
+    tx.textContent=pickPh?L("🏟 "+pname(g.L)+" เลือกธาตุยิมแบบลับ 1 ธาตุ"+(NET.on?"":" (ให้ "+pname(g.C)+" หันหน้าหนี)")+" · ผู้ท้าชิงจะเห็น 3 ธาตุนี้และพยายามทายว่าคุณเลือกอันไหน",
+        "🏟 "+pname(g.L)+", pick the gym type in secret"+(NET.on?"":" ("+pname(g.C)+", look away)")+" · the Challenger sees these 3 and tries to guess yours")
+      :L("🔮 "+pname(g.C)+" ทายว่าหัวหน้ายิมเลือกธาตุไหน · ทายถูกได้เปลี่ยนธาตุทีมตัวเอง 2 ช่อง","🔮 "+pname(g.C)+", guess the gym type · a correct guess lets you change 2 of your slots");
+    const row=document.createElement("div"); row.className="gymopts";
+    g.opts.forEach(t=>{const b=document.createElement("button"); b.type="button"; b.className="gymopt"; b.style.background=TYPES[t][2]; b.style.color=TYPES[t][3]?"#fff":"#1f2638";
+      b.innerHTML='<span class="gymb">'+badgeSVG(t)+'</span><b>'+tn(t)+'</b>'; b.disabled=!mine(who);
+      b.addEventListener("click",()=>pickPh?gymChoose(t):gymGuessPick(t)); row.appendChild(b);});
+    pool.appendChild(row);
+    const known=NET.on&&ME()===g.L?(g.t!=null?g.t:NET.gymMine):null;
+    if(!pickPh&&known!=null){const s=document.createElement("p"); s.className="gymsec"; s.textContent=L("ธาตุยิมของคุณ (ลับ): ","Your gym type (secret): ")+tn(known); pool.appendChild(s);}
+    return;
+  }
+  // gymFix: the Challenger changes up to 2 of their slots
+  tx.textContent=GSEL==null?L("✨ "+pname(g.C)+" แตะช่องในทีมตัวเองที่อยากเปลี่ยน (เหลือ "+g.fix+" ช่อง)","✨ "+pname(g.C)+", tap one of your slots to change ("+g.fix+" left)")
+    :L("✨ ช่อง "+(GSEL+1)+" ("+tn(S.team[g.C][GSEL])+") → เลือกธาตุใหม่","✨ Slot "+(GSEL+1)+" ("+tn(S.team[g.C][GSEL])+") → pick a new type");
+  if(GSEL!=null&&mine(g.C)){const gr=document.createElement("div"); gr.className="tgrid gymgrid"; gr.innerHTML=typeBtns();
+    gr.addEventListener("click",e=>{const b=e.target.closest(".tbtn"); if(b) gymFixPick(GSEL,+b.dataset.t);}); pool.appendChild(gr);}
+  if(mine(g.C)){const sk=document.createElement("button"); sk.type="button"; sk.className="btn"; sk.textContent=L("ข้าม (ไม่เปลี่ยนแล้ว)","Skip (keep the rest)"); sk.addEventListener("click",()=>gymFixSkip()); pool.appendChild(sk);}
+}
 /* ---------- Link Battle: play across devices through a Union Room ----------
    The host's device runs the game (Trainer A) and pushes the shared state; the guest (Trainer B) sends actions
    that the host applies; anyone else who joins watches. Both sides choose commands at the same time on their own screens. */
@@ -3599,9 +3745,13 @@ wrap("surrender",p=>p,p=>({t:"surrender",a:[p]}));
 wrap("timerBtn","any",()=>({t:"timerBtn"}));
 wrap("skipToResult","any",()=>({t:"skipToResult"}));
 wrap("rollItems","any",()=>({t:"rollItems"}));
+wrap("gymChoose",()=>S.gym&&S.gym.L,t=>{NET.gymMine=t; NET.gymId=S.id; return {t:"gymChoose",a:[t]};});
+wrap("gymGuessPick",()=>S.gym&&S.gym.C,t=>({t:"gymGuessPick",a:[t]}));
+wrap("gymFixPick",()=>S.gym&&S.gym.C,(i,t)=>({t:"gymFixPick",a:[i,t]}));
+wrap("gymFixSkip",()=>S.gym&&S.gym.C,()=>({t:"gymFixSkip"}));
 wrap("undo","host"); wrap("setMode","host"); wrap("setSeries","host"); wrap("openModes","host"); wrap("openTour2","host"); wrap("openTrade","never");
-const NETACTS=["roll","safariPick","boxOpen","boxPick","colorChoose","chosen","setWinner","surrender","timerBtn","skipToResult","rollItems"];
-const NETOWN={safariPick:()=>S.sOrder[S.spick],boxOpen:()=>S.bturn,boxPick:()=>S.bturn,colorChoose:p=>p,surrender:p=>p};
+const NETACTS=["gymChoose","gymGuessPick","gymFixPick","gymFixSkip","roll","safariPick","boxOpen","boxPick","colorChoose","chosen","setWinner","surrender","timerBtn","skipToResult","rollItems"];
+const NETOWN={gymChoose:()=>S.gym&&S.gym.L,gymGuessPick:()=>S.gym&&S.gym.C,gymFixPick:()=>S.gym&&S.gym.C,gymFixSkip:()=>S.gym&&S.gym.C,safariPick:()=>S.sOrder[S.spick],boxOpen:()=>S.bturn,boxPick:()=>S.bturn,colorChoose:p=>p,surrender:p=>p};
 // Host: apply one action from the guest.
 function applyAct(a){
   if(!a||!a.t) return;
@@ -3629,6 +3779,7 @@ function applyAct(a){
 function netSnap(){
   const s=Object.assign({},S,{draft:null,plan:{A:S.plan.A?{m:1}:null,B:S.plan.B?{m:1}:null}});
   if(S.cplan) s.cplan={A:S.cplan.A?"x":null,B:S.cplan.B?"x":null};
+  if(S.gym&&!S.gym.rev) s.gym=Object.assign({},S.gym,{t:null});   // the gym type stays secret until the guess
   return {S:s,H:{mode:H.mode,hard:!!H.hard,score:H.score,series:H.series,ser:H.ser,koth:H.koth},
     names:{A:$("nameA").value,B:$("nameB").value},bets:{A:$("betA").value,B:$("betB").value},
     logs:{A:$("logA").textContent,B:$("logB").textContent},says:{A:$("sayA").hidden?"":$("sayA").textContent,B:$("sayB").hidden?"":$("sayB").textContent},
@@ -3709,13 +3860,15 @@ function applySnap(d,asHost){
   render(); if(S.phase==="done"&&d.dlg) setDialog(d.dlg);
   if(!$("fsVeil").hidden&&!typing&&betsWas!==$("betA").value+$("betB").value) renderFS();
   renderLobby(); netBadge();
-  if(first||asHost){NET.revSeen=d.rev?d.rev.id:null; NET.fieldsSeen=S.id; NET.sid=S.id; return;}
+  if(NET.gymId!==S.id) NET.gymMine=null;
+  if(first||asHost){NET.revSeen=d.rev?d.rev.id:null; NET.fieldsSeen=S.id; NET.sid=S.id; if(S.gym&&S.gym.rev) NET.gymSeen=S.id; return;}
   if(landed||(S.id!==NET.sid&&S.phase!=="rolling")){P.forEach(q=>els[q].forEach(bump)); sfx("land");}
   if(S.phase!=="rolling") NET.sid=S.id;
   if(S.winner&&S.winner!==old.winner){winPop(S.winner); sfx("win");}
   if(d.rev&&d.rev.id!==NET.revSeen){NET.revSeen=d.rev.id; const r=d.rev;
     showReveal(r.n,r.ord,r.show,r.out,()=>{render(); if(r.out.tera){$("tvGemIn").style.setProperty("--c",TYPES[r.out.tera.t][2]); $("tvTitle").textContent=r.out.tera.line; $("tvText").textContent=r.out.tera.text;
       $("tvGrid").hidden=true; $("tvCancel").hidden=true; $("tvGem").hidden=false; $("tvOk").hidden=false; teraVeil(true);} else netChosen();}); return;}
+  if(GYM()&&S.gym&&S.gym.rev&&NET.gymSeen!==S.id){NET.gymSeen=S.id; if(!anyVeil()){showGymReveal(); return;}}
   if(CHAOS()&&S.fields.length&&S.phase!=="rolling"&&NET.fieldsSeen!==S.id){NET.fieldsSeen=S.id; if(!anyVeil()){openFields(); return;}}
   netChosen();
 }
@@ -3743,6 +3896,7 @@ function netFab(){
   if(NET.role==="spec") return fabSet(L("👀 กำลังชมห้อง ","👀 Watching room ")+NET.code),true;
   const wait=t=>(fabSet("⏳ "+t),true);
   if(ph==="safari"&&S.sOrder[S.spick]!==me) return wait(L("รอ "+pname(S.sOrder[S.spick])+" หยิบธาตุ","Waiting for "+pname(S.sOrder[S.spick])));
+  if(GYMPH.includes(ph)&&S.picker!==me) return wait(L("รอ "+pname(S.picker)+(ph==="gymPick"?" เลือกธาตุยิม":ph==="gymGuess"?" ทายธาตุยิม":" เปลี่ยนธาตุ"),"Waiting for "+pname(S.picker)));
   if(ph==="box"&&S.bturn!==me) return wait(L("รอ "+pname(S.bturn)+" เปิดกล่อง","Waiting for "+pname(S.bturn)));
   if(ph==="ccmd") return S.cplan[me]?wait(L("รอ "+pname(other(me))+" สั่งการสี","Waiting for "+pname(other(me)))):(fabSet(L("🎨 สั่งการสีของคุณ","🎨 Your color command"),()=>openColorCmd(me)),true);
   if(ph==="cmd") return S.plan[me]?wait(L("รอ "+pname(other(me))+" สั่งการ ("+S.cmdN+"/"+S.maxCmd+")","Waiting for "+pname(other(me))+" ("+S.cmdN+"/"+S.maxCmd+")")):(fabSet(L("🎴 สั่งการ ("+S.cmdN+"/"+S.maxCmd+")","🎴 Command ("+S.cmdN+"/"+S.maxCmd+")"),()=>openPick(me)),true);
