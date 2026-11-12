@@ -124,6 +124,10 @@ body.rolling .plate{animation:blink .4s steps(2) infinite}
 
 /* Gym badge pop-up */
 .linkbtn{background:#d6f0ff}
+.resetbtn{background:#ffd9d4}
+.rsbox{max-width:380px}
+.rsbtns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;width:100%}
+.rsbtns .btn{flex:1;min-width:130px}
 .linkbtn.on{background:#7be0a8}.linkbtn.bad{background:#ffb3b3}
 .lobby{max-width:400px}
 .lobby .lbbig{font-size:19px;padding:14px 20px;width:100%}
@@ -687,6 +691,7 @@ body.playing #roll{width:84px;height:84px;border-width:8px;font-size:15px}
         <span class="px" id="round">ROUND 0</span>
         <button id="modeBtn" class="btn modebtn" type="button">🎮 Cursed Draft ▾</button>
         <button id="menuBtn" class="btn" type="button">⚙ เมนู</button>
+        <button id="resetTop" class="btn resetbtn" type="button" hidden>🔄 เริ่มใหม่</button>
         <button id="linkBtn" class="btn linkbtn" type="button">🔗 Link Battle</button>
         <button id="undo" class="btn" type="button" disabled hidden>ย้อนกลับ 1 ขั้น</button>
         <div hidden><select id="mode"><option value="starter">Starter Draft</option><option value="cursed">Cursed Draft</option><option value="double">Double Cursed</option><option value="safari">Safari Draft</option><option value="blind">Blind Draft</option><option value="mirror">Mirror Draft</option><option value="chaos">Wild Field</option><option value="box">Mystery Box</option><option value="color">Color Draft</option></select>
@@ -822,9 +827,18 @@ body.playing #roll{width:84px;height:84px;border-width:8px;font-size:15px}
         <select id="layout"><option value="auto">อัตโนมัติ</option><option value="h">แนวนอน</option><option value="v">แนวตั้ง</option></select></label>
       <button id="tourBtn" class="btn" type="button">📖 สอนเล่น</button>
       <button id="trophyBtn" class="btn" type="button">🏆 ทำเนียบ</button>
-      <button id="reset" class="btn" type="button" disabled>รีเซ็ต</button>
+      <button id="reset" class="btn resetbtn" type="button" disabled>🔄 เริ่มใหม่ (รีเซ็ต)</button>
     </div>
     <button id="menuClose" class="btn" type="button">ปิด</button>
+  </div>
+</div>
+
+<div class="veil" id="resetVeil" hidden role="dialog" aria-modal="true" aria-labelledby="rsTitle">
+  <div class="box card rsbox">
+    <div class="px lbl">RESET</div>
+    <h2 id="rsTitle">เริ่มใหม่ทั้งหมด?</h2>
+    <p id="rsText"></p>
+    <div class="rsbtns"><button id="resetCancel" class="btn" type="button">ยกเลิก</button><button id="resetGo" class="btn resetbtn" type="button">🔄 เริ่มใหม่</button></div>
   </div>
 </div>
 
@@ -1329,7 +1343,7 @@ function applyLang(){
   {const o=$("series").querySelector('option[value="bo1"]'); if(o) o.textContent=L("แมตช์เดียว","Single match");} set("#itemBtn","สุ่มไอเทม","Draw items");
   [["auto","อัตโนมัติ","Auto"],["h","แนวนอน","Landscape"],["v","แนวตั้ง","Portrait"]].forEach(([v,th,en])=>{const o=$("layout").querySelector('option[value="'+v+'"]'); if(o) o.textContent=L(th,en);});
   $("full").textContent=document.fullscreenElement?L("ออกจากเต็มจอ","Exit full screen"):L("เต็มจอ","Full screen");
-  set("#reset","รีเซ็ต","Reset"); set("#menuBtn","⚙ เมนู","⚙ Menu"); set("#menuTitle","เมนู","Menu"); set("#menuClose","ปิด","Close"); set("#trophyBtn","🏆 ทำเนียบ","🏆 Hall of Fame"); set("#tourBtn","📖 สอนเล่น","📖 Tutorial"); set("#deckH","สำรับคำสาป","the curse deck"); set("#rulesH","📖 วิธีเล่น · HOW TO PLAY","📖 How to play"); set("#copy","คัดลอกผล","Copy result"); set("#lang","English","ภาษาไทย");
+  set("#reset","🔄 เริ่มใหม่ (รีเซ็ต)","🔄 Start over (reset)"); set("#resetTop","🔄 เริ่มใหม่","🔄 Start over"); set("#menuBtn","⚙ เมนู","⚙ Menu"); set("#menuTitle","เมนู","Menu"); set("#menuClose","ปิด","Close"); set("#trophyBtn","🏆 ทำเนียบ","🏆 Hall of Fame"); set("#tourBtn","📖 สอนเล่น","📖 Tutorial"); set("#deckH","สำรับคำสาป","the curse deck"); set("#rulesH","📖 วิธีเล่น · HOW TO PLAY","📖 How to play"); set("#copy","คัดลอกผล","Copy result"); set("#lang","English","ภาษาไทย");
   $("mute").textContent=L("เสียง: ","Sound: ")+(MUTE?L("ปิด","off"):L("เปิด","on"));
   $("bgm").textContent=bgmLabel();
   set(".mid > .note","ช่องที่เป็นธาตุนี้ติดสถานะ Knock Off ห้ามถือไอเทม","Slots of this type have Knock Off: no held item");
@@ -2053,6 +2067,7 @@ function render(){
   $("round").textContent="ROUND "+S.round;
   $("roll").disabled=rolling||DRAFTPH.includes(S.phase); $("roll").textContent=S.round?L("สุ่มใหม่","Redraw"):SAFARI()?L("เปิด Safari","Safari"):L("กดสุ่ม","Draw");
   $("copy").disabled=$("shot").disabled=!live||S.phase!=="done"||COLOR(); $("reset").disabled=rolling||!S.round;
+  $("resetTop").hidden=!S.round||(NET.on&&NET.role!=="host"); $("resetTop").disabled=rolling;
   $("undo").disabled=!U||rolling;
   $("win").hidden=S.phase!=="done";
   $("surr").hidden=!(["cmd","done","ccmd"].includes(S.phase)&&!S.winner); $("surrL").textContent=L("ทีมแย่เกินไป? ยอมแพ้ได้ (อีกฝ่ายได้แต้ม รอบหน้าคุณเป็น Underdog)","Team too rough? Concede (they score, you're the Underdog next round)");
@@ -2064,7 +2079,7 @@ function render(){
 }
 
 /* ---------- Command wizard: one big step at a time ---------- */
-const anyVeil=()=>["lobbyVeil","colorVeil","tourVeil2","dittoVeil","trophyVeil","tradeVeil","fieldVeil","tourVeil","menuVeil","modeVeil","rvVeil","veil","teraVeil","chartVeil","imgVeil","fsVeil","cmdVeil"].some(id=>$(id)&&!$(id).hidden);
+const anyVeil=()=>["resetVeil","lobbyVeil","colorVeil","tourVeil2","dittoVeil","trophyVeil","tradeVeil","fieldVeil","tourVeil","menuVeil","modeVeil","rvVeil","veil","teraVeil","chartVeil","imgVeil","fsVeil","cmdVeil"].some(id=>$(id)&&!$(id).hidden);
 function slotBtn(q,i,sel,dis,fn){
   dis=dis||sealed(q,i);
   const b=document.createElement("button"); b.type="button"; b.className="sbtn"+(sel?" sel":"");
@@ -3419,7 +3434,20 @@ async function countDraw(mode){
   showStats();
 }
 
-$("reset").addEventListener("click",()=>{
+// Start over: the header button and the menu button both ask first, since this clears the round, names and series score.
+function askReset(){
+  if(S.phase==="rolling"||netBlock("host")) return;
+  modal("menuVeil",false);
+  $("rsTitle").textContent=L("เริ่มใหม่ทั้งหมด?","Start over?");
+  $("rsText").textContent=L("ล้างทีมรอบนี้ ชื่อผู้เล่น Future Sight และคะแนนซีรีส์ แล้วกลับไปเริ่มรอบที่ 1 · ประวัติแบทเทิล ทำเนียบ และคะแนนรวมยังอยู่ครบ","Clears this round's teams, player names, Future Sight and the series score, then goes back to round 1 · Battle history, the Hall of Fame and total score stay.");
+  $("resetCancel").textContent=L("ยกเลิก","Cancel"); $("resetGo").textContent=L("🔄 เริ่มใหม่","🔄 Start over");
+  modal("resetVeil",true); $("resetCancel").focus(); sfx("open");
+}
+$("resetTop").addEventListener("click",askReset);
+$("reset").addEventListener("click",askReset);
+$("resetCancel").addEventListener("click",()=>modal("resetVeil",false));
+$("resetGo").addEventListener("click",()=>{
+  modal("resetVeil",false);
   if(S.phase==="rolling"||netBlock("host")) return;
   stopTimer(); archive(); U=null; S=fresh(0); H.ser={A:0,B:0,last:null,champ:null}; store();
   P.forEach(p=>{$("log"+p).textContent=""; say(p,""); $("name"+p).value=L("ผู้เล่น ","Player ")+p; $("bet"+p).value=""; els[p].forEach(el=>el.className="slot")});
@@ -3450,7 +3478,7 @@ document.addEventListener("click",e=>{
   if(/Close$|Cancel$/.test(id)) sfx("close");
   else if(id==="cwBack") sfx("back");
   else if(id==="cwNext"&&!b.classList.contains("go")) sfx("tap");
-  else if(/^surr[AB]$/.test(id)||id==="reset"||b.classList.contains("lbleave")) sfx("danger");
+  else if(/^surr[AB]$/.test(id)||id==="resetGo"||b.classList.contains("lbleave")) sfx("danger");
 },true);
 $("modeBtn").addEventListener("click",()=>{openModes(); sfx("open");});
 $("modeGo").addEventListener("click",()=>{H.seenModes=true; store(); modal("modeVeil",false); sfx("go"); if(!H.seenTour) openTour();});
