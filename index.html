@@ -1133,16 +1133,16 @@ function renderModes(){
     b.setAttribute("aria-pressed",sel?"true":"false");
     b.innerHTML='<i class="mball"></i><span class="mtx"><b>'+m.n+(k==="starter"?' <small class="mrec">⭐ '+L("แนะนำครั้งแรก","First time? Start here")+'</small>':"")+'</b>'
       +(sel?'<span class="mfull">'+L(m.d[0],m.d[1])+'</span>':'<span>'+L(m.s[0],m.s[1])+'</span>')+'</span><em class="mdiff d'+m.lv+'">'+L(DIFF[m.lv][0],DIFF[m.lv][1])+'</em>';
-    b.addEventListener("click",()=>{setMode(k); renderModes(); sfx("click");}); g.appendChild(b);
+    b.addEventListener("click",()=>{setMode(k); renderModes(); sfx("select");}); g.appendChild(b);
   });
   $("serL").textContent=L("ซีรีส์","Series");
   const sb=$("serBtns"); sb.textContent="";
   ["bo1","bo3","koth","tour"].forEach(v=>{
     const b=document.createElement("button"); b.type="button"; b.className="btn"+(H.series===v?" on":""); b.textContent=L(SERNAME[v][0],SERNAME[v][1]); b.disabled=!can;
-    b.addEventListener("click",()=>{setSeries(v); renderModes(); sfx("click"); if(v==="tour"&&(!H.tour||H.tour.champ)) openTour2(true);}); sb.appendChild(b);});
+    b.addEventListener("click",()=>{setSeries(v); renderModes(); sfx("select"); if(v==="tour"&&(!H.tour||H.tour.champ)) openTour2(true);}); sb.appendChild(b);});
   $("hardL").textContent=L("💀 กติกาโหด","💀 Hard rules");
   const ht=$("hardTog"); ht.textContent=H.hard?L("เปิดอยู่","On"):L("ปิดอยู่","Off"); ht.classList.toggle("on",!!H.hard); ht.disabled=!can;
-  ht.onclick=()=>{H.hard=!H.hard; store(); setMode(H.mode); renderModes(); sfx("click");};
+  ht.onclick=()=>{H.hard=!H.hard; store(); setMode(H.mode); renderModes(); sfx(H.hard?"toggleOn":"toggleOff");};
   $("hardNote").textContent=L(HARDINFO[H.mode][0],HARDINFO[H.mode][1])+L(" · ทุกโหมด: Last Stand (แพ้ 2 รอบติดได้ Perish Song) และภาษีแชมป์ King of the Hill (จั่วน้อยลง 1 ใบ)"," · All modes: Last Stand (2 losses in a row earn Perish Song) and the King of the Hill champion's tax (1 card fewer)");
   $("modeMoreL").textContent=L("⚙ ตัวเลือกเพิ่มเติม","⚙ More options");
   $("modeMoreV").textContent=L(SERNAME[H.series][0],SERNAME[H.series][1])+" · "+(H.hard?L("💀 กติกาโหด","💀 Hard rules"):L("กติกาปกติ","Normal rules"));
@@ -1331,7 +1331,7 @@ function applyLang(){
   $("full").textContent=document.fullscreenElement?L("ออกจากเต็มจอ","Exit full screen"):L("เต็มจอ","Full screen");
   set("#reset","รีเซ็ต","Reset"); set("#menuBtn","⚙ เมนู","⚙ Menu"); set("#menuTitle","เมนู","Menu"); set("#menuClose","ปิด","Close"); set("#trophyBtn","🏆 ทำเนียบ","🏆 Hall of Fame"); set("#tourBtn","📖 สอนเล่น","📖 Tutorial"); set("#deckH","สำรับคำสาป","the curse deck"); set("#rulesH","📖 วิธีเล่น · HOW TO PLAY","📖 How to play"); set("#copy","คัดลอกผล","Copy result"); set("#lang","English","ภาษาไทย");
   $("mute").textContent=L("เสียง: ","Sound: ")+(MUTE?L("ปิด","off"):L("เปิด","on"));
-  $("bgm").textContent=L("เพลง: ","Music: ")+(H.bgm===false?L("ปิด","off"):L("เปิด","on"));
+  $("bgm").textContent=bgmLabel();
   set(".mid > .note","ช่องที่เป็นธาตุนี้ติดสถานะ Knock Off ห้ามถือไอเทม","Slots of this type have Knock Off: no held item");
   set("#win > span","แบทเทิลจบแล้ว ใครชนะ?","Battle over. Who won?");
   const tl=document.querySelector(".trow"); if(tl) tl.firstChild.nodeValue=L("เวลาจัดทีม ","Team time ");
@@ -1939,7 +1939,7 @@ function render(){
     const tools=document.createElement("div"); tools.className="stools";
     [["rock","🪨 Rock",L("ทำลายธาตุ 1 ช่องในทุ่ง (ธาตุใหม่เดินเข้ามาแทน)","Destroy 1 type on the field; a new one wanders in")],["bait","🍖 Bait",L("จองธาตุ 1 ช่องไว้ อีกฝ่ายหยิบไม่ได้","Reserve 1 type; the other side can't take it")]].forEach(([k,n,t])=>{
       const b=document.createElement("button"); b.type="button"; b.className="btn"+(S.sTool===k?" on":""); b.disabled=S.sUsed[who][k]; b.title=t;
-      b.textContent=n+(S.sUsed[who][k]?L(" (ใช้แล้ว)"," (used)"):""); b.addEventListener("click",()=>{S.sTool=S.sTool===k?null:k; render(); sfx("click");}); tools.appendChild(b);});
+      b.textContent=n+(S.sUsed[who][k]?L(" (ใช้แล้ว)"," (used)"):""); b.addEventListener("click",()=>{S.sTool=S.sTool===k?null:k; render(); sfx(S.sTool?"select":"back");}); tools.appendChild(b);});
     pool.appendChild(tools);
     if(S.sTool){const n=document.createElement("p"); n.className="ctag"; n.style.margin="0"; n.textContent=S.sTool==="rock"?L("แตะธาตุที่จะทำลาย (ไม่เสียตา)","Tap a type to destroy (doesn't use your turn)"):L("แตะธาตุที่จะจองไว้ (ไม่เสียตา)","Tap a type to reserve (doesn't use your turn)"); pool.appendChild(n);}
     const wk=new Set(); S.team[who].forEach(x=>{if(x!=null) weakTo(x).forEach(a=>wk.add(a))});
@@ -2147,14 +2147,14 @@ function renderWizard(){
     $("cwTitle").textContent=L("เลือกธาตุเติมทีม","Pick a type for your team");
     $("cwText").textContent=L("เลือก 1 ใน 2 ธาตุ จะเติมลงช่อง "+(i+1)+" ตอนเปิดคำสั่ง (เหลือช่องว่างอีก "+S.seal[p].length+" ช่อง)","Pick 1 of 2. It fills slot "+(i+1)+" when commands are revealed ("+S.seal[p].length+" empty left)");
     const g=grid("tgrid buildg"); S.offer[p].forEach(t=>{const b=document.createElement("button"); b.type="button"; b.className="tbtn"+(d.build===t?" sel":"");
-      b.style.background=TYPES[t][2]; b.style.color=TYPES[t][3]?"#fff":"#1f2638"; b.textContent=tn(t); b.addEventListener("click",()=>{d.build=t; d.step=after("build"); render(); sfx("click");}); g.appendChild(b);}); body.appendChild(g);
+      b.style.background=TYPES[t][2]; b.style.color=TYPES[t][3]?"#fff":"#1f2638"; b.textContent=tn(t); b.addEventListener("click",()=>{sfx("typePick"); d.build=t; d.step=after("build"); render(); sfx("click");}); g.appendChild(b);}); body.appendChild(g);
     next.textContent=L("ต่อไป ›","Next ›"); next.disabled=d.build==null; next.onclick=()=>{d.step=after("build"); render();};
     back.onclick=()=>{S.draft=null; render();}; return;
   }
   if(st==="ace"){
     $("cwTitle").textContent=L("เลือกตัวเอก ⭐ (ลับ)","Choose your Ace ⭐ (secret)");
     $("cwText").textContent=L("ถ้าการ์ดของอีกฝ่ายทำให้ธาตุของช่องนี้เปลี่ยน อีกฝ่ายได้การ์ด Terastal เลือกครั้งเดียวต่อรอบ เปิดเผยตอนจบคำสั่ง","If the other side's card changes this slot's type, they earn a Terastal. Chosen once a round, revealed when commands end.");
-    const g=grid("sgrid"); for(let i=0;i<N;i++) g.appendChild(slotBtn(p,i,d.ace===i,false,()=>{d.ace=i; d.step=after("ace"); render(); sfx("click");})); body.appendChild(g);
+    const g=grid("sgrid"); for(let i=0;i<N;i++) g.appendChild(slotBtn(p,i,d.ace===i,false,()=>{d.ace=i; d.step=after("ace"); render(); sfx("target");})); body.appendChild(g);
     next.textContent=L("ต่อไป ›","Next ›"); next.disabled=d.ace==null; next.onclick=()=>{d.step=after("ace"); render();};
     back.onclick=()=>{ if(ord[0]==="ace"){S.draft=null; render();} else {d.step=ord[ord.indexOf("ace")-1]; render();} }; return;
   }
@@ -2165,7 +2165,7 @@ function renderWizard(){
     $("cwText").textContent=L("ส่งเครื่องให้ "+pname(p)+" แล้วให้ "+pname(o)+" หันหน้าหนี","Pass the device to "+pname(p)+". "+pname(o)+", look away.");
     body.appendChild(sub(S.plan[o]?L("คำสั่งของ "+pname(o)+" ถูกซ่อนไว้แล้ว","Command from "+pname(o)+" is hidden."):L("ไพ่จะเปิดหลังกดปุ่มด้านล่าง","Your cards show after you press the button below.")));
     back.textContent=L("ปิด","Close"); next.textContent=L("ฉันคือ "+pname(p)+" · เริ่ม ›","I'm "+pname(p)+" · Start ›"); next.classList.add("go"); next.disabled=false;
-    next.onclick=()=>{d.step=BARE()?"card":"protect"; render(); sfx("click");};
+    next.onclick=()=>{d.step=BARE()?"card":"protect"; render(); sfx("back");};
     back.onclick=()=>{S.draft=null; render();};
     return;
   }
@@ -2183,7 +2183,7 @@ function renderWizard(){
       b.innerHTML=cardHead(cd)+"<span>"+cShort(cd)+"</span>"; b.disabled=!canPlay(p,cd);
       b.addEventListener("click",()=>{chooseCard(p,k); d.step=afterCard(d); render();}); g.appendChild(b);});
     const ps=document.createElement("button"); ps.type="button"; ps.className="cardbtn"+(d.ci==="pass"?" sel":""); ps.innerHTML="<b>"+L("ไม่ใช้การ์ด","No card")+"</b><span>"+(BARE()?L("เก็บไพ่ไว้ ไม่ทำอะไร","Keep your cards, do nothing"):L("เก็บไพ่ไว้ ใช้ Protect อย่างเดียว","Keep your cards, Protect only"))+"</span>";
-    ps.addEventListener("click",()=>{Object.assign(d,{ci:"pass",type:null,mine:null,theirs:null,slot:null,tt:null,self:null}); d.step="confirm"; render(); sfx("click");});
+    ps.addEventListener("click",()=>{Object.assign(d,{ci:"pass",type:null,mine:null,theirs:null,slot:null,tt:null,self:null}); d.step="confirm"; render(); sfx("pass");});
     g.appendChild(ps); body.appendChild(g);
     next.textContent=L("ต่อไป ›","Next ›"); next.disabled=d.ci==null; next.onclick=()=>{d.step=afterCard(d); render();};
   }else if(st==="target"){
@@ -2194,7 +2194,7 @@ function renderWizard(){
       body.appendChild(sub(L("ธาตุของ "+pname(o),pname(o)+"'s types")));
       const g=grid("tgrid"); typeOpts(p,c).forEach(t=>{const b=document.createElement("button"); b.type="button"; b.className="tbtn"+(d.type===t?" sel":"");
         b.style.background=TYPES[t][2]; b.style.color=TYPES[t][3]?"#fff":"#1f2638"; b.textContent=tn(t);
-        b.addEventListener("click",()=>{d.type=t; sfx("click"); done();}); g.appendChild(b);}); body.appendChild(g);
+        b.addEventListener("click",()=>{d.type=t; sfx("typePick"); done();}); g.appendChild(b);}); body.appendChild(g);
     }else if(need==="swap"){
       body.appendChild(sub(L("① ช่องของคุณที่จะให้ไป","① Your slot to give")));
       const g1=grid("sgrid"); for(let i=0;i<N;i++) g1.appendChild(slotBtn(p,i,d.mine===i,false,()=>{d.mine=i; done();})); body.appendChild(g1);
@@ -2206,12 +2206,12 @@ function renderWizard(){
       body.appendChild(sub(L("② ธาตุใหม่","② New type")));
       const g2=grid("tgrid"); TYPES.forEach((_,t)=>{const b=document.createElement("button"); b.type="button"; b.className="tbtn"+(d.tt===t?" sel":"");
         b.style.background=TYPES[t][2]; b.style.color=TYPES[t][3]?"#fff":"#1f2638"; b.textContent=tn(t);
-        b.addEventListener("click",()=>{d.tt=t; sfx("click"); done();}); g2.appendChild(b);}); body.appendChild(g2);
+        b.addEventListener("click",()=>{d.tt=t; sfx("typePick"); done();}); g2.appendChild(b);}); body.appendChild(g2);
     }else if(need==="copy"){
       body.appendChild(sub(L("ลอกแบบไหน?","How to copy?")));
       const g=grid("cwhand"); [["now",L("⚡ ลอกทันที","⚡ Copy now"),L("ใช้การ์ดเดียวกับอีกฝ่ายในคำสั่งนี้ เป้าสุ่ม","Play their card this command, random target")],["keep",L("🎨 เก็บเข้ามือ","🎨 Keep it"),L("คัดลอกการ์ดของอีกฝ่ายไว้ใช้คำสั่งถัดไป เลือกเป้าเอง","Copy their card into your hand for next command")]].forEach(([v,n,t])=>{
         const b=document.createElement("button"); b.type="button"; b.className="cardbtn"+(d.type===v?" sel":""); b.innerHTML="<b>"+n+"</b><span>"+t+"</span>"; b.disabled=v==="keep"&&S.cmdN>=S.maxCmd;
-        b.addEventListener("click",()=>{d.type=v; sfx("click"); done();}); g.appendChild(b);}); body.appendChild(g);
+        b.addEventListener("click",()=>{d.type=v; sfx("typePick"); done();}); g.appendChild(b);}); body.appendChild(g);
     }else if(need==="hid"){
       body.appendChild(sub(L("ช่องที่ซ่อนอยู่ของ "+pname(o),pname(o)+"'s hidden slots")));
       const g=grid("sgrid"); for(let i=0;i<N;i++) g.appendChild(slotBtn(o,i,d.slot===i,!isHid(o,i),()=>{d.slot=i; done();})); body.appendChild(g);
@@ -2228,7 +2228,7 @@ function renderWizard(){
   }
   if(st==="card"&&BARE()) back.textContent=L("ปิด","Close");
   const rb=$("cwRand"); rb.hidden=st==="confirm"||st==="handoff"; rb.textContent=L("🎲 สุ่มคำสั่งให้ทั้งหมด","🎲 Randomize my whole command");
-  rb.onclick=()=>{randomDraft(d); render(); sfx("click");};
+  rb.onclick=()=>{randomDraft(d); render(); sfx("dice");};
   back.onclick=()=>{
     if(st===ord[0]){S.draft=null; render(); return;}
     if(st==="protect"||(st==="card"&&BARE())){d.step=ord[ord.indexOf(st)-1]; render(); return;}
@@ -2275,7 +2275,7 @@ function renderFS(){
     const off=NET.on&&ME()!==p; n.disabled=off;
     n.addEventListener("input",()=>{$("name"+p).value=n.value; renderFab(); netName(p);}); r.appendChild(n);
     for(let k=1;k<=6;k++){const b=document.createElement("button"); b.type="button"; b.className="btn"+($("bet"+p).value===String(k)?" on":""); b.textContent=k; b.disabled=off;
-      b.addEventListener("click",()=>{$("bet"+p).value=String(k); renderFS(); renderSteps(); sfx("click"); netBet(p);}); r.appendChild(b);}
+      b.addEventListener("click",()=>{$("bet"+p).value=String(k); renderFS(); renderSteps(); sfx("select"); netBet(p);}); r.appendChild(b);}
     rows.appendChild(r);
     const o=other(p), bl=document.createElement("label"); bl.className="fsban"; bl.textContent=L("🚫 "+pname(p)+" แบนธาตุจากทีม "+pname(o)+": ","🚫 "+pname(p)+" bans a type from "+pname(o)+"'s team: ");
     const sel=document.createElement("select"); sel.innerHTML='<option value="">'+L("ไม่แบน","No ban")+'</option>'+TYPES.map((_,t)=>'<option value="'+t+'">'+tn(t)+'</option>').join("");
@@ -2311,7 +2311,7 @@ function tone(f,at,dur,type="square",vol=.07,f2){
     const o=AC.createOscillator(), g=AC.createGain(), t=AC.currentTime+at;
     o.type=type; o.frequency.setValueAtTime(f,t); if(f2) o.frequency.exponentialRampToValueAtTime(f2,t+dur);
     g.gain.setValueAtTime(vol,t); g.gain.exponentialRampToValueAtTime(.0001,t+dur);
-    o.connect(g); g.connect(AC.destination); o.start(t); o.stop(t+dur+.02);
+    o.connect(g); g.connect(OUTN||AC.destination); o.start(t); o.stop(t+dur+.02);
   }catch(e){}
 }
 let NB=null;   // shared white-noise buffer
@@ -2321,7 +2321,7 @@ function noise(at,dur,vol,f1,f2,q=1,type="bandpass"){
     const s=AC.createBufferSource(), f=AC.createBiquadFilter(), g=AC.createGain(), t=AC.currentTime+at;
     s.buffer=NB; f.type=type; f.Q.value=q; f.frequency.setValueAtTime(f1,t); f.frequency.exponentialRampToValueAtTime(f2,t+dur);
     g.gain.setValueAtTime(.0001,t); g.gain.exponentialRampToValueAtTime(vol,t+Math.min(.08,dur/3)); g.gain.exponentialRampToValueAtTime(.0001,t+dur);
-    s.connect(f); f.connect(g); g.connect(AC.destination); s.start(t); s.stop(t+dur+.05);
+    s.connect(f); f.connect(g); g.connect(OUTN||AC.destination); s.start(t); s.stop(t+dur+.05);
   }catch(e){}
 }
 function vib(f,at,dur,type,vol,f2,rate,depth){
@@ -2380,34 +2380,136 @@ const SFX={
     [523,659,784,1047].forEach(f=>tone(f,1.7,1,"sawtooth",.035)); tone(262,1.7,1,"triangle",.09); [2093,2637,3136].forEach((f,i)=>tone(f,1.72+i*.1,.5,"sine",.04))},
   win:()=>{[659,659,659,523,659,784].forEach((f,i)=>tone(f,i*.12,.11)); tone(1047,.75,.45)},
   undo:()=>{tone(500,0,.1,"square",.07,250)},
-  click:()=>tone(700,0,.05),
+  click:()=>{tone(880,0,.035,"triangle",.06); tone(1320,.03,.03,"triangle",.03)},
   time:()=>{tone(880,0,.2); tone(880,.3,.2); tone(880,.6,.5)}
 };
-// Background music: a quiet synthesized loop whose pace follows the game.
-const BGP={calm:{bpm:84,w:"sine",prog:[[220,262,330],[175,220,262],[196,247,294],[165,196,247]]},
-  tense:{bpm:104,w:"triangle",prog:[[220,262,330],[208,262,311],[196,233,294],[208,247,311]]},
-  rush:{bpm:132,w:"triangle",prog:[[220,262,330],[208,262,311],[196,233,294],[208,247,311]]},
-  panic:{bpm:168,w:"square",prog:[[220,262,330],[233,277,349],[220,262,330],[208,247,311]]}};
-let BGS=0;
-function bgMood(){
-  if(typeof S==="undefined"||S.phase==="rolling") return null;
-  if(T.id) return T.end-Date.now()<=30000?"panic":"rush";
-  if(S.phase==="cmd"||S.phase==="safari") return "tense";
-  return "calm";
+// Background music: six short original chiptune tracks. In "auto" the track follows the game
+// (home → Morning Meadow, drafting → Trainer Bazaar, commands → Rival's Glare, team timer → Countdown,
+// a winner → New Champion, the Union Room → Union Lounge); the menu can also pin one track or turn music off.
+// Notes are semitones above the song's key, one token per eighth note: a number plays, "." holds, "-" rests.
+// Drums: k kick, s snare, h hat. Bass: R root, F fifth, O octave of each bar's chord.
+const SONGS={
+  meadow:{n:["ทุ่งหญ้ายามเช้า","Morning Meadow"],key:262,bpm:100,lead:"triangle",pad:true,
+    ch:[0,9,5,7,0,4,5,7],
+    mel:["7 . 4 . 0 2 4 .","9 . 7 4 . . - -","5 . 9 . 12 . 9 .","7 . . 5 4 2 - -","4 . 7 . 12 . 11 9","7 . . 4 . . 2 4","5 4 5 9 . 7 5 .","2 . 4 . 2 . - -"],
+    bass:"R . . . F . . .",dr:"k - h - s - h -"},
+  bazaar:{n:["ตลาดนัดเทรนเนอร์","Trainer Bazaar"],key:175,bpm:116,lead:"square",stac:true,
+    ch:[0,5,7,0,9,5,7,7],
+    mel:["12 16 19 16 24 . 19 .","17 21 24 21 26 . 24 .","19 23 26 23 24 . - .","21 . 19 . 16 . 12 .","21 24 28 24 26 . 24 21","22 . 21 . 17 . 14 .","19 . 23 . 26 . 24 23","24 . . . - . 19 ."],
+    bass:"R . F . R . F .",dr:"k h s h k k s h"},
+  rival:{n:["สายตาคู่แข่ง","Rival's Glare"],key:220,bpm:126,lead:"sawtooth",
+    ch:[0,0,8,10,0,0,5,7],
+    mel:["12 . 12 15 . 12 19 .","17 . 15 . 12 . 10 12","8 . 12 . 15 . 17 15","14 . 10 . 7 . - .","12 15 19 15 24 . 22 19","20 . 19 . 15 . 12 .","17 . 20 . 24 . 22 20","19 . 16 . 11 . 7 ."],
+    bass:"R R R R R R F F",dr:"k h s h k h s s"},
+  countdown:{n:["นับถอยหลัง","Countdown"],key:147,bpm:144,lead:"square",stac:true,
+    ch:[0,8,10,7],
+    mel:["24 . 27 . 29 27 24 .","20 . 24 . 27 24 20 .","22 26 29 26 34 . 29 .","31 35 38 35 31 . 35 ."],
+    bass:"R O R O R O F O",dr:"k h s h k k s h"},
+  lounge:{n:["ยูเนียนเลานจ์","Union Lounge"],key:196,bpm:92,lead:"sine",pad:true,
+    ch:[0,9,5,7],
+    mel:["11 . 7 . 4 . 7 .","14 . 12 . 9 . 7 .","16 . 12 . 9 . 5 .","14 . 12 . 11 9 7 ."],
+    bass:"R . F . O . F .",dr:"k - h - s - h h"},
+  champion:{n:["แชมป์คนใหม่","New Champion"],key:262,bpm:120,lead:"square",
+    ch:[0,5,7,0,9,5,7,7],
+    mel:["12 16 19 24 . 19 24 .","21 . 24 . 29 . 28 26","26 . 23 . 19 . 23 26","24 . . . 19 . 24 .","28 . 24 . 21 . 24 28","29 . 28 . 26 . 24 .","23 . 26 . 31 . 29 26","28 . . . 26 . . ."],
+    bass:"R . F . R F O .",dr:"k h s h k h s h"}
+};
+const SONGKEYS=Object.keys(SONGS);
+// Minor chords: the bars whose chord root sits at these semitones above the key use a minor third.
+const MINOR={meadow:[9,4],bazaar:[9],rival:[0,5],countdown:[0],lounge:[9],champion:[9]};
+for(const k of SONGKEYS){const s=SONGS[k]; s.mel=s.mel.map(b=>b.split(" ")); s.bass=s.bass.split(" "); s.dr=s.dr.split(" ");}
+let MBUS=null, OUTN=null;   // music bus (quieter, separate from effects); OUTN redirects tone()/noise() while music schedules
+function musicBus(){ if(!MBUS){MBUS=AC.createGain(); MBUS.gain.value=.55; MBUS.connect(AC.destination);} return MBUS; }
+function bgSong(){
+  if(typeof S==="undefined") return null;
+  if(H.bgm===false) return null;
+  if(typeof H.bgm==="string"&&SONGS[H.bgm]) return S.phase==="rolling"?null:H.bgm;
+  if(S.phase==="rolling") return null;
+  if(!$("lobbyVeil").hidden) return "lounge";
+  if(T.id) return "countdown";
+  if(S.phase==="cmd"||S.phase==="ccmd") return "rival";
+  if(["safari","box","luck"].includes(S.phase)) return "bazaar";
+  if(S.phase==="done"&&S.winner) return "champion";
+  return "meadow";
+}
+let BG={song:null,step:0,next:0};
+const hz=(key,semi)=>key*Math.pow(2,semi/12);
+function bgStep(s,step,at,beat){
+  const bars=s.mel.length, bar=Math.floor(step/8)%bars, k=step%8, cr=s.ch[bar%s.ch.length], minor=(MINOR[BG.song]||[]).includes(cr);
+  // lead
+  const tok=s.mel[bar][k];
+  if(tok!=="."&&tok!=="-"){
+    let len=1; while(k+len<8&&s.mel[bar][k+len]===".") len++;
+    const d=beat/2*(s.stac?Math.min(len,1)*.7:len*.92);
+    tone(hz(s.key,+tok),at,d,s.lead,s.lead==="sawtooth"?.018:s.lead==="square"?.022:.045);
+  }
+  // bass
+  const b=s.bass[k], bsemi=b==="R"?cr:b==="F"?cr+7:b==="O"?cr+12:null;
+  if(bsemi!=null) tone(hz(s.key/4,bsemi),at,beat/2*.9,"triangle",.07);
+  // soft chord pad at the start of each bar
+  if(s.pad&&k===0) [0,minor?3:4,7].forEach(x=>tone(hz(s.key/2,cr+x),at,beat*3.6,"sine",.018));
+  // drums
+  const dr=s.dr[k];
+  if(dr==="k"){tone(130,at,.12,"sine",.12,45);}
+  else if(dr==="s"){noise(at,.12,.05,2200,1400,1);}
+  else if(dr==="h"){noise(at,.03,.02,8000,6000,1,"highpass");}
 }
 function bgTick(){
-  let wait=400;
-  if(H.bgm!==false&&!MUTE&&AC&&AC.state==="running"&&!document.hidden){
-    const m=bgMood();
-    if(m){const P2=BGP[m], beat=60/P2.bpm, ch=P2.prog[Math.floor(BGS/8)%P2.prog.length], k=BGS%8;
-      if(k===0) tone(ch[0]/2,0,beat*3.6,"triangle",.03);
-      tone(ch[[0,1,2,1,0,2,1,2][k]]*2,0,beat*.45,P2.w,m==="panic"?.012:.016);
-      if(m!=="calm"&&k%2===1) noise(0,.04,.018,7000,5000,1,"highpass");
-      BGS++; wait=beat*500;}
-  }
+  let wait=60;
+  try{
+    const want=(!MUTE&&AC&&AC.state==="running"&&!document.hidden)?bgSong():null;
+    if(want!==BG.song){BG.song=want; BG.step=0; BG.next=AC?AC.currentTime+.08:0; if(!$("menuVeil").hidden) applyLang();}
+    if(want){
+      const s=SONGS[want], fast=want==="countdown"&&T.id&&T.end-Date.now()<=30000?1.18:1, beat=60/(s.bpm*fast);
+      OUTN=musicBus();
+      while(BG.next<AC.currentTime+.25){ bgStep(s,BG.step,Math.max(0,BG.next-AC.currentTime),beat); BG.next+=beat/2; BG.step++; }
+      OUTN=null;
+    }
+  }catch(e){OUTN=null;}
   setTimeout(bgTick,wait);
 }
 setTimeout(bgTick,1000);
+function bgmLabel(){
+  const v=H.bgm===false?"off":typeof H.bgm==="string"&&SONGS[H.bgm]?H.bgm:"auto";
+  if(v==="off") return L("🎵 เพลง: ปิด","🎵 Music: off");
+  if(v==="auto") return L("🎵 เพลง: อัตโนมัติ","🎵 Music: auto")+(BG.song?" · "+L(SONGS[BG.song].n[0],SONGS[BG.song].n[1]):"");
+  return L("🎵 เพลง: ","🎵 Music: ")+L(SONGS[v].n[0],SONGS[v].n[1])+L(" (วนซ้ำ)"," (loop)");
+}
+// The music button cycles: auto → each track → off → auto.
+function bgmNext(){
+  const order=["auto",...SONGKEYS,"off"], cur=H.bgm===false?"off":typeof H.bgm==="string"&&SONGS[H.bgm]?H.bgm:"auto";
+  const nx=order[(order.indexOf(cur)+1)%order.length]; H.bgm=nx==="off"?false:nx==="auto"?true:nx; store();
+}
+// Sounds for buttons and moves, by kind, so each action has its own voice.
+const SFX_UI={
+  tap:()=>{tone(880,0,.035,"triangle",.06); tone(1320,.03,.03,"triangle",.03)},
+  select:()=>{tone(784,0,.05,"square",.045); tone(1175,.05,.07,"square",.045)},
+  open:()=>{tone(523,0,.06,"triangle",.07,784); tone(1047,.06,.09,"triangle",.05)},
+  close:()=>{tone(784,0,.06,"triangle",.06,523); tone(392,.06,.08,"triangle",.04)},
+  toggleOn:()=>{tone(660,0,.06,"square",.05); tone(990,.07,.1,"square",.05)},
+  toggleOff:()=>{tone(990,0,.06,"square",.05); tone(660,.07,.1,"square",.04)},
+  go:()=>{[523,659,784].forEach((f,i)=>tone(f,i*.06,.12,"square",.06)); tone(1047,.18,.25,"triangle",.07)},
+  back:()=>{tone(620,0,.07,"triangle",.06,420)},
+  danger:()=>{tone(180,0,.22,"square",.08,90); noise(0,.18,.12,600,150,.8,"lowpass")},
+  dice:()=>{for(let i=0;i<5;i++){noise(i*.05,.04,.14,2500,1800,3); tone(500+Math.random()*700,i*.05,.03,"square",.03);} tone(1175,.27,.12,"triangle",.06)},
+  notify:()=>{tone(1319,0,.09,"sine",.07); tone(1760,.1,.16,"sine",.06)},
+  target:()=>{tone(1568,0,.04,"square",.05); tone(1568,.07,.04,"square",.05); tone(2093,.14,.1,"square",.05)},
+  typePick:()=>{tone(698,0,.05,"triangle",.06); tone(1047,.05,.09,"sine",.06); noise(.02,.08,.06,4000,6000,2)},
+  shield:()=>{tone(523,0,.08,"triangle",.08); tone(784,.06,.12,"triangle",.08); noise(.04,.25,.08,3500,1500,2)},
+  pass:()=>{tone(440,0,.08,"triangle",.06); tone(392,.1,.12,"triangle",.05)},
+  seal:()=>{tone(1047,0,.06,"square",.05); noise(.06,.1,.18,700,250,.8,"lowpass"); tone(220,.06,.12,"square",.07,140)},
+  rock:()=>{tone(300,0,.25,"sine",.04,700); noise(.22,.18,.32,700,120,.7,"lowpass"); tone(110,.22,.18,"square",.08,55)},
+  bait:()=>{for(let i=0;i<3;i++) noise(i*.09,.06,.16,1600,900,2); tone(988,.3,.12,"triangle",.06,1319)},
+  grab:()=>{noise(0,.06,.12,3000,5000,2); tone(659,.03,.06,"square",.06); tone(988,.09,.1,"square",.06)},
+  boxPlace:()=>{tone(392,0,.06,"triangle",.07); noise(.04,.1,.14,500,200,.8,"lowpass")},
+  boxGive:()=>{noise(0,.3,.18,600,3500,1.5); tone(988,.22,.1,"triangle",.06,494)},
+  copy:()=>{tone(784,0,.07,"square",.05); tone(784,.1,.07,"square",.04); tone(1175,.2,.14,"triangle",.06)},
+  fore:()=>{vib(880,0,.6,"sine",.06,1320,7,30); tone(1760,.35,.3,"sine",.04)},
+  shieldUp:()=>{[523,784,1047].forEach((f,i)=>tone(f,i*.05,.3,"triangle",.06)); noise(0,.5,.1,4000,1200,2)}
+};
+// The sound each card makes when its scene plays in the reveal.
+const CARDSND={roar:"roar",trick:"trick",present:"present",tera:"teraOn",mirror:"mirror",sub:"sub",conv:"conv",copycat:"copy",fore:"fore",perish:null,
+  raindance:"rain",sandstorm:"sand",entrain:"entrain",doom:"doomSet",destiny:"bondSet",swagger:"swagger",roleplay:"role",sketch:"sketch",wish:"teraOn"};
 function buzz(p){try{if(!MUTE&&navigator.vibrate) navigator.vibrate(p)}catch(e){}}
 function swipe(p){
   sfx("swoosh"); if(still()) return;
@@ -2458,7 +2560,7 @@ function sceneFx(box,ev,tiles,hitKey){
   else if(ev.via==="conf"){["💫","😵"].forEach((t,k)=>{const e=big(t,"fxspin"); e.style.animationDelay=(k*.15)+"s";});}
   else if(ev.refl){const bm=document.createElement("i"); bm.className="fxbeam"; l.appendChild(bm);}
 }
-function sfx(n){if(MUTE||!audio()) return; const f=SFX[n]||SFX_EXTRA[n]; f&&f();}
+function sfx(n){if(MUTE||!audio()) return; const f=SFX[n]||SFX_EXTRA[n]||SFX_UI[n]; f&&f();}
 function tick(){
   const left=T.end-Date.now();
   if(left<=0){
@@ -2643,7 +2745,7 @@ function openColorCmd(p){
 }
 function colorChoose(p,k){
   if(S.phase!=="ccmd"||S.cplan[p]||!CCMD[k]) return; const o=other(p);
-  saveUndo(); S.cplan[p]=k; modal("colorVeil",false); sfx("protect");
+  saveUndo(); S.cplan[p]=k; modal("colorVeil",false); sfx("seal");
   if(S.cplan[o]){S.picker=null; resolveColor();} else if(NET.on){S.picker=null; render();} else {S.picker=o; render(); swipe(o);}
 }
 function resolveColor(){
@@ -2715,7 +2817,7 @@ function makeBoxes(){
   const bag=[].concat(Array(24).fill("single"),Array(10).fill("share"),Array(7).fill("twin"),Array(5).fill("both"),Array(4).fill("triple"));
   return shuffle(bag).map(k=>{const t=pick(); return {k,t:k==="single"||k==="both"?[t]:k==="twin"?[t,t]:k==="share"?[t,pick()]:[t,pick(),pick()]};});
 }
-function boxPlace(q,t){ let to=q; if(S.team[to].indexOf(null)<0) to=other(q); const i=S.team[to].indexOf(null); if(i<0) return null; S.team[to][i]=t; bump(els[to][i]); return to; }
+function boxPlace(q,t){ sfx(S.team[q].indexOf(null)<0?"boxGive":"boxPlace"); let to=q; if(S.team[to].indexOf(null)<0) to=other(q); const i=S.team[to].indexOf(null); if(i<0) return null; S.team[to][i]=t; bump(els[to][i]); return to; }
 function boxOpts(){
   const p=S.bturn, o=other(p), b=S.pool[S.bopen], [a,c,d]=b.t;
   if(b.k==="single") return [[L("📦 เก็บเอง","📦 Keep it"),[[p,a]]],[L("🎯 ยัดให้ ","🎯 Give to ")+pname(o),[[o,a]]]];
@@ -2757,9 +2859,9 @@ function safariPick(k){
   const who=S.sOrder[S.spick];
   if(S.sTool==="rock"){saveUndo(); const was=S.pool[k]; let n; do{n=pick()}while(n===was); S.pool[k]=n; if(S.bait&&S.bait.k===k) S.bait=null;
     S.sUsed[who].rock=true; S.sTool=null; S.flash=L(pname(who)+" ขว้าง Rock! ธาตุ"+tn(was)+"หนีไป ธาตุ"+tn(n)+"เดินเข้ามาแทน",pname(who)+" threw a Rock! "+tn(was)+" ran off and "+tn(n)+" wandered in");
-    addLog(who,L("Rock: ไล่ธาตุ"+tn(was)+" ออกจากทุ่ง","Rock: drove "+tn(was)+" off the field")); render(); sfx("roar"); return;}
+    addLog(who,L("Rock: ไล่ธาตุ"+tn(was)+" ออกจากทุ่ง","Rock: drove "+tn(was)+" off the field")); render(); sfx("rock"); return;}
   if(S.sTool==="bait"){saveUndo(); S.bait={k,p:who}; S.sUsed[who].bait=true; S.sTool=null; S.flash=L(pname(who)+" วาง Bait จองธาตุ"+tn(S.pool[k])+"ไว้",pname(who)+" set Bait on "+tn(S.pool[k]));
-    addLog(who,L("Bait: จองธาตุ"+tn(S.pool[k]),"Bait: reserved "+tn(S.pool[k]))); render(); sfx("click"); return;}
+    addLog(who,L("Bait: จองธาตุ"+tn(S.pool[k]),"Bait: reserved "+tn(S.pool[k]))); render(); sfx("bait"); return;}
   if(S.bait&&S.bait.k===k&&S.bait.p!==who) return;
   saveUndo();
   const p=who, i=S.team[p].indexOf(null);
@@ -2775,7 +2877,7 @@ function safariPick(k){
     settle({A:"",B:""});
     render(); P.forEach(q=>els[q].forEach(bump)); sfx("land"); checkChosen(); return;
   }
-  render(); bump(els[p][i]); sfx("click");
+  render(); bump(els[p][i]); sfx("grab");
 }
 
 /* ---------- Commands: both sides choose in secret, then everything is revealed at once ---------- */
@@ -2801,28 +2903,28 @@ function chooseCard(p,k){
 }
 function slotPick(q,i){
   const d=S.draft; if(S.phase!=="cmd"||!d) return;
-  const p=d.p, need=d.ci!=null&&d.ci!=="pass"?CARDS[S.hand[p][d.ci]].need:null;
+  const p=d.p, need=d.ci!=null&&d.ci!=="pass"?CARDS[S.hand[p][d.ci]].need:null; let snd="target";
   if(q===p){
     if(BARE()){ if(need==="swap") d.mine=i; else if(need==="self") d.self=i; else return; }
-    else if(d.protect==null){d.protect=i; sfx("protect");}
+    else if(d.protect==null){d.protect=i; snd="shield";}
     else if(need==="swap"&&d.mine==null) d.mine=i;
     else if(need==="self"&&d.self==null){ if(i===d.protect) return; d.self=i; }
-    else d.protect=i;
+    else {d.protect=i; snd="shield";}
     if(d.self===d.protect) d.self=null;
   }else{
     if(S.sub[q].includes(i)) return;
     if(need==="swap"){ if(S.taken[q].includes(i)) return; d.theirs=i; }
-    else if(need==="tera"){ d.slot=i; openTeraPick(); return; }
+    else if(need==="tera"){ d.slot=i; openTeraPick(); sfx("target"); return; }
     else return;
   }
-  render();
+  render(); sfx(snd);
 }
 function confirmCmd(p){
   const d=S.draft; if(!d||d.p!==p||!draftDone()) return;
   saveUndo();
   S.plan[p]=Object.assign({},d,{card:d.ci==="pass"?"pass":S.hand[p][d.ci]}); S.draft=null;
   if(d.ace!=null&&S.ace[p]==null) S.ace[p]=d.ace;
-  sfx("protect");
+  sfx("seal");
   if(!S.plan[other(p)]&&NET.on){S.picker=null; S.flash=L("คำสั่งของ "+pname(p)+" ถูกซ่อนแล้ว รอ "+pname(other(p))+" …","Command from "+pname(p)+" is hidden. Waiting for "+pname(other(p))+"…"); render(); S.flash=""; return;}
   if(!S.plan[other(p)]){S.picker=other(p); S.flash=L("คำสั่งของ "+pname(p)+" ถูกซ่อนแล้ว","Command from "+pname(p)+" is hidden."); handoff(S.picker); render(); swipe(S.picker); return;}
   S.picker=null;
@@ -2999,8 +3101,7 @@ function reveal(){
   if(NET.on&&NET.role==="host") NET.rev={id:(NET.rev?NET.rev.id:0)+1,n,ord,show,out:{ev:out.ev,res:out.res,tera:out.tera}};
   showReveal(n,ord,show,out,()=>{
   render(); out.bump.forEach(([q,i])=>bump(els[q][i]));
-  out.sfx.forEach((n,k)=>setTimeout(()=>sfx(n),k*450));
-  if(!out.sfx.length) sfx("reveal");
+  sfx("reveal");
   if(out.tera){
     $("tvGemIn").style.setProperty("--c",TYPES[out.tera.t][2]);
     $("tvTitle").textContent=out.tera.line; $("tvText").textContent=out.tera.text;
@@ -3084,7 +3185,9 @@ function playScene(ev,k,total){
       if(blkKey.has(q+i)){el.classList.remove("still"); el.classList.add("shake","hitb");}
     });
     sceneFx(box,ev,tiles,hitKey);
-    r.hidden=false; sfx(kind==="fail"?"fail":kind==="ok"||kind==="reflect"?"stamp":"click");
+    const own=ev.kind==="protect"?"shieldUp":ev.refl?"mirror":ev.card==="doom"&&ev.hit.length?"doomHit":ev.via==="bond"?"bond":ev.card&&CARDSND[ev.card];
+    if(own&&kind!=="fail") sfx(own);
+    r.hidden=false; setTimeout(()=>sfx(kind==="fail"?"fail":kind==="ok"||kind==="reflect"?"stamp":"click"),own&&kind!=="fail"?380:0);
     if(!fast&&(atkCard||ev.card==="copycat")&&ev.kind!=="protect"){
       const crit=kind==="ok"&&ev.hit.length>=3, t=kind==="reflect"?L("เด้งกลับ!","IT BOUNCED BACK!"):kind==="ok"?(crit?L("คริติคอล!","CRITICAL HIT!"):L("ได้ผลดีเยี่ยม!","IT'S SUPER EFFECTIVE!")):(ev.block&&ev.block.length?L("ไม่ค่อยได้ผล…","IT'S NOT VERY EFFECTIVE…"):L("แต่ไม่เป็นผล!","BUT IT FAILED!"));
       const bt=document.createElement("div"); bt.className="bigtxt"+(kind==="fail"?" bad":crit?" crit":""); bt.textContent=t; box.appendChild(bt);
@@ -3216,7 +3319,7 @@ function renderTrade(){
     $("trdTitle").textContent=L("ใครจะเสนอแลก?","Who makes an offer?");
     $("trdText").textContent=L("แต่ละฝ่ายเสนอได้ 1 ครั้งต่อรอบ อีกฝ่ายตอบรับหรือปฏิเสธก็ได้ (Mega Stone แลกไม่ได้)","Each side gets 1 offer per round; the other side may accept or decline. Mega Stones can't be traded.");
     const g=grid("cwhand"); for(const q of P){const b=document.createElement("button"); b.type="button"; b.className="btn"; b.textContent=L(pname(q)+" เสนอแลก",pname(q)+" makes an offer"); b.disabled=S.traded[q]||!S.items[q].some((_,i)=>tradable(q,i))||!S.items[other(q)].some((_,i)=>tradable(other(q),i));
-      b.addEventListener("click",()=>{TR.p=q; TR.stage="pick"; renderTrade(); sfx("click");}); g.appendChild(b);} body.appendChild(g);
+      b.addEventListener("click",()=>{TR.p=q; TR.stage="pick"; renderTrade(); sfx("select");}); g.appendChild(b);} body.appendChild(g);
     next.hidden=true; back.textContent=L("ปิด","Close"); back.onclick=()=>modal("tradeVeil",false); return;
   }
   const p=TR.p, o=other(p);
@@ -3339,12 +3442,20 @@ for(const p of P){
 }
 $("undo").addEventListener("click",()=>undo());
 $("fabUndo").addEventListener("click",()=>undo());
-$("menuBtn").addEventListener("click",()=>{modal("menuVeil",true); $("menuClose").focus(); sfx("click");});
+$("menuBtn").addEventListener("click",()=>{modal("menuVeil",true); $("menuClose").focus(); sfx("open");});
 $("menuClose").addEventListener("click",()=>modal("menuVeil",false));
-$("modeBtn").addEventListener("click",()=>{openModes(); sfx("click");});
-$("modeGo").addEventListener("click",()=>{H.seenModes=true; store(); modal("modeVeil",false); sfx("click"); if(!H.seenTour) openTour();});
+// Navigation buttons that have no sound of their own: closing, stepping back, risky moves, and "next" in the command wizard.
+document.addEventListener("click",e=>{
+  const b=e.target.closest&&e.target.closest("button"); if(!b||b.disabled) return; const id=b.id||"";
+  if(/Close$|Cancel$/.test(id)) sfx("close");
+  else if(id==="cwBack") sfx("back");
+  else if(id==="cwNext"&&!b.classList.contains("go")) sfx("tap");
+  else if(/^surr[AB]$/.test(id)||id==="reset"||b.classList.contains("lbleave")) sfx("danger");
+},true);
+$("modeBtn").addEventListener("click",()=>{openModes(); sfx("open");});
+$("modeGo").addEventListener("click",()=>{H.seenModes=true; store(); modal("modeVeil",false); sfx("go"); if(!H.seenTour) openTour();});
 $("tourNext").addEventListener("click",()=>{if(tourK<TOUR.length-1){tourK++; renderTour(); sfx("click");} else {closeTour(); sfx("click");}});
-$("tourBack").addEventListener("click",()=>{if(tourK){tourK--; renderTour();} else closeTour(); sfx("click");});
+$("tourBack").addEventListener("click",()=>{if(tourK){tourK--; renderTour();} else closeTour(); sfx("back");});
 $("tourBtn").addEventListener("click",()=>{modal("menuVeil",false); openTour();});
 $("fsGo").addEventListener("click",()=>{if(!($("betA").value&&$("betB").value)) return; modal("fsVeil",false); roll();});
 $("fsClose").addEventListener("click",()=>modal("fsVeil",false));
@@ -3361,14 +3472,14 @@ $("hlShot").addEventListener("click",saveImage);
 $("t2Close").addEventListener("click",()=>modal("tourVeil2",false));
 $("serLine").addEventListener("click",()=>{if(H.series==="tour") openTour2(false);});
 $("fvOk").addEventListener("click",()=>{modal("fieldVeil",false); checkChosen();});
-$("tradeBtn").addEventListener("click",()=>{openTrade(); sfx("click");});
-$("trophyBtn").addEventListener("click",()=>{modal("menuVeil",false); drawTrophy(); modal("trophyVeil",true); $("trClose").focus(); sfx("click");});
+$("tradeBtn").addEventListener("click",()=>{openTrade(); sfx("open");});
+$("trophyBtn").addEventListener("click",()=>{modal("menuVeil",false); drawTrophy(); modal("trophyVeil",true); $("trClose").focus(); sfx("open");});
 $("trClose").addEventListener("click",()=>modal("trophyVeil",false));
 $("trClear").addEventListener("click",()=>{H.led=[]; store(); drawTrophy();});
 $("winB").addEventListener("click",()=>setWinner("B"));
 $("hclear").addEventListener("click",()=>{if(netBlock("host")) return; H.score={A:0,B:0}; H.rounds=[]; S.winner=null; store(); drawHist(); render();});
-$("bgm").addEventListener("click",()=>{H.bgm=H.bgm===false; store(); applyLang(); audio(); sfx("click");});
-$("mute").addEventListener("click",()=>{MUTE=!MUTE; H.mute=MUTE; store(); applyLang(); if(!MUTE) sfx("click");});
+$("bgm").addEventListener("click",()=>{bgmNext(); audio(); BG.song=undefined; applyLang(); sfx(H.bgm===false?"toggleOff":"toggleOn");});
+$("mute").addEventListener("click",()=>{MUTE=!MUTE; H.mute=MUTE; store(); applyLang(); if(!MUTE) sfx("toggleOn");});
 // Switching language redraws everything on screen; lines already written to the logs stay as they were.
 $("lang").addEventListener("click",()=>{
   LANG=LANG==="en"?"th":"en"; H.lang=LANG; store();
@@ -3424,7 +3535,7 @@ async function netApi(method,body,qs){
   if(!r.ok){const e=new Error((j&&j.error)||("http "+r.status)); e.status=r.status; throw e;}
   return j;
 }
-function toast(m){const t=$("netToast"); t.textContent=m; t.hidden=false; t.classList.remove("on"); void t.offsetWidth; t.classList.add("on"); clearTimeout(toast.id); toast.id=setTimeout(()=>{t.hidden=true},2600);}
+function toast(m){sfx("notify"); const t=$("netToast"); t.textContent=m; t.hidden=false; t.classList.remove("on"); void t.offsetWidth; t.classList.add("on"); clearTimeout(toast.id); toast.id=setTimeout(()=>{t.hidden=true},2600);}
 function netNo(m){toast(m||L("ไม่ใช่ตาของคุณ","Not your turn")); sfx("fail");}
 // Wrap a game function so that, online, only its owner can use it. The guest sends its moves to the host.
 function wrap(name,own,mk){
@@ -3449,11 +3560,11 @@ wrap("safariPick",()=>S.sOrder[S.spick],k=>({t:"safariPick",a:[k],tool:S.sTool})
 wrap("boxOpen",()=>S.bturn,k=>({t:"boxOpen",a:[k]}));
 wrap("boxPick",()=>S.bturn,n=>({t:"boxPick",a:[n]}));
 wrap("openColorCmd",p=>p);
-wrap("colorChoose",p=>p,(p,k)=>{ if(S.phase!=="ccmd"||S.cplan[p]) return false; S.cplan[p]="x"; NET.sentC={k:S.id,at:Date.now()}; modal("colorVeil",false); render(); sfx("protect"); return {t:"colorChoose",a:[p,k]}; });
+wrap("colorChoose",p=>p,(p,k)=>{ if(S.phase!=="ccmd"||S.cplan[p]) return false; S.cplan[p]="x"; NET.sentC={k:S.id,at:Date.now()}; modal("colorVeil",false); render(); sfx("seal"); return {t:"colorChoose",a:[p,k]}; });
 wrap("openPick",p=>p);
 wrap("confirmCmd",p=>p,p=>{ const d=S.draft; if(!d||d.p!==p||!draftDone()||S.plan[p]) return false;
   const act={t:"plan",d:JSON.parse(JSON.stringify(d)),k:dkey()}; S.plan[p]={m:1}; S.draft=null; NET.sent={k:dkey(),at:Date.now()};
-  S.flash=L("ส่งคำสั่งแล้ว! รอ "+pname(other(p))+" …","Command sent! Waiting for "+pname(other(p))+"…"); render(); S.flash=""; sfx("protect"); return act; });
+  S.flash=L("ส่งคำสั่งแล้ว! รอ "+pname(other(p))+" …","Command sent! Waiting for "+pname(other(p))+"…"); render(); S.flash=""; sfx("seal"); return act; });
 wrap("chosen","any",p=>{NET.chosenAt=Date.now(); return {t:"chosen",a:[p]};});
 wrap("setWinner","any",p=>({t:"setWinner",a:[p]}));
 wrap("surrender",p=>p,p=>({t:"surrender",a:[p]}));
@@ -3644,7 +3755,7 @@ function renderLobby(){
   body.appendChild(el("p","lbnote",L("ผู้เล่นทั้งสองเลือกคำสั่งพร้อมกันบนเครื่องตัวเอง ไม่ต้องส่งเครื่อง · ซิงก์ทุก 2–3 วินาที ช่วงแบทเทิลจริงช้าลงเพื่อประหยัดโควตา","Both trainers choose commands at the same time on their own device · syncs every 2–3 seconds, slower during the real battle to save quota")));
   const lv=el("button","btn lbleave",L("🚪 ออกจากห้อง","🚪 Leave room")); lv.type="button"; lv.onclick=netLeave; body.appendChild(lv);
 }
-function openLobby(){NET.err=""; modal("lobbyVeil",true); renderLobby(); sfx("click"); const c=$("lbCode"); if(c) c.focus();}
+function openLobby(){NET.err=""; modal("lobbyVeil",true); renderLobby(); sfx("open"); const c=$("lbCode"); if(c) c.focus();}
 function netSave(){try{localStorage.setItem("choiceNet",JSON.stringify({code:NET.code,role:NET.role,tok:NET.tok}))}catch(e){}}
 function netStart(code,role,tok){
   Object.assign(NET,{on:true,role,code,tok:tok||null,v:"-",touchAt:0,last:"",seen:false,bad:0,act:Date.now(),guest:false,rev:null,revSeen:null});
