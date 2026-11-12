@@ -535,16 +535,11 @@ details.rules[open]>summary h2{margin-bottom:12px}
 .schead.c-copycat{border-left-color:#8e7cc3}.schead.c-wish{border-left-color:#ffb3d1}
 .dcard.c-copycat{border-left-color:#8e7cc3}.dcard.c-wish{border-left-color:#ffb3d1}
 .m-mirror{--mb:#9aa7c7}.m-chaos{--mb:#ff7a3d}
-/* Each mode gets its own ball: Starter = Great Ball, Build-up = bricks, Push Your Luck = gold coin, Mystery Box = gift ribbon, Color = Pokédex color stripes */
-.m-starter .mball{background:linear-gradient(180deg,transparent 0 44%,var(--ink) 44% 56%,#fff 56%),linear-gradient(90deg,#3a8ee8 0 18%,#e3342f 18% 30%,#3a8ee8 30% 70%,#e3342f 70% 82%,#3a8ee8 82%)}
+/* Each mode gets its own ball: Build-up = bricks, Push Your Luck = gold coin, Mystery Box = gift ribbon, Color = Pokédex color stripes */
 .m-buildup .mball{background:linear-gradient(180deg,transparent 0 44%,var(--ink) 44% 56%,#fff 56%),repeating-linear-gradient(0deg,#c8612a 0 5px,#7a3412 5px 6px)}
 .m-luck .mball{background:radial-gradient(circle at 50% 25%,#fff7c2 0 10%,transparent 11%),linear-gradient(180deg,#f2c230 0 44%,var(--ink) 44% 56%,#fff 56%)}
 .m-box .mball{background:linear-gradient(90deg,transparent 0 42%,#ffd84a 42% 58%,transparent 58%),linear-gradient(180deg,#d6337a 0 44%,var(--ink) 44% 56%,#fff 56%)}
 .m-color .mball{background:linear-gradient(180deg,transparent 0 44%,var(--ink) 44% 56%,#fff 56%),linear-gradient(90deg,#e3342f 0 10%,#f6c61c 10% 20%,#35b565 20% 30%,#2c68d6 30% 40%,#8e44ad 40% 50%,#f78fb3 50% 60%,#8b5a2b 60% 70%,#9aa1b8 70% 80%,#2a2a2a 80% 90%,#f4f4f4 90%)}
-body.mode-starter{background:#101b2e radial-gradient(#1d2f4d 1.2px,transparent 1.6px) 0 0/14px 14px}
-body.mode-starter .ball-top{background:linear-gradient(90deg,transparent 0 16%,rgba(227,52,47,.95) 16% 26%,transparent 26% 74%,rgba(227,52,47,.95) 74% 84%,transparent 84%),linear-gradient(180deg,#5aa8f0,#2f7fd8 55%,#1c5aa8)}
-body.mode-starter h1 em{color:#ffe08a}
-body.mode-starter .steps .st.cur{background:#bfe0ff}
 body.mode-buildup{background:#1f140e radial-gradient(#3a2418 1.2px,transparent 1.6px) 0 0/14px 14px}
 body.mode-buildup .ball-top{background:repeating-linear-gradient(0deg,transparent 0 22px,rgba(60,22,8,.55) 22px 25px),repeating-linear-gradient(90deg,transparent 0 46px,rgba(60,22,8,.35) 46px 49px),linear-gradient(180deg,#e0823f,#c8612a 55%,#8e3c15)}
 body.mode-buildup h1 em{color:#ffe0b0}
@@ -710,7 +705,7 @@ body.playing #roll{width:84px;height:84px;border-width:8px;font-size:15px}
         <button id="resetTop" class="btn resetbtn" type="button" hidden>🔄 เริ่มใหม่</button>
         <button id="linkBtn" class="btn linkbtn" type="button">🔗 Link Battle</button>
         <button id="undo" class="btn" type="button" disabled hidden>ย้อนกลับ 1 ขั้น</button>
-        <div hidden><select id="mode"><option value="starter">Starter Draft</option><option value="cursed">Cursed Draft</option><option value="double">Double Cursed</option><option value="safari">Safari Draft</option><option value="blind">Blind Draft</option><option value="mirror">Mirror Draft</option><option value="chaos">Wild Field</option><option value="box">Mystery Box</option><option value="color">Color Draft</option><option value="gym">Gym Leader</option></select>
+        <div hidden><select id="mode"><option value="cursed">Cursed Draft</option><option value="double">Double Cursed</option><option value="safari">Safari Draft</option><option value="blind">Blind Draft</option><option value="mirror">Mirror Draft</option><option value="chaos">Wild Field</option><option value="box">Mystery Box</option><option value="color">Color Draft</option><option value="gym">Gym Leader</option></select>
           <select id="series"><option value="bo1">แมตช์เดียว</option><option value="bo3">Best of 3</option><option value="koth">King of the Hill</option><option value="tour">Tournament</option></select></div>
       </div>
     </div>
@@ -1140,7 +1135,6 @@ function drawTools(){
   for(const c of TOOLS){const d=document.createElement("div"); d.className="ccard"; const h=document.createElement("h3"); const x=LANG==="en"?c.en:c.th; h.textContent=x[0]; const p=document.createElement("p"); p.textContent=x[1]; d.append(h,p); box.appendChild(d);}
 }
 const MODEINFO={
- starter:{n:"Starter Draft",lv:0,s:["ไม่ต้องทาย การ์ดน้อย คำสั่งเดียว","No guessing, fewer cards, 1 command"],d:["ไม่ต้องทาย Future Sight มีคำสั่งเดียว การ์ดมีแค่ Roar กับ Trick เหมาะสอนเพื่อนเล่นครั้งแรก","No Future Sight, 1 command, only Roar and Trick. Made for teaching a friend."]},
  cursed:{n:"Cursed Draft",lv:0,s:["สุ่มทีม 6 ช่อง แล้วสาปกันด้วยการ์ด","Draw 6 slots, then curse each other"],d:["สุ่มทีม 6 ช่อง แล้วสาปกันด้วยการ์ด 2 คำสั่ง โหมดหลักของเกม","Draw 6 slots, then curse each other over 2 commands. The main mode."]},
  safari:{n:"Safari Draft",lv:1,s:["ไม่สุ่ม ผลัดกันหยิบธาตุจากทุ่ง","No draw: take turns picking types"],d:["ไม่สุ่ม! ผลัดกันหยิบธาตุจากทุ่ง 14 ธาตุ ธาตุที่เหลือเป็น Knock Off","No draw! Take turns picking from 14 types. A leftover becomes Knock Off."]},
  blind:{n:"Blind Draft",lv:1,s:["ทีมมีช่องถูกซ่อน ต้องเล็งแบบเดาดวง","Hidden slots: aim blind"],d:["ทุกทีมมี 2 ช่องถูกซ่อน เล็งแบบเดาดวง เปิดเผยตอนจบคำสั่ง","2 slots per team stay hidden. Aim blind; all revealed at the end."]},
@@ -1153,7 +1147,6 @@ const MODEINFO={
  color:{n:"Color Draft",lv:1,s:["สุ่มสี ทั้งทีมต้องเป็นโปเกมอนสีนั้น","Draw a color; the whole team must match"],d:["ไม่สุ่มธาตุ สุ่มสีให้แต่ละฝ่าย ทั้งทีมต้องเป็นโปเกมอนสีนั้น แล้วสาปกันด้วยการ์ดสี","No types: each side draws a Pokédex color; the whole team must be that color."]},
  double:{n:"Double Cursed",lv:2,s:["จบแล้วทุกช่องโดนยัดไอเทม ห้ามเปลี่ยน","Every slot ends up with a forced item"],d:["สาปซ้อน: จบคำสั่งแล้วทุกช่องถูกยัดไอเทม + Mega Stone ห้ามเปลี่ยน","Every slot is forced to hold an item, plus a Mega Stone. No swaps."]}};
 const HARDINFO={
- starter:["Starter Draft ไม่มีกติกาโหดเฉพาะโหมด","Starter Draft has no mode-specific hard rule"],
  cursed:["Curse Stack: Knock Off ของรอบก่อนติดค้างต่อ สะสมได้สูงสุด 3 ธาตุ","Curse Stack: past Knock Off types carry over, up to 3 at once"],
  double:["ไอเทมต้องสาป: แต่ละทีมโดนยัดไอเทมไร้ประโยชน์ 2 ช่อง เช่น Iron Ball","Cursed items: 2 slots per team get dead-weight items such as Iron Ball"],
  safari:["โปเกมอนหนี: หยิบแล้วมีโอกาส 15% ที่ธาตุนั้นหนีไป เสียตานั้นไปต่อท้ายคิว","Runaways: each pick has a 15% chance to flee, and that turn goes to the back of the line"],
@@ -1165,7 +1158,7 @@ const HARDINFO={
  gym:["ผู้ท้าชิงทายผิด หัวหน้ายิมได้การ์ดเพิ่มอีก 1 ใบ","A wrong guess gives the Gym Leader 1 more card"]};
 // The mode picker: one list from easiest to hardest. Tap a row to pick it (it opens its full description);
 // series and hard rules live in a folded "more options" section so a first-timer only has to pick and press start.
-const MODEORDER=["starter","cursed","mirror","safari","gym","box","color","blind","chaos","double"];
+const MODEORDER=["cursed","mirror","safari","gym","box","color","blind","chaos","double"];
 const DIFF=[["ง่าย","Easy"],["กลาง","Medium"],["ยาก","Hard"]];
 const SERNAME={bo1:["แมตช์เดียว","Single match"],bo3:["Best of 3","Best of 3"],koth:["👑 King of the Hill","👑 King of the Hill"],tour:["🏆 ทัวร์นาเมนต์","🏆 Tournament"]};
 function renderModes(){
@@ -1176,7 +1169,7 @@ function renderModes(){
   MODEORDER.forEach(k=>{
     const m=MODEINFO[k], sel=H.mode===k, b=document.createElement("button"); b.type="button"; b.className="moderow m-"+k+(sel?" sel":""); b.disabled=!can;
     b.setAttribute("aria-pressed",sel?"true":"false");
-    b.innerHTML='<i class="mball"></i><span class="mtx"><b>'+m.n+(k==="starter"?' <small class="mrec">⭐ '+L("แนะนำครั้งแรก","First time? Start here")+'</small>':"")+'</b>'
+    b.innerHTML='<i class="mball"></i><span class="mtx"><b>'+m.n+(k==="cursed"?' <small class="mrec">⭐ '+L("แนะนำครั้งแรก","First time? Start here")+'</small>':"")+'</b>'
       +(sel?'<span class="mfull">'+L(m.d[0],m.d[1])+'</span>':'<span>'+L(m.s[0],m.s[1])+'</span>')+'</span><em class="mdiff d'+m.lv+'">'+L(DIFF[m.lv][0],DIFF[m.lv][1])+'</em>';
     b.addEventListener("click",()=>{setMode(k); renderModes(); sfx("select");}); g.appendChild(b);
   });
@@ -1274,7 +1267,7 @@ const RULES={
   ["สุ่มทีม","แต่ละฝ่ายได้ธาตุ 6 ช่องจาก 18 ธาตุ ซ้ำกันได้ ธาตุเดียวกันออกได้สูงสุด 6 ช่อง จำนวนธาตุของทีมสุ่มตามเรทที่กำหนด (ดูใน Future Sight) 1 ช่องคือโปเกมอน 1 ตัวที่มีธาตุนั้น"],
   ["Knock Off","สุ่ม 1 ธาตุกลางต่อรอบ ช่องที่เป็นธาตุนั้นห้ามถือไอเทม"],
   ["Gym Leader (หัวหน้ายิม)","ได้ธาตุเดียวกัน 4 ช่องขึ้นไปเมื่อไร ต้องรับเข็มกลัดทันที ทั้งทีมกลายเป็นธาตุนั้น ไม่ติด Knock Off ไม่รับ Present และอีกฝ่ายใช้ Roar ไม่ได้"],
-  ["ไพ่คำสาป (Curse Hand)","หลังสุ่ม แต่ละฝ่ายจั่วการ์ด 4 ใบ (Starter Draft 3 ใบ) จากกอง 17 ใบ: Roar ×2, Trick ×2, Present ×2, Mirror Coat, Substitute, Conversion, Copycat, Rain Dance, Sandstorm, Entrainment, Doom Desire, Destiny Bond, Swagger, Role Play บวกการ์ด Terastal ที่ได้ (สูงสุด 2 ใบ) ไพ่ในมือคว่ำไว้ อีกฝ่ายมองไม่เห็น"],
+  ["ไพ่คำสาป (Curse Hand)","หลังสุ่ม แต่ละฝ่ายจั่วการ์ด 4 ใบ จากกอง 17 ใบ: Roar ×2, Trick ×2, Present ×2, Mirror Coat, Substitute, Conversion, Copycat, Rain Dance, Sandstorm, Entrainment, Doom Desire, Destiny Bond, Swagger, Role Play บวกการ์ด Terastal ที่ได้ (สูงสุด 2 ใบ) ไพ่ในมือคว่ำไว้ อีกฝ่ายมองไม่เห็น"],
   ["เฟสสั่งการ","มี 2 คำสั่ง ทุกคำสั่งทั้งสองฝ่ายเลือกแบบลับทีละคน (อีกฝ่ายหันหน้าหนี): Protect 1 ช่อง + การ์ด 1 ใบ (หรือไม่ใช้) + เป้าหมาย แล้วเปิดพร้อมกัน การ์ดฝั่งตัวเอง (Substitute, Conversion, Mirror Coat) ทำงานก่อน ตามด้วยการ์ดเล็งศัตรู ฝ่ายที่มีธาตุน้อยกว่าทำงานก่อน"],
   ["Protect (ป้องกัน)","เลือกใหม่ทุกคำสั่ง ป้องกันได้ 1 ช่องเท่านั้น การ์ดที่เล็งช่องนั้น (Trick, Terastal) จะล้มเหลว การ์ดที่เล็งธาตุ (Roar, Present) จะไม่โดนช่องที่ Protect แต่ช่องอื่นที่เป็นธาตุเดียวกันยังโดน อ่านใจให้ถูก"],
   ["Roar (คำราม)","เลือกธาตุของอีกฝ่าย ทุกช่องที่เป็นธาตุนั้นถูกไล่ออกแล้วสุ่มใหม่ ไม่ออกธาตุเดิม"],
@@ -1299,7 +1292,6 @@ const RULES={
   ["Color Draft","ไม่สุ่มธาตุ แต่ละฝ่ายสุ่มได้ 1 สีจาก 10 สีของโปเกเด็กซ์ (แดง น้ำเงิน เหลือง เขียว ดำ น้ำตาล ม่วง เทา ขาว ชมพู) ทั้งทีมต้องเป็นโปเกมอนสีนั้น จากนั้นสั่งการลับ 1 ครั้ง: ป้องกันสี · สุ่มสีอีกฝ่ายใหม่ · สลับสีกัน · สุ่มสีตัวเองใหม่"],
   ["🏆 Tournament","เลือกในช่องซีรีส์ ใส่ชื่อ 4 หรือ 8 คน ระบบสุ่มจับคู่แบบแพ้คัดออก บันทึกผลแต่ละแมตช์แล้วระบบเติมชื่อคู่ถัดไปให้ แตะแถบซีรีส์เพื่อดูสาย"],
   ["Mirror Draft","สองฝ่ายเริ่มด้วยทีมเหมือนกันทุกช่อง แล้วสาปกันจนต่าง สนามแสดงว่าทีมต่างกันกี่ช่อง ถ้าจบคำสั่งแล้วยังเหมือนกันเป๊ะ รอบหน้าทั้งคู่ได้ Terastal +1 (Mirror Bonus)"],
-  ["Starter Draft","โหมดมือใหม่: ไม่ต้องทาย Future Sight มีคำสั่งเดียว การ์ดมีแค่ Roar กับ Trick ไม่มี Terastal"],
   ["Knock Off ล่วงหน้า","ทุกโหมดยกเว้น Safari จะเห็น Knock Off ของรอบตั้งแต่ก่อนทาย Future Sight"],
   ["ตลาดแลกของ (Double Cursed)","หลังสุ่มไอเทม แต่ละฝ่ายเสนอแลกไอเทมได้ 1 ครั้ง อีกฝ่ายรับหรือปฏิเสธ Mega Stone แลกไม่ได้ ดูคำอธิบายไอเทมได้ใต้ทีม"],
   ["Rock / Bait (Safari Draft)","ใช้ได้อย่างละ 1 ครั้งต่อรอบ ไม่เสียตา Rock ไล่ธาตุ 1 ช่องในทุ่ง (มีธาตุใหม่มาแทน) Bait จองธาตุ 1 ช่องไว้ อีกฝ่ายหยิบไม่ได้ ปุ่มธาตุบอกด้วยว่าถ้าหยิบแล้วทีมจะมีจุดอ่อนอะไรเพิ่ม"],
@@ -1321,7 +1313,7 @@ const RULES={
   ["The draw","Each side gets 6 slots drawn from the 18 types. Repeats are allowed, up to all 6 slots of the same type. How many types a team gets follows set odds (see Future Sight). One slot is one Pokémon that has that type."],
   ["Knock Off","One type is drawn for the round. Slots of that type can't hold an item."],
   ["Gym Leader","Get 4 or more slots of the same type and the badge is yours, no refusals. The whole team becomes that type, ignores Knock Off, refuses Present, and can't be roared at."],
-  ["Curse Hand","After the draw each side draws 4 cards (3 in Starter Draft) from a 17-card deck: Roar ×2, Trick ×2, Present ×2, Mirror Coat, Substitute, Conversion, Copycat, Rain Dance, Sandstorm, Entrainment, Doom Desire, Destiny Bond, Swagger and Role Play, plus any Terastal cards earned (up to 2). Hands stay face-down."],
+  ["Curse Hand","After the draw each side draws 4 cards from a 17-card deck: Roar ×2, Trick ×2, Present ×2, Mirror Coat, Substitute, Conversion, Copycat, Rain Dance, Sandstorm, Entrainment, Doom Desire, Destiny Bond, Swagger and Role Play, plus any Terastal cards earned (up to 2). Hands stay face-down."],
   ["Commands","There are 2 commands. In each, both sides choose in secret one at a time (the other looks away): Protect 1 slot + 1 card (or none) + its target. Then everything is revealed at once. Own-side cards (Substitute, Conversion, Mirror Coat) resolve first, then enemy-target cards; the side with fewer types goes first."],
   ["Protect","Chosen again every command, and it guards 1 slot only. A card aimed at that slot (Trick, Terastal) fails. A card aimed at a type (Roar, Present) skips the protected slot, but other slots of that type are still hit. Read your opponent."],
   ["Roar","Pick one of the opponent's types: every slot of that type is redrawn, never as the same type."],
@@ -1346,7 +1338,6 @@ const RULES={
   ["Color Draft","No types: each side draws 1 of the 10 Pokédex colors (red, blue, yellow, green, black, brown, purple, gray, white, pink) and the whole team must be that color. Then one secret command: guard · reroll theirs · swap · reroll yours."],
   ["🏆 Tournament","Pick it under Series. Enter 4 or 8 names for a random knockout bracket; record each match and the next pairing fills in. Tap the series bar to see the bracket."],
   ["Mirror Draft","Both sides start with the exact same team, then curse it apart. The field shows how many slots differ; still identical after the commands means +1 Terastal each next round (Mirror Bonus)."],
-  ["Starter Draft","Beginner mode: no Future Sight, 1 command, only Roar and Trick, no Terastal."],
   ["Knock Off preview","In every mode except Safari, the round's Knock Off is shown before Future Sight."],
   ["Trade market (Double Cursed)","After items are drawn, each side may offer one item swap; the other side accepts or declines. Mega Stones can't be traded. Item effects are listed under each team."],
   ["Rock / Bait (Safari Draft)","Once each per round, free: Rock drives one type off the field (a new one wanders in); Bait reserves one type the other side can't take. Each type button shows the weaknesses it would add to your team."],
@@ -1770,7 +1761,7 @@ function rollItems(auto){
   S.flash=(auto&&S.flash?S.flash+" ":"")+L("สุ่มไอเทมแล้ว! ต้องใช้ตามนี้ แลกได้แค่ที่ตลาดแลกของ","Items drawn! Use exactly these; the only way to swap is the trade market.");
   render(); P.forEach(p=>els[p].forEach(bump)); sfx("items");
 }
-const MODES={starter:"STARTER DRAFT",cursed:"CURSED DRAFT",double:"DOUBLE CURSED",safari:"SAFARI DRAFT",blind:"BLIND DRAFT",mirror:"MIRROR DRAFT",chaos:"WILD FIELD",box:"MYSTERY BOX",color:"COLOR DRAFT",gym:"GYM LEADER"};
+const MODES={cursed:"CURSED DRAFT",double:"DOUBLE CURSED",safari:"SAFARI DRAFT",blind:"BLIND DRAFT",mirror:"MIRROR DRAFT",chaos:"WILD FIELD",box:"MYSTERY BOX",color:"COLOR DRAFT",gym:"GYM LEADER"};
 function setMode(v){
   if(v==="cal") v="double";
   H.mode=MODES[v]?v:"cursed"; store();
@@ -1893,6 +1884,7 @@ const BARE=()=>hasF("bare");
 // Set odds for how many different types a team ends up with (1..6). Also the chance each Future Sight guess comes true.
 const TYPE_ODDS=[1,5,15,30,32,17];
 const FS_ODDS=TYPE_ODDS.map(x=>x+"%");
+// Starter Draft was removed from the mode list (a saved "starter" mode loads as Cursed Draft); STARTER() stays so its old branches read false.
 const STARTER=()=>H.mode==="starter", HARD=()=>!!H.hard;
 const BUILD=()=>H.mode==="buildup", LUCK=()=>H.mode==="luck", BOX=()=>H.mode==="box", COLOR=()=>H.mode==="color", GYM=()=>H.mode==="gym";
 const NOFS=()=>STARTER()||SAFARI()||BUILD()||LUCK()||BOX()||COLOR()||GYM();
