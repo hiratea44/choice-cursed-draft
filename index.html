@@ -466,8 +466,10 @@ body.mode-blind .steps .st.cur{background:#ffcf9a}
 .moderow .mtx>span{color:var(--muted)}
 .moderow .mfull{color:var(--ink)!important}
 .mrec{font-family:var(--body);font-weight:700;font-size:11.5px;padding:1px 7px;border-radius:99px;background:var(--yellow);border:2px solid var(--ink);white-space:nowrap;vertical-align:2px}
-.mdiff{flex:none;align-self:flex-start;font-style:normal;font-family:var(--display);font-size:12.5px;padding:1px 9px;border-radius:99px;border:2px solid var(--ink)}
-.mdiff.d0{background:#c9f0d4}.mdiff.d1{background:#ffe9a8}.mdiff.d2{background:#ffc4c4}
+/* Difficulty as 1–3 Poké Balls: filled ones count, empty ones are faded outlines */
+.mdiff{flex:none;align-self:flex-start;display:flex;gap:3px;font-style:normal;padding-top:3px}
+.dball{width:15px;height:15px;border-radius:50%;border:2px solid var(--ink);box-sizing:border-box;background:linear-gradient(180deg,transparent 0 42%,var(--ink) 42% 58%,transparent 58%);opacity:.22;position:relative}
+.dball.on{opacity:1;background:radial-gradient(circle at 50% 50%,#fff 0 18%,var(--ink) 18% 30%,transparent 31%),linear-gradient(180deg,#e3342f 0 42%,var(--ink) 42% 58%,#fff 58%)}
 .moderow.sel{background:#fff6cf;outline:4px solid var(--yellow);outline-offset:-1px}
 .moderow:disabled{opacity:.5;cursor:not-allowed}
 .modemore{width:100%;border:3px solid var(--ink);border-radius:12px;background:#fff;text-align:left}
@@ -1170,7 +1172,8 @@ function renderModes(){
     const m=MODEINFO[k], sel=H.mode===k, b=document.createElement("button"); b.type="button"; b.className="moderow m-"+k+(sel?" sel":""); b.disabled=!can;
     b.setAttribute("aria-pressed",sel?"true":"false");
     b.innerHTML='<i class="mball"></i><span class="mtx"><b>'+m.n+(k==="cursed"?' <small class="mrec">⭐ '+L("แนะนำครั้งแรก","First time? Start here")+'</small>':"")+'</b>'
-      +(sel?'<span class="mfull">'+L(m.d[0],m.d[1])+'</span>':'<span>'+L(m.s[0],m.s[1])+'</span>')+'</span><em class="mdiff d'+m.lv+'">'+L(DIFF[m.lv][0],DIFF[m.lv][1])+'</em>';
+      +(sel?'<span class="mfull">'+L(m.d[0],m.d[1])+'</span>':'<span>'+L(m.s[0],m.s[1])+'</span>')+'</span><em class="mdiff" title="'+L("ระดับ: ","Difficulty: ")+L(DIFF[m.lv][0],DIFF[m.lv][1])+'">'
+      +[0,1,2].map(j=>'<i class="dball'+(j<=m.lv?" on":"")+'"></i>').join("")+'<span class="sr">'+L("ระดับ ","Difficulty ")+L(DIFF[m.lv][0],DIFF[m.lv][1])+'</span></em>';
     b.addEventListener("click",()=>{setMode(k); renderModes(); sfx("select");}); g.appendChild(b);
   });
   $("serL").textContent=L("ซีรีส์","Series");
