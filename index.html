@@ -129,6 +129,7 @@ body.mode-gym{background:#1f150b radial-gradient(#3b2914 1.2px,transparent 1.6px
 body.mode-gym .ball-top{background:linear-gradient(90deg,transparent 0 46%,#ffd36b 46% 54%,transparent 54%),linear-gradient(180deg,#f59a4b,#e8833a 55%,#a9521b)}
 body.mode-gym h1 em{color:#ffd36b}
 body.mode-gym .steps .st.cur{background:#ffcf9a}
+.gymbtns{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .gymtx{margin:4px 0 8px;font-size:15px;text-align:center}
 .gymopts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%}
 .gymopt{display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 6px;border:3px solid var(--ink);border-radius:14px;box-shadow:0 4px 0 var(--ink);font:inherit;font-weight:700;font-size:16px;cursor:pointer}
@@ -874,6 +875,7 @@ body.playing #roll{width:84px;height:84px;border-width:8px;font-size:15px}
     <div id="modeGrid" class="modelist"></div>
     <details class="modemore" id="modeMore"><summary><b id="modeMoreL">⚙ ตัวเลือกเพิ่มเติม</b><span id="modeMoreV"></span></summary>
       <div class="serrow"><b id="serL">ซีรีส์</b><div id="serBtns"></div></div>
+      <div class="serrow gymrow" id="gymRow" hidden><b>🏟 Gym Leader</b><div><div id="gymBtns" class="gymbtns"></div><p id="gymNote" class="hardnote"></p></div></div>
       <div class="serrow hardrow"><b id="hardL">💀</b><div><button id="hardTog" class="btn" type="button"></button><p id="hardNote" class="hardnote"></p></div></div>
     </details>
     <div class="modefoot"><button id="modeGo" class="btn" type="button">เริ่มเลย ✓</button></div>
@@ -1181,12 +1183,18 @@ function renderModes(){
   ["bo1","bo3","koth","tour"].forEach(v=>{
     const b=document.createElement("button"); b.type="button"; b.className="btn"+(H.series===v?" on":""); b.textContent=L(SERNAME[v][0],SERNAME[v][1]); b.disabled=!can;
     b.addEventListener("click",()=>{setSeries(v); renderModes(); sfx("select"); if(v==="tour"&&(!H.tour||H.tour.champ)) openTour2(true);}); sb.appendChild(b);});
+  const gr=$("gymRow"); gr.hidden=H.mode!=="gym";
+  if(H.mode==="gym"){const gb=$("gymBtns"); gb.textContent="";
+    [["rotate","🔄 Gym Rotation"],["defend","🛡 Gym Defense"]].forEach(([v,nm])=>{const b=document.createElement("button"); b.type="button"; b.className="btn"+(gymRule()===v?" on":""); b.textContent=nm; b.disabled=!can;
+      b.addEventListener("click",()=>{if(gymRule()!==v){H.gymRule=v; H.gymChamp=null; H.gymStreak=0; store(); render();} renderModes(); sfx("select");}); gb.appendChild(b);});
+    $("gymNote").textContent=gymRule()==="defend"?L("หัวหน้ายิมคุมยิมต่อจนกว่าจะแพ้ ผู้ท้าชิงที่ชนะจะขึ้นเป็นหัวหน้ายิมแทน","The Gym Leader keeps the gym until they lose; a winning Challenger takes over")
+      :L("สลับกันเป็นหัวหน้ายิมทุกรอบ","Take turns being the Gym Leader every round");}
   $("hardL").textContent=L("💀 กติกาโหด","💀 Hard rules");
   const ht=$("hardTog"); ht.textContent=H.hard?L("เปิดอยู่","On"):L("ปิดอยู่","Off"); ht.classList.toggle("on",!!H.hard); ht.disabled=!can;
   ht.onclick=()=>{H.hard=!H.hard; store(); setMode(H.mode); renderModes(); sfx(H.hard?"toggleOn":"toggleOff");};
   $("hardNote").textContent=L(HARDINFO[H.mode][0],HARDINFO[H.mode][1])+L(" · ทุกโหมด: Last Stand (แพ้ 2 รอบติดได้ Perish Song) และภาษีแชมป์ King of the Hill (จั่วน้อยลง 1 ใบ)"," · All modes: Last Stand (2 losses in a row earn Perish Song) and the King of the Hill champion's tax (1 card fewer)");
   $("modeMoreL").textContent=L("⚙ ตัวเลือกเพิ่มเติม","⚙ More options");
-  $("modeMoreV").textContent=L(SERNAME[H.series][0],SERNAME[H.series][1])+" · "+(H.hard?L("💀 กติกาโหด","💀 Hard rules"):L("กติกาปกติ","Normal rules"));
+  $("modeMoreV").textContent=L(SERNAME[H.series][0],SERNAME[H.series][1])+" · "+(H.mode==="gym"?(gymRule()==="defend"?"🛡 Gym Defense":"🔄 Gym Rotation")+" · ":"")+(H.hard?L("💀 กติกาโหด","💀 Hard rules"):L("กติกาปกติ","Normal rules"));
   $("modeGo").textContent=L("เริ่ม ","Start ")+MODEINFO[H.mode].n+" ✓";
 }
 /* ---------- First-time tour ---------- */
@@ -1598,12 +1606,22 @@ function renderTour2(){
   }
   $("t2Close").textContent=L("ปิด","Close");
 }
+// Gym Defense: a leader win adds to the streak; a Challenger win hands them the gym. Undoing or changing the winner restores the old streak.
+function gymResult(p){
+  const g=S.gym; if(!GYM()||!g||!g.rev||gymRule()!=="defend") return "";
+  if(S.gymPrev) Object.assign(H,JSON.parse(S.gymPrev)); else S.gymPrev=JSON.stringify({gymChamp:H.gymChamp,gymStreak:H.gymStreak||0});
+  if(p===g.L){H.gymChamp=g.L; H.gymStreak=(H.gymStreak||0)+1;} else {H.gymChamp=g.C; H.gymStreak=0;}
+  store(); render();
+  return p===g.L?L("🛡 "+pname(g.L)+" ป้องกันยิมสำเร็จ "+H.gymStreak+" ครั้งติด! รอบหน้ายังคุมยิมต่อ","🛡 "+pname(g.L)+" defended the gym "+H.gymStreak+" time"+(H.gymStreak>1?"s":"")+" in a row! They keep the gym next round")
+    :L("🏅 "+pname(g.C)+" โค่นหัวหน้ายิมได้! รอบหน้าได้เป็นหัวหน้ายิมแทน","🏅 "+pname(g.C)+" beat the Gym Leader! They take over the gym next round");
+}
 function setWinner(p){
   if(S.phase!=="done"||S.winner===p) return;
   if(S.winner){H.score[S.winner]=Math.max(0,H.score[S.winner]-1); if(H.series==="bo3") H.ser[S.winner]=Math.max(0,H.ser[S.winner]-1);}
   S.winner=p; H.score[p]++; winPop(p);
   if(H.series==="bo3"){H.ser[p]++; H.ser.last=other(p); H.ser.champ=H.ser[p]>=2?p:null;}
   archive(); store(); render(); sfx("win");
+  const gymMsg=gymResult(p);
   if(H.series==="tour"&&H.tour&&(!H.tour.champ||S.tourPrev)){
     if(S.tourPrev) H.tour=JSON.parse(S.tourPrev); else S.tourPrev=JSON.stringify(H.tour);
     const t=H.tour, mt=t.rounds[t.r][t.m], w=p==="A"?mt.a:mt.b; mt.w=w; t.m++;
@@ -1623,11 +1641,13 @@ function setWinner(p){
     setDialog(L("👑 "+w+" ครองบัลลังก์! ชนะติดต่อกัน "+H.koth.streak+" รอบ · ผู้ท้าชิงคนต่อไป ใส่ชื่อแทน "+pname(lo)+" แล้วกดรอบต่อไป","👑 "+w+" holds the throne! "+H.koth.streak+" in a row · Next challenger: replace "+pname(lo)+"'s name, then press Next round.")); return;}
   if(H.series==="bo3"&&H.ser.champ){setDialog(L(pname(p)+" ชนะซีรีส์ Best of 3 ไปด้วยคะแนน "+H.ser[p]+" – "+H.ser[other(p)]+"! สุ่มใหม่เพื่อเริ่มซีรีส์ต่อไป",pname(p)+" wins the Best of 3 series "+H.ser[p]+"–"+H.ser[other(p)]+"! Redraw to start a new series.")); return;}
   if(H.series==="bo3"){setDialog(L(pname(p)+" ชนะรอบนี้! ซีรีส์ "+H.ser.A+" – "+H.ser.B+" · รอบหน้า "+pname(other(p))+" เป็น UNDERDOG ได้ไพ่เพิ่ม 1 ใบและ Terastal +1",pname(p)+" wins this round! Series "+H.ser.A+"–"+H.ser.B+" · Next round "+pname(other(p))+" is the UNDERDOG: +1 card and +1 Terastal.")); return;}
+  if(gymMsg) return setDialog(gymMsg);
   setDialog(L(pname(p)+" ชนะแบทเทิลรอบที่ "+S.round+"! คะแนนตอนนี้ ",pname(p)+" won the round "+S.round+" battle! Score: ")+pname("A")+" "+H.score.A+" : "+H.score.B+" "+pname("B"));
 }
 function undo(){
   if(!U||S.phase==="rolling") return;
   if(S.winner&&U.S.winner!==S.winner&&H.series==="koth"&&S.kothPrev){H.koth=JSON.parse(S.kothPrev);}
+  if(S.winner&&U.S.winner!==S.winner&&S.gymPrev) Object.assign(H,JSON.parse(S.gymPrev));
   if(S.winner&&U.S.winner!==S.winner){H.score[S.winner]=Math.max(0,H.score[S.winner]-1); if(H.series==="bo3"){H.ser[S.winner]=Math.max(0,H.ser[S.winner]-1); H.ser.champ=null; H.ser.last=null;}}
   stopTimer(); S=U.S; S.draft=null; if(S.phase==="cmd"&&!S.picker) S.picker=order()[0];
   for(const p of P){$("log"+p).textContent=U.log[p]; say(p,U.say[p]);}
@@ -2037,7 +2057,8 @@ function render(){
   fl.hidden=!fli.length; fl.innerHTML=fli.join("");
   $("serLine").hidden=H.series==="bo1";
   if(H.series==="tour"){const t=H.tour; $("serLine").textContent=!t?L("🏆 ทัวร์นาเมนต์ · แตะเพื่อตั้งค่า","🏆 TOURNAMENT · tap to set up"):t.champ?"🏆 "+L("แชมป์: ","CHAMPION: ")+t.champ+L(" · แตะเพื่อเริ่มใหม่"," · tap to restart"):"🏆 "+tourRoundName(t)+" · "+L("คู่ ","Match ")+(t.m+1)+"/"+t.rounds[t.r].length+": "+t.rounds[t.r][t.m].a+" vs "+t.rounds[t.r][t.m].b;}
-  if(H.series!=="tour") $("serLine").textContent=H.series==="koth"?"👑 KING OF THE HILL · "+(H.koth.champ?H.koth.champ+L(" ชนะติด "," streak ")+H.koth.streak:L("ยังไม่มีแชมป์","no champion yet"))+(H.koth.best.n?L(" · สถิติ: "," · record: ")+H.koth.best.name+" "+H.koth.best.n:"")
+  if(GYM()&&gymRule()==="defend"&&H.series!=="tour") $("serLine").textContent="🛡 GYM DEFENSE · "+(P.includes(H.gymChamp)?L("หัวหน้ายิม: ","Gym Leader: ")+pname(H.gymChamp)+(H.gymStreak?L(" · ป้องกันสำเร็จ "+H.gymStreak+" ครั้งติด"," · "+H.gymStreak+" defense"+(H.gymStreak>1?"s":"")+" in a row"):""):L("ยังไม่มีหัวหน้ายิม","no Gym Leader yet"));
+  else if(H.series!=="tour") $("serLine").textContent=H.series==="koth"?"👑 KING OF THE HILL · "+(H.koth.champ?H.koth.champ+L(" ชนะติด "," streak ")+H.koth.streak:L("ยังไม่มีแชมป์","no champion yet"))+(H.koth.best.n?L(" · สถิติ: "," · record: ")+H.koth.best.name+" "+H.koth.best.n:"")
     :"BEST OF 3 · "+H.ser.A+" – "+H.ser.B+(H.ser.champ?L(" · แชมป์: "," · Champion: ")+pname(H.ser.champ):"");
   for(const p of P){
     const o=other(p), mine=d&&d.p===p&&d.step!=="handoff", need=d&&d.ci!=null&&d.ci!=="pass"?CARDS[S.hand[d.p][d.ci]].need:null;
@@ -3526,7 +3547,7 @@ $("resetCancel").addEventListener("click",()=>modal("resetVeil",false));
 $("resetGo").addEventListener("click",()=>{
   modal("resetVeil",false);
   if(S.phase==="rolling"||netBlock("host")) return;
-  stopTimer(); archive(); U=null; S=fresh(0); H.ser={A:0,B:0,last:null,champ:null}; store();
+  stopTimer(); archive(); U=null; S=fresh(0); H.ser={A:0,B:0,last:null,champ:null}; H.gymChamp=null; H.gymStreak=0; H.gymNext=null; store();
   P.forEach(p=>{$("log"+p).textContent=""; say(p,""); $("name"+p).value=L("ผู้เล่น ","Player ")+p; $("bet"+p).value=""; els[p].forEach(el=>el.className="slot")});
   render();
 });
@@ -3639,11 +3660,15 @@ if([1,2,3,5,10].includes(+H.mins)){$("tmin").value=String(H.mins); TEAM_MS=H.min
 function drawTeam(){let r=pick(100), k=0; while(r>=TYPE_ODDS[k]){r-=TYPE_ODDS[k]; k++;} k++;
   const ts=shuffle([...Array(TYPES.length).keys()]).slice(0,k), a=ts.slice(); while(a.length<N) a.push(ts[pick(k)]); return shuffle(a);}
 function gkoAt(p,i){return !!(S.gko&&S.gko[p]&&S.gko[p].includes(i));}
+// Gym Rotation swaps the leader every round; Gym Defense keeps them until a Challenger beats them.
+const gymRule=()=>H.gymRule==="defend"?"defend":"rotate";
 function gymRoll(preKO){
-  const Ld=P.includes(H.gymNext)?H.gymNext:P[pick(2)]; H.gymNext=other(Ld); store();
+  const Ld=gymRule()==="defend"?(P.includes(H.gymChamp)?H.gymChamp:P[pick(2)]):(P.includes(H.gymNext)?H.gymNext:P[pick(2)]);
+  H.gymNext=other(Ld); if(gymRule()==="defend") H.gymChamp=Ld; store();
   S.gym={L:Ld,C:other(Ld),opts:shuffle([...Array(TYPES.length).keys()]).slice(0,3),t:null,guess:null,rev:false,hit:false,fix:0,bonus:0};
   S.curse=preKO!=null?preKO:pick(); S.phase="gymPick"; S.picker=Ld; GSEL=null;
   addLog(Ld,L("🏟 รอบนี้เป็นหัวหน้ายิม","🏟 Gym Leader this round")); addLog(other(Ld),L("🔮 รอบนี้เป็นผู้ท้าชิง","🔮 Challenger this round"));
+  if(gymRule()==="defend"&&H.gymStreak) addLog(Ld,L("🛡 ป้องกันยิมมาแล้ว "+H.gymStreak+" ครั้งติด","🛡 Defended the gym "+H.gymStreak+" time"+(H.gymStreak>1?"s":"")+" in a row"));
   S.flash=L("🏟 "+pname(Ld)+" เป็นหัวหน้ายิม! เลือกธาตุยิมแบบลับ · "+pname(other(Ld))+" หันหน้าหนีก่อน","🏟 "+pname(Ld)+" is the Gym Leader! Pick the gym type in secret · "+pname(other(Ld))+", look away");
   render(); sfx("vs"); if(!NET.on) swipe(Ld);
 }
@@ -3811,7 +3836,7 @@ function netSnap(){
   const s=Object.assign({},S,{draft:null,plan:{A:S.plan.A?{m:1}:null,B:S.plan.B?{m:1}:null}});
   if(S.cplan) s.cplan={A:S.cplan.A?"x":null,B:S.cplan.B?"x":null};
   if(S.gym&&!S.gym.rev) s.gym=Object.assign({},S.gym,{t:null});   // the gym type stays secret until the guess
-  return {S:s,H:{mode:H.mode,hard:!!H.hard,score:H.score,series:H.series,ser:H.ser,koth:H.koth},
+  return {S:s,H:{mode:H.mode,hard:!!H.hard,score:H.score,series:H.series,ser:H.ser,koth:H.koth,gymRule:H.gymRule,gymChamp:H.gymChamp,gymStreak:H.gymStreak},
     names:{A:$("nameA").value,B:$("nameB").value},bets:{A:$("betA").value,B:$("betB").value},
     logs:{A:$("logA").textContent,B:$("logB").textContent},says:{A:$("sayA").hidden?"":$("sayA").textContent,B:$("sayB").hidden?"":$("sayB").textContent},
     dlg:dlg.t,T:{run:!!T.id,over:!!T.over,ms:TEAM_MS},rev:NET.rev,guest:!!NET.guest};
@@ -3861,7 +3886,7 @@ function applySnap(d,asHost){
   if(!d||!d.S) return;
   const old=S, keep=old.draft, k0=old.id+":"+old.cmdN, first=!NET.seen; NET.seen=true;
   if(d.H.mode!==H.mode||!!d.H.hard!==!!H.hard){H.hard=d.H.hard; NET.applying=true; try{setMode(d.H.mode)}finally{NET.applying=false}}
-  Object.assign(H,{score:d.H.score,series:d.H.series,ser:d.H.ser,koth:d.H.koth}); $("series").value=H.series;
+  Object.assign(H,{score:d.H.score,series:d.H.series,ser:d.H.ser,koth:d.H.koth,gymRule:d.H.gymRule,gymChamp:d.H.gymChamp,gymStreak:d.H.gymStreak}); $("series").value=H.series;
   S=d.S; const me=ME();
   if(asHost){ if(S.phase==="cmd") S.plan={A:null,B:null}; if(S.phase==="ccmd") S.cplan={A:null,B:null}; S.draft=null; }
   else{
