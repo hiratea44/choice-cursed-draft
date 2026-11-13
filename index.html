@@ -1408,19 +1408,55 @@ const Q=(list,t)=>list[pick(list.length)].replace(/\{t\}/g,t==null?"":tn(t));
 const ty=t=>L("ธาตุ"+tn(t),tn(t));            // "ธาตุไฟ" / "Fire"
 
 /* ---------- Original badge art, one silhouette per type ---------- */
-const BADGE=[[16,1],[5,.45],[3,.6],[4,.35],[6,.55],[6,.3],[4,.75],[7,.6],[4,.707],[3,.3],[9,.7],[6,.8],[5,.85],[8,.5],[10,.45],[5,.3],[12,.8],[5,.65]];
 function star(k,r,R){
   const s=[];
   for(let i=0;i<k*2;i++){const a=Math.PI*i/k-Math.PI/2, q=i%2?R*r:R; s.push((50+q*Math.cos(a)).toFixed(1)+","+(50+q*Math.sin(a)).toFixed(1));}
   return s.join(" ");
 }
+// Gym badges: an original set for this game. Every badge is a hexagon medal with a polished gold rim,
+// a glossy face in the type's color and a white emblem for the type, so the 18 read as one family.
+function shade(hex,a){ // a>0 mixes toward white, a<0 toward black
+  const n=parseInt(hex.slice(1),16), ch=[n>>16,(n>>8)&255,n&255].map(v=>Math.round(a>0?v+(255-v)*a:v*(1+a)));
+  return "#"+ch.map(v=>v.toString(16).padStart(2,"0")).join("");
+}
+const hexPts=(R,cx=50,cy=50)=>[0,1,2,3,4,5].map(i=>{const a=Math.PI/3*i-Math.PI/2; return (cx+R*Math.cos(a)).toFixed(1)+","+(cy+R*Math.sin(a)).toFixed(1);}).join(" ");
+function gearPath(){let d=""; for(let i=0;i<20;i++){const a=Math.PI*2*i/20-Math.PI/2, r=i%2?16.5:23, a2=a+Math.PI*2/40; d+=(i?"L":"M")+(50+r*Math.cos(a-.12)).toFixed(1)+" "+(51+r*Math.sin(a-.12)).toFixed(1)+"L"+(50+r*Math.cos(a2-.04)).toFixed(1)+" "+(51+r*Math.sin(a2-.04)).toFixed(1);} return d+"Z";}
+// Emblems: drawn on a 100×100 canvas around the centre; fill and stroke come from the group around them.
+const EMBLEM=[
+ /* Normal: plain star */ '<polygon points="'+star(5,.46,23).replace(/([\d.]+),([\d.]+)/g,(m,x,y)=>x+","+(+y+2).toFixed(1))+'" stroke-linejoin="round"/>',
+ /* Fire: three-tongued flame */ '<path d="M50 26C60 37 67 45 66 57C65 68 58 75 50 75C41 75 34 68 35 57C36 49 42 45 43 37C47 41 48 46 47 51C52 47 55 38 50 26Z"/><path d="M50 50C55 56 58 60 57 65C56 70 53 72 50 72C46 72 43 69 44 64C45 60 48 58 50 50Z" fill="#ffd36b" stroke-width="2"/>',
+ /* Water: curling wave */ '<path d="M27 67C30 51 43 39 57 40C67 41 73 48 70 56C68 62 60 63 58 58C56 53 61 50 64 53C63 46 54 45 48 50C42 55 42 62 47 66L73 66L73 72L27 72Z" stroke-linejoin="round"/>',
+ /* Electric: zigzag bolt */ '<polygon points="56,24 34,55 48,55 42,78 67,44 53,44 60,24" stroke-linejoin="round"/>',
+ /* Grass: two crossed leaves */ '<g transform="rotate(-30 50 70)"><path d="M50 72C38 62 37 45 50 28C63 45 62 62 50 72Z"/><path d="M50 68V36" fill="none" stroke-width="2"/></g><g transform="rotate(30 50 70)"><path d="M50 72C38 62 37 45 50 28C63 45 62 62 50 72Z"/><path d="M50 68V36" fill="none" stroke-width="2"/></g>',
+ /* Ice: six-armed snowflake */ '<g fill="none" stroke-linecap="round">'+[0,60,120].map(a=>'<g transform="rotate('+a+' 50 51)"><path d="M50 27V75M44 31L50 37L56 31M44 71L50 65L56 71" stroke-width="9" stroke="#1f2638"/><path d="M50 27V75M44 31L50 37L56 31M44 71L50 65L56 71" stroke-width="4.5" stroke="#fff"/></g>').join("")+'</g>',
+ /* Fighting: impact burst */ '<polygon points="'+star(9,.58,25).replace(/([\d.]+),([\d.]+)/g,(m,x,y)=>x+","+(+y+1).toFixed(1))+'" stroke-linejoin="round"/><circle cx="50" cy="51" r="8" fill="#ffd36b" stroke-width="2"/>',
+ /* Poison: drop with bubbles */ '<path d="M47 27C55 41 62 50 62 59A15 15 0 0 1 32 59C32 50 39 41 47 27Z"/><circle cx="66" cy="34" r="5"/><circle cx="71" cy="46" r="3"/>',
+ /* Ground: three peaks over strata */ '<polygon points="26,60 40,36 48,46 57,29 74,60" stroke-linejoin="round"/><path d="M29 67H71M35 74H65" fill="none" stroke-width="8" stroke-linecap="round" stroke="#1f2638"/><path d="M29 67H71M35 74H65" fill="none" stroke-width="3.5" stroke-linecap="round" stroke="#fff"/>',
+ /* Flying: spread wings */ '<path d="M49 60C42 45 30 37 21 41C27 43 29 46 27 50C33 50 36 52 34 56C39 56 42 58 41 62C44 62 47 62 49 60Z" stroke-linejoin="round"/><path d="M51 60C58 45 70 37 79 41C73 43 71 46 73 50C67 50 64 52 66 56C61 56 58 58 59 62C56 62 53 62 51 60Z" stroke-linejoin="round"/><circle cx="50" cy="61" r="4"/>',
+ /* Psychic: spiral */ '<path d="M50 51a3 3 0 0 1 6 0a7 7 0 0 1-14 0a11 11 0 0 1 22 0a15 15 0 0 1-30 0a19 19 0 0 1 38 0" fill="none" stroke-width="9" stroke="#1f2638" stroke-linecap="round"/><path d="M50 51a3 3 0 0 1 6 0a7 7 0 0 1-14 0a11 11 0 0 1 22 0a15 15 0 0 1-30 0a19 19 0 0 1 38 0" fill="none" stroke-width="4.5" stroke="#fff" stroke-linecap="round"/>',
+ /* Bug: four wings and a body */ '<ellipse cx="38" cy="42" rx="12" ry="8" transform="rotate(-30 38 42)"/><ellipse cx="62" cy="42" rx="12" ry="8" transform="rotate(30 62 42)"/><ellipse cx="40" cy="60" rx="9" ry="6" transform="rotate(25 40 60)"/><ellipse cx="60" cy="60" rx="9" ry="6" transform="rotate(-25 60 60)"/><ellipse cx="50" cy="52" rx="4.5" ry="15"/><path d="M48 37L43 28M52 37L57 28" fill="none" stroke-width="2.5" stroke-linecap="round"/>',
+ /* Rock: faceted crystal */ '<polygon points="50,25 66,40 61,74 39,74 34,40" stroke-linejoin="round"/><path d="M50 25L46 44L39 74M46 44L61 74M46 44L66 40M34 40L46 44" fill="none" stroke-width="2"/>',
+ /* Ghost: spirit flame with eyes */ '<path d="M50 25C56 33 66 39 66 54C66 65 59 73 50 73C42 73 34 67 34 57C34 49 39 45 42 40C43 46 45 49 48 50C47 41 47 33 50 25Z" stroke-linejoin="round"/><ellipse cx="45" cy="59" rx="2.8" ry="4" fill="#1f2638" stroke="none"/><ellipse cx="55" cy="59" rx="2.8" ry="4" fill="#1f2638" stroke="none"/>',
+ /* Dragon: twin fangs */ '<path d="M27 30C37 30 45 33 49 39C47 52 44 63 40 76C36 63 31 47 27 30Z" stroke-linejoin="round"/><path d="M73 30C63 30 55 33 51 39C53 52 56 63 60 76C64 63 69 47 73 30Z" stroke-linejoin="round"/>',
+ /* Dark: crescent moon */ '<path d="M58 27A25 25 0 1 0 58 75A19 19 0 1 1 58 27Z" stroke-linejoin="round"/><polygon points="'+star(4,.4,5).replace(/([\d.]+),([\d.]+)/g,(m,x,y)=>(+x+18).toFixed(1)+","+(+y-12).toFixed(1))+'"/>',
+ /* Steel: gear */ '<path d="'+gearPath()+'" stroke-linejoin="round"/><circle cx="50" cy="51" r="7"/>',
+ /* Fairy: four-point sparkle */ '<path d="M50 25C52 42 58 48 75 51C58 54 52 60 50 77C48 60 42 54 25 51C42 48 48 42 50 25Z" stroke-linejoin="round"/><path d="M70 28C71 33 72 34 77 35C72 36 71 37 70 42C69 37 68 36 63 35C68 34 69 33 70 28Z" stroke-width="1.5"/>'
+];
+let BADGE_N=0;
 function badgeSVG(t){
-  const [k,r]=BADGE[t], c=TYPES[t][2];
+  const c=TYPES[t][2], id="bg"+(++BADGE_N);
   return '<svg viewBox="0 0 100 100" role="img" aria-label="'+L("เข็มกลัดธาตุ"+tn(t),tn(t)+" badge")+'">'
-    +'<polygon points="'+star(k,r,46)+'" fill="'+c+'" stroke="#1f2638" stroke-width="4" stroke-linejoin="round"/>'
-    +'<polygon points="'+star(k,r,30)+'" fill="#fff" fill-opacity=".5"/>'
-    +'<circle cx="50" cy="50" r="13" fill="'+c+'" stroke="#1f2638" stroke-width="3.5"/>'
-    +'<circle cx="45" cy="45" r="4" fill="#fff" fill-opacity=".9"/></svg>';
+    +'<defs><linearGradient id="'+id+'r" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff8d6"/><stop offset=".3" stop-color="#f2c94c"/><stop offset=".55" stop-color="#a87a1e"/><stop offset=".72" stop-color="#ffe9a0"/><stop offset="1" stop-color="#7a5612"/></linearGradient>'
+    +'<radialGradient id="'+id+'f" cx=".38" cy=".32" r=".8"><stop offset="0" stop-color="'+shade(c,.45)+'"/><stop offset=".5" stop-color="'+c+'"/><stop offset="1" stop-color="'+shade(c,-.45)+'"/></radialGradient>'
+    +'<clipPath id="'+id+'c"><polygon points="'+hexPts(36)+'"/></clipPath>'
+    +'<filter id="'+id+'s" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="1.6" dy="2.2" stdDeviation="0" flood-color="#000" flood-opacity=".3"/></filter></defs>'
+    +'<polygon points="'+hexPts(47)+'" fill="url(#'+id+'r)" stroke="#1f2638" stroke-width="3" stroke-linejoin="round"/>'
+    +'<polygon points="'+hexPts(41.5)+'" fill="none" stroke="#fff" stroke-opacity=".55" stroke-width="1.5"/>'
+    +'<polygon points="'+hexPts(36)+'" fill="url(#'+id+'f)" stroke="#1f2638" stroke-width="2.5" stroke-linejoin="round"/>'
+    +'<g clip-path="url(#'+id+'c)"><ellipse cx="34" cy="24" rx="40" ry="17" transform="rotate(-24 34 24)" fill="#fff" fill-opacity=".22"/></g>'
+    +'<g fill="#fff" stroke="#1f2638" stroke-width="2.5" filter="url(#'+id+'s)">'+EMBLEM[t]+'</g>'
+    +'<path d="M78 14C79 19 80 20 85 21C80 22 79 23 78 28C77 23 76 22 71 21C76 20 77 19 78 14Z" fill="#fff" stroke="#1f2638" stroke-width="1.2"/>'
+    +'</svg>';
 }
 
 $("lanes").innerHTML=P.map(p=>`
