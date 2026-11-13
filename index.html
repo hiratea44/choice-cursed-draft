@@ -2499,8 +2499,8 @@ function renderFS(){
     const o=other(p), bl=document.createElement("label"); bl.className="fsban"; bl.textContent=L("🚫 "+pname(p)+" แบนธาตุจากทีม "+pname(o)+": ","🚫 "+pname(p)+" bans a type from "+pname(o)+"'s team: ");
     const sel=document.createElement("select"); sel.innerHTML='<option value="">'+L("ไม่แบน","No ban")+'</option>'+TYPES.map((_,t)=>'<option value="'+t+'">'+tn(t)+'</option>').join("");
     sel.value=BAN[o]==null?"":String(BAN[o]); sel.disabled=off; sel.addEventListener("change",()=>{BAN[o]=sel.value===""?null:+sel.value; if(NET.on&&NET.role==="guest") netAct({t:"ban",v:sel.value});}); bl.appendChild(sel); rows.appendChild(bl);}
-  $("fsGo").disabled=!($("betA").value&&$("betB").value);
-  $("fsGo").textContent=$("fsGo").disabled?L("เลือกให้ครบทั้ง 2 คนก่อน","Both players pick first"):L("🎲 สุ่มทีม","🎲 Draw"); $("fsClose").textContent=L("ปิด","Close");
+  $("fsGo").disabled=!($("betA").value&&$("betB").value)||netNoGuest();
+  $("fsGo").textContent=!$("fsGo").disabled?L("🎲 สุ่มทีม","🎲 Draw"):netWaitText()||L("เลือกให้ครบทั้ง 2 คนก่อน","Both players pick first"); $("fsClose").textContent=L("ปิด","Close");
 }
 
 /* ---------- Team Preview timer, drawn as an HP bar ---------- */
@@ -2868,6 +2868,7 @@ function settle(bets){
   startCmd();
 }
 function roll(){
+  if(NET.on&&NET.role==="host"&&!NET.applying){ const w=netWaitText(); if(w&&(netNoGuest()||!NOFS())){toast(w); if(netNoGuest()) openLobby(); return;} }
   if(S.phase==="rolling"||DRAFTPH.includes(S.phase)) return;
   const bets={A:$("betA").value,B:$("betB").value};
   const missing=NOFS()?[]:P.filter(p=>bets[p]==="");
@@ -3929,9 +3930,19 @@ function wrap(name,own,mk){
 // The sound a guest's own move makes on their device (the host plays the real one when it applies the move).
 const NETSND={roll:"go",safariPick:()=>S.sTool==="rock"?"rock":S.sTool==="bait"?"bait":"grab",boxOpen:"present",boxPick:"boxPlace",
   gymChoose:"seal",gymGuessPick:"seal",gymFixPick:"typePick",gymFixSkip:"back",chosen:"badge",setWinner:"select",timerBtn:"tap",skipToResult:"tap",surrender:"danger"};
+// Online, before a draw: is Trainer B still missing, or has someone not picked Future Sight yet?
+function netNoGuest(){ return NET.on&&NET.role==="host"&&!NET.guest; }
+function netWaitText(){
+  if(!NET.on) return "";
+  if(netNoGuest()) return L("⏳ รอผู้เล่น B เข้าห้อง · ส่งลิงก์ห้องให้เพื่อนก่อน","⏳ Waiting for Trainer B to join · send them the room link");
+  const me=ME(), o=me?other(me):null;
+  if(me&&!$("bet"+me).value) return L("เลือก Future Sight ของคุณก่อน","Pick your Future Sight first");
+  if(o&&!$("bet"+o).value) return L("⏳ รอ "+pname(o)+" เลือก Future Sight","⏳ Waiting for "+pname(o)+" to pick Future Sight");
+  return "";
+}
 function netBlock(w){ if(!NET.on) return false; if(NET.role==="spec"||(w==="host"&&NET.role!=="host")){netNo(NET.role==="spec"?L("ผู้ชมกดไม่ได้ 👀","Spectators can only watch 👀"):L("เฉพาะเจ้าของห้องเท่านั้น","Only the room host can do that")); return true;} return false; }
 const dkey=()=>S.id+":"+S.cmdN;
-wrap("roll","any",()=>{ if(!NOFS()&&P.some(p=>$("bet"+p).value==="")){ORIG.roll(); return false;} return {t:"roll"}; });
+wrap("roll","any",()=>{ const w=netWaitText(); if(w&&(netNoGuest()||!NOFS())){toast(w); if(netNoGuest()) openLobby(); return false;} return {t:"roll"}; });
 wrap("openFS","any");
 wrap("safariPick",()=>S.sOrder[S.spick],k=>({t:"safariPick",a:[k],tool:S.sTool}));
 wrap("boxOpen",()=>S.bturn,k=>({t:"boxOpen",a:[k]}));
@@ -3958,9 +3969,10 @@ const NETOWN={gymChoose:()=>S.gym&&S.gym.L,gymGuessPick:()=>S.gym&&S.gym.C,gymFi
 // Host: apply one action from the guest.
 function applyAct(a){
   if(!a||!a.t) return;
-  if(a.t==="hello"){NET.guest=true; toast(L("🎉 ผู้เล่น B เข้าห้องแล้ว!","🎉 Trainer B joined!")); sfx("badge"); renderLobby(); netDirty(); return;}
+  if(a.t==="hello"){NET.guest=true; toast(L("🎉 ผู้เล่น B เข้าห้องแล้ว!","🎉 Trainer B joined!")); sfx("badge"); renderLobby(); if(!$("fsVeil").hidden) renderFS(); render(); return;}
   if(a.t==="name"){$("nameB").value=String(a.v||"").slice(0,24); if(!$("fsVeil").hidden&&!document.activeElement.classList.contains("fsname")) renderFS(); render(); return;}
-  if(a.t==="bet"){const v=String(a.v||""); if(!["","1","2","3","4","5","6"].includes(v)) return; $("betB").value=v; if(!$("fsVeil").hidden&&!document.activeElement.classList.contains("fsname")) renderFS(); render(); return;}
+  if(a.t==="bet"){const v=String(a.v||""); if(!["","1","2","3","4","5","6"].includes(v)) return; const had=$("betB").value; $("betB").value=v;
+    if(v&&!had&&!$("betA").value&&!NOFS()) toast(L(pname("B")+" เลือก Future Sight แล้ว · รอคุณอยู่!",pname("B")+" picked Future Sight · your turn!")); if(!$("fsVeil").hidden&&!document.activeElement.classList.contains("fsname")) renderFS(); render(); return;}
   if(a.t==="av"){const v=+a.v; if(v>=0&&v<AVATARS.length){H.av=Object.assign({A:avOf("A"),B:avOf("B")},H.av); H.av.B=v; store(); renderAv(); netDirty();} return;}
   if(a.t==="ban"){BAN.A=a.v==null||a.v===""?null:+a.v; netDirty(); return;}
   if(a.t==="plan"){
@@ -4049,7 +4061,7 @@ function applySnap(d,asHost){
     NET.guest=d.guest;
   }
   const typing=document.activeElement&&(document.activeElement.id==="name"+me||document.activeElement.classList.contains("fsname"));
-  const betsWas=$("betA").value+$("betB").value;
+  const betsWas=$("betA").value+$("betB").value, oWas=me?$("bet"+other(me)).value:"";
   for(const p of P){
     const mine=p===me&&!asHost;
     if(!(mine&&(typing||Date.now()-(NET.pendName||0)<5000))) $("name"+p).value=d.names[p];
@@ -4068,6 +4080,7 @@ function applySnap(d,asHost){
   if(asHost) NET.rev=d.rev;
   render(); if(S.phase==="done"&&d.dlg) setDialog(d.dlg);
   if(!$("fsVeil").hidden&&!typing&&betsWas!==$("betA").value+$("betB").value) renderFS();
+  if(!first&&me&&!oWas&&$("bet"+other(me)).value&&!$("bet"+me).value&&!NOFS()&&(S.phase==="idle"||S.phase==="done")) toast(L(pname(other(me))+" เลือก Future Sight แล้ว · รอคุณอยู่!",pname(other(me))+" picked Future Sight · your turn!"));
   renderLobby(); netBadge();
   if(NET.gymId!==S.id) NET.gymMine=null;
   if(first||asHost){NET.revSeen=d.rev?d.rev.id:null; NET.fieldsSeen=S.id; NET.sid=S.id; if(S.gym&&S.gym.rev) NET.gymSeen=S.id; return;}
@@ -4103,6 +4116,7 @@ function netFab(){
   const me=ME(), ph=S.phase;
   $("fabUndo").disabled=NET.role!=="host"||!U||ph==="rolling";
   if(NET.role==="spec") return fabSet(L("👀 กำลังชมห้อง ","👀 Watching room ")+NET.code),true;
+  if(netNoGuest()&&(ph==="idle"||ph==="done")) return fabSet(L("🔗 ส่งลิงก์ห้องให้ผู้เล่น B","🔗 Send the room link to Trainer B"),openLobby),true;
   const wait=t=>(fabSet("⏳ "+t),true);
   if(ph==="safari"&&S.sOrder[S.spick]!==me) return wait(L("รอ "+pname(S.sOrder[S.spick])+" หยิบธาตุ","Waiting for "+pname(S.sOrder[S.spick])));
   if(GYMPH.includes(ph)&&S.picker!==me) return wait(L("รอ "+pname(S.picker)+(ph==="gymPick"?" เลือกธาตุยิม":ph==="gymGuess"?" ทายธาตุยิม":" เปลี่ยนธาตุ"),"Waiting for "+pname(S.picker)));
