@@ -751,6 +751,7 @@ body.playing #roll{width:84px;height:84px;border-width:8px;font-size:15px}
 .cmponly{display:none!important}
 .lmore{display:none}
 .lane,.pool,.timer,.mid{scroll-margin-top:72px}
+.boxopts{scroll-margin-bottom:96px;scroll-margin-top:72px}
 @media (max-width:1039px),(max-height:600px){
   body.playing .cmponly{display:block!important}
   body.playing .wrap{gap:12px;padding-top:10px}
@@ -792,6 +793,7 @@ body.playing #roll{width:84px;height:84px;border-width:8px;font-size:15px}
 @media (max-height:600px) and (min-width:560px){
   body.playing .slot{min-height:66px;padding-top:15px}
   body.playing .steps{position:static}
+  .poolgrid{grid-template-columns:repeat(4,minmax(0,1fr))}
   .lane,.pool,.timer,.mid{scroll-margin-top:8px}
   .fab{padding-top:6px;padding-bottom:calc(6px + env(safe-area-inset-bottom,0px))}
   .fab .btn{min-height:42px;padding-block:6px}
@@ -2408,14 +2410,18 @@ function mobileLay(act){
   }
   let veil=true; try{veil=anyVeil();}catch(e){} // anyVeil is defined further down; skip until it exists
   if(!mqCmp().matches||S.phase==="rolling"||veil) return;
-  let key="", el=null;
+  let key="", el=null, blk="start";
   if(act){key="cmd"+S.round+"-"+S.cmdN+act; el=$("lane"+act);}
-  else if(["safari","box","gymPick","gymGuess","gymFix","ccmd"].includes(S.phase)){key=S.phase+S.round; el=$("pool").hidden?document.querySelector(".mid"):$("pool");}
+  else if(S.phase==="gymFix"&&S.gym){ // first tap one of your own slots, then pick its new type in the middle box
+    const g=S.gym; if(!NET.on||ME()===g.C){key="gymFix"+S.round+"-"+g.fix+"-"+GSEL; el=GSEL==null?$("lane"+g.C):$("pool");}}
+  else if(S.phase==="box"&&S.bopen!=null){key="box"+S.round+"o"+S.bopen; el=$("pool").querySelector(".boxopts")||$("pool"); blk="nearest";} // an opened box: bring its choices up
+  else if(["safari","box","gymPick","gymGuess","ccmd"].includes(S.phase)){key=S.phase+S.round; el=$("pool").hidden?document.querySelector(".mid"):$("pool");}
   else if(S.phase==="done"){key="done"+S.round; el=document.querySelector(".mid");}
   if(!el||key===st.key) return;
   st.key=key;
-  const r=el.getBoundingClientRect(); if(r.top>=56&&r.top<innerHeight*.4) return;
-  requestAnimationFrame(()=>el.scrollIntoView({behavior:still()?"auto":"smooth",block:"start"}));
+  const r=el.getBoundingClientRect(), fabTop=$("fab").getBoundingClientRect().top||innerHeight;
+  if(blk==="nearest"?(r.top>=0&&r.bottom<=fabTop):(r.top>=56&&r.top<innerHeight*.4)) return;
+  requestAnimationFrame(()=>el.scrollIntoView({behavior:still()?"auto":"smooth",block:blk}));
 }
 for(const p of P) $("more"+p).addEventListener("click",()=>{const st=mobileLay.st; if(!st) return; st.open[p]=!st.open[p]; render(); sfx("click");});
 $("mMode").addEventListener("click",()=>{modal("menuVeil",false); openModes(); sfx("open");});
