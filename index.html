@@ -25,11 +25,12 @@ body{background:var(--bezel) radial-gradient(var(--bezel2) 1.2px,transparent 1.6
 h1{font-family:var(--px);font-weight:400;font-size:clamp(34px,10vw,84px);line-height:1.1;margin:18px 0 0;color:#fff;text-shadow:.07em .07em 0 var(--ink)}
 h1 em{display:block;font-style:normal;font-size:.26em;letter-spacing:.2em;margin-top:1.1em;color:var(--yellow);text-shadow:.12em .12em 0 var(--ink)}
 .ball-band{position:relative;height:24px;background:var(--ink)}
-#roll{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:132px;height:132px;border-radius:50%;cursor:pointer;
-  font-family:var(--display);font-weight:600;font-size:20px;color:var(--ink);background:#fff;border:11px solid var(--ink);
+/* The ball is decoration: it shows "?" before the first draw and the round number after, and shakes while drawing.
+   Drawing starts from the Future Sight button at the bottom, so a stray tap up here can't throw a round away. */
+#roll{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:132px;height:132px;border-radius:50%;cursor:default;
+  display:grid;place-items:center;box-sizing:border-box;user-select:none;-webkit-user-select:none;letter-spacing:.02em;
+  font-family:var(--display);font-weight:600;font-size:34px;color:var(--ink);background:#fff;border:11px solid var(--ink);
   box-shadow:inset 0 0 0 6px #fff,inset 0 0 0 9px var(--edge),0 5px 0 rgba(0,0,0,.35)}
-#roll:hover:not(:disabled){background:var(--yellow)}
-#roll:disabled{cursor:wait}
 body.rolling #roll{animation:catchShake .5s ease-in-out 3,wobble .5s ease-in-out 1.5s infinite}
 @keyframes catchShake{0%,100%{transform:translate(-50%,-50%) rotate(0)}20%{transform:translate(-50%,-50%) rotate(-20deg)}45%{transform:translate(-50%,-50%) rotate(16deg)}65%,100%{transform:translate(-50%,-50%) rotate(0)}}
 @keyframes wobble{0%,100%{transform:translate(-50%,-50%) rotate(0)}25%{transform:translate(-50%,-50%) rotate(-14deg)}75%{transform:translate(-50%,-50%) rotate(14deg)}}
@@ -313,7 +314,6 @@ body.mode-double .eyebrow{color:#f1e6ff}
 body.mode-double h1{text-shadow:.07em .07em 0 #24104f}
 body.mode-double h1 em{color:#ff8fc8;text-shadow:.12em .12em 0 #24104f}
 body.mode-double #roll{box-shadow:inset 0 0 0 6px #fff,inset 0 0 0 9px #8d5be0,0 5px 0 rgba(0,0,0,.35)}
-body.mode-double #roll:hover:not(:disabled){background:#f6c8e2}
 body.mode-double #itemBtn{background:#6a39c2;color:#fff}
 body.mode-double .steps .st.cur{background:#f6a8d2}
 .slot small.hint2{font-family:var(--body);font-size:11px;text-transform:none;letter-spacing:0;opacity:.95;margin-top:2px}
@@ -631,6 +631,9 @@ body.mode-chaos h1 em{color:#fff}
 .hardnote{margin:6px 0 0;font-size:13px;color:var(--muted);text-align:left}
 #hardTog.on{background:#2a1530;color:#fff}
 .hlbox{display:flex;flex-direction:column;gap:6px;width:100%;padding:10px;border:3px solid var(--ink);border-radius:12px;background:#fffbe6}
+.hltog{all:unset;box-sizing:border-box;width:100%;min-height:36px;cursor:pointer;text-align:center}
+.hltog:focus-visible{outline:3px solid var(--ink);outline-offset:2px;border-radius:6px}
+.hlbox.shut ul,.hlbox.shut #hlShot{display:none}
 .hlbox ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:4px;font-family:var(--display);font-weight:500;font-size:15px;text-align:left}
 .trophy{max-width:640px}
 .trbody{width:100%;overflow-x:auto}
@@ -659,6 +662,17 @@ body.mode-chaos h1 em{color:#fff}
 @media (prefers-reduced-motion:reduce){.fvc{animation:none}}
 .fsban{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:6px;font-size:14px;font-weight:600;margin:-2px 0 8px}
 .fsban select{font-size:14px;padding:4px}
+.fsban{flex-direction:column;width:100%;margin:-4px 0 6px}
+.fsbanbtn{display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap;width:100%;min-height:44px;padding:6px 10px;font:inherit;font-weight:600;color:var(--ink);background:#fff;border:2px dashed var(--edge);border-radius:10px;cursor:pointer}
+.fsbanbtn[aria-expanded="true"]{border-style:solid;border-color:var(--ink)}
+.fsbangrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;width:100%}
+@media (min-width:420px){.fsbangrid{grid-template-columns:repeat(6,minmax(0,1fr))}}
+.fsbangrid .tbtn{min-height:44px;padding:4px 2px;font-size:14px}
+.fsbangrid .tbtn.on{outline:4px solid var(--ink);outline-offset:1px}
+.fsbangrid .nob{grid-column:1/-1;background:#fff;color:var(--ink)}
+#fsVeil .fsfoot{position:sticky;bottom:-26px;z-index:3;margin-bottom:-26px;padding:10px 0 26px;background:linear-gradient(transparent,var(--screen) 22%)}
+#fsVeil .fsfoot #fsGo{flex:2}
+#fsVeil .fsfoot .btn{min-height:48px}
 .surr{display:flex;flex-direction:column;gap:6px;align-items:center;font-size:13px;color:var(--muted)}
 .surr div{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
 .surr .btn{font-size:13px;padding:6px 10px}
@@ -710,7 +724,7 @@ body.playing .ball-top::before,body.playing .eyebrow,body.playing .ball-bot .tag
 body.playing h1{font-size:clamp(26px,4vw,36px);margin:0}
 body.playing h1 em{margin-top:.45em;font-size:.42em}
 body.playing .ball-bot{padding:44px 12px 12px}
-body.playing #roll{width:84px;height:84px;border-width:8px;font-size:15px}
+body.playing #roll{width:84px;height:84px;border-width:8px;font-size:22px}
 @media (max-width:719px){
   body.turnA .arena{grid-template-areas:"a" "mid" "b"}
   body.turnB .arena{grid-template-areas:"b" "mid" "a"}
@@ -760,7 +774,7 @@ body.playing #roll{width:84px;height:84px;border-width:8px;font-size:15px}
   body.playing h1{font-size:20px;margin:0;display:flex;align-items:baseline;gap:4px 10px;flex-wrap:wrap}
   body.playing h1 em{display:inline;margin:0;font-size:12px;letter-spacing:.1em}
   body.playing .ball-band{grid-area:band;height:auto;border-left:4px solid var(--ink)}
-  body.playing #roll{width:58px;height:58px;border-width:6px;font-size:12px;line-height:1.1;padding:0;box-shadow:inset 0 0 0 3px #fff,inset 0 0 0 5px var(--edge),0 3px 0 rgba(0,0,0,.35)}
+  body.playing #roll{width:58px;height:58px;border-width:6px;font-size:16px;line-height:1.1;padding:0;box-shadow:inset 0 0 0 3px #fff,inset 0 0 0 5px var(--edge),0 3px 0 rgba(0,0,0,.35)}
   body.playing .ball-bot{grid-area:bot;padding:6px 12px 8px}
   body.playing .bar{margin:0;justify-content:space-between;flex-wrap:nowrap;gap:8px}
   body.playing .bar #modeBtn,body.playing .bar #resetTop,body.playing .bar #linkBtn:not(.on){display:none}
@@ -813,7 +827,7 @@ body.playing #roll{width:84px;height:84px;border-width:8px;font-size:15px}
       <div class="eyebrow">18 TYPES · 6 SLOTS · 2 TRAINERS</div>
       <h1>CHOICE<em id="modeName">CURSED DRAFT</em></h1>
     </div>
-    <div class="ball-band"><button id="roll" type="button">กดสุ่ม</button></div>
+    <div class="ball-band"><div id="roll" aria-hidden="true">?</div></div>
     <div class="ball-bot">
       <p class="tag">ฉันไม่ได้เลือกนาย!</p>
       <p class="note" style="margin:4px 0 0;font-size:15px">ดวงเลือกให้ พร้อมแถมคำสาปมา</p>
@@ -845,7 +859,7 @@ body.playing #roll{width:84px;height:84px;border-width:8px;font-size:15px}
       <div class="note">ช่องที่เป็นธาตุนี้ติดสถานะ Knock Off ห้ามถือไอเทม</div>
       <div class="ctag" id="koTag"></div>
       <p class="verdict" id="verdict" hidden></p>
-      <div class="hlbox" id="hlBox" hidden><div class="px lbl" data-l="hl">HIGHLIGHTS</div><ul id="hlList"></ul><button id="hlShot" class="btn" type="button">📸 บันทึกรูปสรุป</button></div>
+      <div class="hlbox" id="hlBox" hidden><button class="px lbl hltog" id="hlTog" type="button" aria-controls="hlList">HIGHLIGHTS</button><ul id="hlList"></ul><button id="hlShot" class="btn" type="button">📸 บันทึกรูปสรุป</button></div>
       <div class="timer" id="timer" hidden>
         <div class="px lbl" data-l="tp">TEAM PREVIEW</div>
         <div class="hp"><b class="px">TIME</b><div class="hpbar"><i id="hpfill"></i></div></div>
@@ -1048,8 +1062,7 @@ body.playing #roll{width:84px;height:84px;border-width:8px;font-size:15px}
     <h2 id="fsTitle"></h2>
     <p id="fsText"></p>
     <div id="fsRows" class="fsrows"></div>
-    <button id="fsGo" class="btn" type="button">สุ่มทีม</button>
-    <button id="fsClose" class="btn" type="button">ปิด</button>
+    <div class="cwnav fsfoot"><button id="fsClose" class="btn" type="button">ปิด</button><button id="fsGo" class="btn" type="button">สุ่มทีม</button></div>
   </div>
 </div>
 
@@ -2375,9 +2388,14 @@ function render(){
   const act=actSide();
   for(const q of P) document.body.classList.toggle("turn"+q,act===q);
   $("timer").hidden=S.phase!=="done";
-  $("hlBox").hidden=S.phase!=="done"; if(S.phase==="done"){$("hlList").innerHTML=hlLines().map(t=>"<li>"+t.replace(/</g,"&lt;")+"</li>").join(""); $("hlShot").textContent=L("📸 บันทึกรูปสรุป","📸 Save the result card");}
+  $("hlBox").hidden=S.phase!=="done";
+  if(S.phase==="done"){const lines=hlLines(); $("hlList").innerHTML=lines.map(t=>"<li>"+t.replace(/</g,"&lt;")+"</li>").join(""); $("hlShot").textContent=L("📸 บันทึกรูปสรุป","📸 Save the result card");
+    // Folded on phones and tablets so the teams stay near the top; open on a computer.
+    const hs=render.hl||(render.hl={}); if(hs.r!==S.round){hs.r=S.round; hs.open=!mqCmp().matches;}
+    $("hlBox").classList.toggle("shut",!hs.open); $("hlTog").setAttribute("aria-expanded",hs.open?"true":"false");
+    $("hlTog").textContent=L("ไฮไลต์รอบนี้","Highlights")+" ("+lines.length+") "+(hs.open?"▴":"▾");}
   $("round").textContent="ROUND "+S.round;
-  $("roll").disabled=rolling||DRAFTPH.includes(S.phase); $("roll").textContent=S.round?L("สุ่มใหม่","Redraw"):SAFARI()?L("เปิด Safari","Safari"):L("กดสุ่ม","Draw");
+  $("roll").textContent=S.round?"R"+S.round:"?";
   $("copy").disabled=$("shot").disabled=!live||S.phase!=="done"||COLOR(); $("reset").disabled=rolling||!S.round;
   $("resetTop").hidden=!S.round||(NET.on&&NET.role!=="host"); $("resetTop").disabled=rolling;
   $("undo").disabled=!U||rolling;
@@ -2590,11 +2608,11 @@ function renderFab(){
   if(S.winner) return fabSet(L("🎲 รอบต่อไป","🎲 Next round"),NOFS()?roll:openFS);
   if(T.id) return fabSet("⏱ "+$("clock").textContent+L(" · ยกเลิก"," · Cancel"),()=>$("tbtn").click());
   if(T.over) return fabSet(L(pname("A")+" ชนะ",pname("A")+" won"),()=>setWinner("A"),L(pname("B")+" ชนะ",pname("B")+" won"),()=>setWinner("B"));
-  return fabSet(L("⏱ เริ่มจับเวลาจัดทีม","⏱ Start the team timer"),()=>$("tbtn").click(),L("ข้ามไปบันทึกผล","Skip to result"),()=>skipToResult());
+  return fabSet(L("⏱ เริ่มจับเวลาจัดทีม","⏱ Start the team timer"),()=>$("tbtn").click(),L("บันทึกผล","Result"),()=>skipToResult());
 }
 function skipToResult(){T.over=true; render();}
 /* ---------- Future Sight pop-up ---------- */
-function openFS(){ modal("fsVeil",true); renderFS(); if(H.series==="koth"&&H.koth.next){const i=$("fsRows").querySelectorAll(".fsname")[P.indexOf(H.koth.next)]; if(i){i.select(); i.focus();}} }
+function openFS(){ renderFS.open={}; modal("fsVeil",true); renderFS(); if(H.series==="koth"&&H.koth.next){const i=$("fsRows").querySelectorAll(".fsname")[P.indexOf(H.koth.next)]; if(i){i.select(); i.focus();}} }
 function renderFS(){
   $("fsTitle").textContent=L("ทายว่าในทีมจะมีกี่ธาตุ","How many types will your team have?");
   $("fsText").textContent=L("ธาตุที่ซ้ำกันนับเป็นธาตุเดียว","Repeats count once.");
@@ -2611,11 +2629,21 @@ function renderFS(){
     for(let k=1;k<=6;k++){const b=document.createElement("button"); b.type="button"; b.className="btn"+($("bet"+p).value===String(k)?" on":""); b.textContent=k; b.disabled=off;
       b.addEventListener("click",()=>{$("bet"+p).value=String(k); renderFS(); renderSteps(); sfx("select"); netBet(p);}); r.appendChild(b);}
     rows.appendChild(r);
-    const o=other(p), bl=document.createElement("label"); bl.className="fsban"; bl.textContent=L("🚫 "+pname(p)+" แบนธาตุจากทีม "+pname(o)+": ","🚫 "+pname(p)+" bans a type from "+pname(o)+"'s team: ");
-    const sel=document.createElement("select"); sel.innerHTML='<option value="">'+L("ไม่แบน","No ban")+'</option>'+TYPES.map((_,t)=>'<option value="'+t+'">'+tn(t)+'</option>').join("");
-    sel.value=BAN[o]==null?"":String(BAN[o]); sel.disabled=off; sel.addEventListener("change",()=>{BAN[o]=sel.value===""?null:+sel.value; if(NET.on&&NET.role==="guest") netAct({t:"ban",v:sel.value});}); bl.appendChild(sel); rows.appendChild(bl);}
+    // Ban: one tap opens the type chips, one tap picks (easier on a phone than a long drop-down)
+    const o=other(p), open=renderFS.open||(renderFS.open={}), bl=document.createElement("div"); bl.className="fsban";
+    const hb=document.createElement("button"); hb.type="button"; hb.className="fsbanbtn"; hb.disabled=off; hb.setAttribute("aria-expanded",open[p]?"true":"false");
+    hb.append(L("🚫 "+pname(p)+" แบนธาตุจากทีม "+pname(o)+": ","🚫 "+pname(p)+" bans from "+pname(o)+": "));
+    if(BAN[o]!=null) hb.appendChild(pill(BAN[o])); else {const nb=document.createElement("span"); nb.textContent=L("ไม่แบน","no ban"); hb.appendChild(nb);}
+    hb.append(open[p]?" ▴":" ▾");
+    hb.addEventListener("click",()=>{open[p]=!open[p]; renderFS(); sfx("click");}); bl.appendChild(hb);
+    if(open[p]&&!off){const g=document.createElement("div"); g.className="fsbangrid";
+      const set=v=>{BAN[o]=v; open[p]=false; renderFS(); sfx("select"); if(NET.on&&NET.role==="guest") netAct({t:"ban",v:v==null?"":String(v)});};
+      TYPES.forEach((T,t)=>{const b=document.createElement("button"); b.type="button"; b.className="tbtn"+(BAN[o]===t?" on":""); b.textContent=tn(t); b.style.background=T[2]; b.style.color=T[3]?"#fff":"#1f2638"; b.addEventListener("click",()=>set(t)); g.appendChild(b);});
+      const nb=document.createElement("button"); nb.type="button"; nb.className="tbtn nob"+(BAN[o]==null?" on":""); nb.textContent=L("ไม่แบน","No ban"); nb.addEventListener("click",()=>set(null)); g.appendChild(nb);
+      bl.appendChild(g);}
+    rows.appendChild(bl);}
   $("fsGo").disabled=!($("betA").value&&$("betB").value)||netNoGuest();
-  $("fsGo").textContent=!$("fsGo").disabled?L("🎲 สุ่มทีม","🎲 Draw"):netWaitText()||L("เลือกให้ครบทั้ง 2 คนก่อน","Both players pick first"); $("fsClose").textContent=L("ปิด","Close");
+  $("fsGo").textContent=!$("fsGo").disabled?L("🎲 สุ่มทีม","🎲 Draw"):netWaitText()||L("รอทายครบ 2 คน","Both players guess first"); $("fsClose").textContent=L("ปิด","Close");
 }
 
 /* ---------- Team Preview timer, drawn as an HP bar ---------- */
@@ -3662,7 +3690,6 @@ $("tvGrid").addEventListener("click",e=>{const b=e.target.closest(".tbtn"); if(!
 $("tvCancel").addEventListener("click",()=>{if(S.draft){S.draft.slot=null; S.draft.tt=null;} teraVeil(false); render();});
 $("tvOk").addEventListener("click",()=>{teraVeil(false); checkChosen();});
 
-$("roll").addEventListener("click",()=>roll());
 /* ---------- Global trainer count: shared by every device through /api/stats ---------- */
 let GS=null, GLOCAL={starter:0,cursed:0,calamity:0,safari:0,blind:0,mirror:0,chaos:0};
 try{GLOCAL=Object.assign(GLOCAL,JSON.parse(localStorage.getItem("choiceTC")||"{}"))}catch(e){}
@@ -3752,6 +3779,7 @@ $("tcClose").addEventListener("click",()=>modal("chartVeil",false));
 $("winA").addEventListener("click",()=>setWinner("A"));
 $("surrA").addEventListener("click",()=>surrender("A")); $("surrB").addEventListener("click",()=>surrender("B"));
 $("hlShot").addEventListener("click",saveImage);
+$("hlTog").addEventListener("click",()=>{const hs=render.hl; if(!hs) return; hs.open=!hs.open; render(); sfx("click");});
 $("t2Close").addEventListener("click",()=>modal("tourVeil2",false));
 $("serLine").addEventListener("click",()=>{if(H.series==="tour") openTour2(false);});
 $("fvOk").addEventListener("click",()=>{modal("fieldVeil",false); checkChosen();});
@@ -3851,10 +3879,23 @@ function achGot(id){return !!ACHD.ach[id];}
 function unlock(id){
   if(achGot(id)||!ACH.some(a=>a[0]===id)) return;
   ACHD.ach[id]=Date.now(); saveAch();
-  const a=ACH.find(x=>x[0]===id), el=$("achPop");
+  achQueue().push(ACH.find(x=>x[0]===id)); achNext(); renderAchBtn();
+}
+// Achievement pop-ups wait while a reveal is on screen (so they don't cover the big moment) and show one at a time.
+function achQueue(){return achNext.q||(achNext.q=[]);} // a function, so an early unlock during start-up is safe
+function achNext(){
+  const achQ=achQueue(); if(achNext.busy||!achQ.length) return;
+  const big=()=>["rvVeil","gymVeil","titleVeil"].some(v=>$(v)&&!$(v).hidden);
+  if(big()){clearTimeout(achNext.w); achNext.w=setTimeout(achNext,600); return;}
+  const a=achQ.shift(), el=$("achPop"); achNext.busy=true;
   el.innerHTML='<span class="achi">'+a[1]+'</span><span><small>'+L("ปลดล็อกความสำเร็จ!","Achievement unlocked!")+'</small><b>'+L(a[2][0],a[2][1])+'</b></span>';
-  el.hidden=false; el.classList.remove("on"); void el.offsetWidth; el.classList.add("on"); clearTimeout(unlock.t); unlock.t=setTimeout(()=>{el.hidden=true},3600);
-  setTimeout(()=>jingle("ach"),200); renderAchBtn();
+  el.hidden=false; el.classList.remove("on"); void el.offsetWidth; el.classList.add("on");
+  setTimeout(()=>jingle("ach"),200);
+  // If a reveal opens while it's showing, put it away and show it again afterwards.
+  let left=3200; const tick=setInterval(()=>{
+    if(big()){clearInterval(tick); el.hidden=true; achQ.unshift(a); achNext.busy=false; achNext(); return;}
+    left-=200; if(left<=0){clearInterval(tick); el.hidden=true; achNext.busy=false; setTimeout(achNext,300);}
+  },200);
 }
 // Counters that some achievements need; kept on this device.
 function achWin(p){
