@@ -4161,7 +4161,8 @@ function renderLobby(){
   const lv=el("button","btn lbleave",L("🚪 ออกจากห้อง","🚪 Leave room")); lv.type="button"; lv.onclick=netLeave; body.appendChild(lv);
 }
 function openLobby(){NET.err=""; modal("lobbyVeil",true); renderLobby(); sfx("open"); const c=$("lbCode"); if(c) c.focus();}
-function netSave(){try{localStorage.setItem("choiceNet",JSON.stringify({code:NET.code,role:NET.role,tok:NET.tok}))}catch(e){}}
+// A tab keeps its own seat (host, Trainer B or spectator), so a second tab of the same browser joins as a new player.
+function netSave(){try{sessionStorage.setItem("choiceNet",JSON.stringify({code:NET.code,role:NET.role,tok:NET.tok}))}catch(e){}}
 function netStart(code,role,tok){
   Object.assign(NET,{on:true,role,code,tok:tok||null,v:"-",touchAt:0,last:"",seen:false,bad:0,act:Date.now(),guest:false,rev:null,revSeen:null});
   netSave(); try{history.replaceState(null,"","?room="+code)}catch(e){} unlock("link");
@@ -4191,12 +4192,12 @@ async function netJoin(code,saved){
     netStart(code,j.role,j.tok); sfx("badge");
     toast(j.role==="guest"?L("เข้าห้องแล้ว! คุณคือผู้เล่น B","Joined! You are Trainer B"):L("ห้องนี้มีผู้เล่นครบแล้ว คุณเข้ามาเป็นผู้ชม 👀","Both trainers are already in. You're watching 👀"));
   }catch(e){NET.err=e.status===404?L("ไม่พบห้องนี้ หรือห้องหมดอายุแล้ว","Room not found or expired"):e.status===503?L("ระบบห้องยังไม่พร้อม","Rooms aren't available"):L("เข้าห้องไม่สำเร็จ เช็กอินเทอร์เน็ตแล้วลองใหม่","Couldn't join. Check your connection and try again.");
-    if(saved){try{localStorage.removeItem("choiceNet")}catch(x){} try{history.replaceState(null,"",location.pathname)}catch(x){} modal("lobbyVeil",true);} renderLobby();}
+    if(saved){try{sessionStorage.removeItem("choiceNet")}catch(x){} try{history.replaceState(null,"",location.pathname)}catch(x){} modal("lobbyVeil",true);} renderLobby();}
 }
 function netLeave(){
   const wasHost=NET.role==="host";
   clearTimeout(NET.timer); clearInterval(NET.spin); NET={on:false};
-  try{localStorage.removeItem("choiceNet")}catch(e){} try{history.replaceState(null,"",location.pathname)}catch(e){}
+  try{sessionStorage.removeItem("choiceNet")}catch(e){} try{history.replaceState(null,"",location.pathname)}catch(e){}
   if(!wasHost){location.reload(); return;}
   document.body.classList.remove("online","spec"); netBadge(); renderLobby(); render(); toast(L("ออกจากห้องแล้ว","Left the room"));
 }
@@ -4208,7 +4209,7 @@ for(const p of P){$("name"+p).addEventListener("input",()=>netName(p)); $("bet"+
 applyLang(); drawHist(); stopTimer(); render();
 $("ttMedal").innerHTML='<svg viewBox="0 0 100 100"><defs><linearGradient id="tmr" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff8d6"/><stop offset=".3" stop-color="#f2c94c"/><stop offset=".55" stop-color="#a87a1e"/><stop offset=".72" stop-color="#ffe9a0"/><stop offset="1" stop-color="#7a5612"/></linearGradient><radialGradient id="tmf" cx=".38" cy=".32" r=".8"><stop offset="0" stop-color="#ff7a80"/><stop offset=".5" stop-color="#d92b34"/><stop offset="1" stop-color="#7d0f17"/></radialGradient></defs><polygon points="'+hexPts(47)+'" fill="url(#tmr)" stroke="#1f2638" stroke-width="3.5" stroke-linejoin="round"/><polygon points="'+hexPts(41.5)+'" fill="none" stroke="#fff" stroke-opacity=".55" stroke-width="1.5"/><polygon points="'+hexPts(36)+'" fill="url(#tmf)" stroke="#1f2638" stroke-width="3" stroke-linejoin="round"/><text x="50" y="66" text-anchor="middle" font-family="Mitr,sans-serif" font-weight="600" font-size="50" fill="#fff" stroke="#1f2638" stroke-width="3" paint-order="stroke">?</text><path d="M78 14C79 19 80 20 85 21C80 22 79 23 78 28C77 23 76 22 71 21C76 20 77 19 78 14Z" fill="#fff" stroke="#1f2638" stroke-width="1.2"/></svg>';
 showTitle(()=>{const rc=new URLSearchParams(location.search).get("room");
- if(rc){let sv=null; try{sv=JSON.parse(localStorage.getItem("choiceNet")||"null")}catch(e){} netJoin(rc,sv&&sv.code===rc.toUpperCase()?sv:{code:"",role:""});}
+ if(rc){let sv=null; try{sv=JSON.parse(sessionStorage.getItem("choiceNet")||"null")}catch(e){} netJoin(rc,sv&&sv.code===rc.toUpperCase()?sv:{code:"",role:""});}
  else if(!H.seenModes) openModes();});
 </script>
 
