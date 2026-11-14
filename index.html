@@ -1517,7 +1517,7 @@ const RULES={
   ["Mirror Draft","สองฝ่ายเริ่มด้วยทีมเหมือนกันทุกช่อง แล้วสาปกันจนต่าง สนามแสดงว่าทีมต่างกันกี่ช่อง ถ้าจบคำสั่งแล้วยังเหมือนกันเป๊ะ รอบหน้าทั้งคู่ได้ Terastal +1 (Mirror Bonus)"],
   ["Knock Off ล่วงหน้า","ทุกโหมดยกเว้น Safari จะเห็น Knock Off ของรอบตั้งแต่ก่อนทาย Future Sight"],
   ["ตลาดแลกของ (Double Cursed)","หลังสุ่มไอเทม แต่ละฝ่ายเสนอแลกไอเทมได้ 1 ครั้ง อีกฝ่ายรับหรือปฏิเสธ Mega Stone แลกไม่ได้ ดูคำอธิบายไอเทมได้ใต้ทีม"],
-  ["Rock / Bait (Safari Draft)","ใช้ได้อย่างละ 1 ครั้งต่อรอบ ไม่เสียตา Rock ไล่ธาตุ 1 ช่องในทุ่ง (มีธาตุใหม่มาแทน) Bait จองธาตุ 1 ช่องไว้ อีกฝ่ายหยิบไม่ได้ ปุ่มธาตุบอกด้วยว่าถ้าหยิบแล้วทีมจะมีจุดอ่อนอะไรเพิ่ม"],
+  ["Rock / Bait (Safari Draft)","ใช้ได้อย่างละ 1 ครั้งต่อรอบ ไม่เสียตา Rock ไล่ธาตุ 1 ช่องในทุ่ง (มีธาตุใหม่มาแทน) Bait จองธาตุ 1 ช่องไว้ อีกฝ่ายหยิบไม่ได้"],
   ["Blind Draft เพิ่มเติม","ช่องที่ซ่อนมีคำใบ้ 1 ธาตุที่แพ้ทาง และมีการ์ด Foresight ×2 ในกอง ใช้เปิดดูช่องที่ซ่อนของอีกฝ่าย"],
   ["สนามราชันย์ (Wild Field)","สนามหายาก 1%: ทั้งสองทีมกลายเป็นหัวหน้ายิมของธาตุที่มีมากที่สุดทันที เปิด Gym Battle"],
   ["💀 กติกาโหด","เปิดในหน้าเลือกโหมด · Cursed: Knock Off สะสมจาก 2 รอบก่อน (Curse Stack) · Double: ไอเทมไร้ประโยชน์ 2 ช่อง เช่น Iron Ball · Safari: หยิบแล้วโอกาส 15% ธาตุหนี · Blind: ซ่อน 3 ช่อง · Mirror: Shadow การ์ดที่สำเร็จโดนทีมตัวเอง 1 ช่องด้วย · Wild Field: โอกาส 10% ออก 3 สนาม · ทุกโหมด: แพ้ 2 รอบติดได้ Perish Song (Last Stand) และแชมป์ King of the Hill จั่วไพ่น้อยลง 1 ใบ"],
@@ -1565,7 +1565,7 @@ const RULES={
   ["Mirror Draft","Both sides start with the exact same team, then curse it apart. The field shows how many slots differ; still identical after the commands means +1 Terastal each next round (Mirror Bonus)."],
   ["Knock Off preview","In every mode except Safari, the round's Knock Off is shown before Future Sight."],
   ["Trade market (Double Cursed)","After items are drawn, each side may offer one item swap; the other side accepts or declines. Mega Stones can't be traded. Item effects are listed under each team."],
-  ["Rock / Bait (Safari Draft)","Once each per round, free: Rock drives one type off the field (a new one wanders in); Bait reserves one type the other side can't take. Each type button shows the weaknesses it would add to your team."],
+  ["Rock / Bait (Safari Draft)","Once each per round, free: Rock drives one type off the field (a new one wanders in); Bait reserves one type the other side can't take."],
   ["Blind Draft extras","Hidden slots show a hint: one type they're weak to. The deck adds Foresight ×2 to reveal an opponent's hidden slot."],
   ["Royal Court (Wild Field)","1% rare field: both teams become Gym Leaders of their most common type at once. Gym Battle."],
   ["💀 Hard rules","Toggle in the mode picker · Cursed: Knock Off carries over from the last 2 rounds (Curse Stack) · Double: 2 dead-weight items such as Iron Ball · Safari: 15% of picks run away · Blind: 3 hidden slots · Mirror: Shadow, a card that lands hits 1 of your own slots too · Wild Field: 10% chance of 3 fields · All modes: 2 losses in a row earn Perish Song (Last Stand), and the King of the Hill champion draws 1 card fewer."],
@@ -2265,12 +2265,11 @@ function render(){
       b.textContent=n+(S.sUsed[who][k]?L(" (ใช้แล้ว)"," (used)"):""); b.addEventListener("click",()=>{S.sTool=S.sTool===k?null:k; render(); sfx(S.sTool?"select":"back");}); tools.appendChild(b);});
     pool.appendChild(tools);
     if(S.sTool){const n=document.createElement("p"); n.className="ctag"; n.style.margin="0"; n.textContent=S.sTool==="rock"?L("แตะธาตุที่จะทำลาย (ไม่เสียตา)","Tap a type to destroy (doesn't use your turn)"):L("แตะธาตุที่จะจองไว้ (ไม่เสียตา)","Tap a type to reserve (doesn't use your turn)"); pool.appendChild(n);}
-    const wk=new Set(); S.team[who].forEach(x=>{if(x!=null) weakTo(x).forEach(a=>wk.add(a))});
     const g=document.createElement("div"); g.className="poolgrid";
     S.pool.forEach((t,k)=>{const b=document.createElement("button"); b.type="button"; b.className="tbtn"+(S.poolTaken[k]?" taken":"");
       b.style.background=TYPES[t][2]; b.style.color=TYPES[t][3]?"#fff":"#1f2638"; b.textContent=tn(t)+(S.poolTaken[k]?" · "+S.poolTaken[k]:"");
       const baited=S.bait&&S.bait.k===k;
-      if(!S.poolTaken[k]){const nw=weakTo(t).filter(a=>!wk.has(a)); const sm=document.createElement("small"); sm.className="pw"; sm.textContent=(baited?"🍖 "+S.bait.p+" · ":"")+(nw.length?L("+อ่อน ","+weak: ")+nw.map(tn).join(" "):L("ไม่เพิ่มจุดอ่อน","no new weakness")); b.appendChild(sm);}
+      if(!S.poolTaken[k]&&baited){const sm=document.createElement("small"); sm.className="pw"; sm.textContent="🍖 "+S.bait.p; b.appendChild(sm);}
       b.disabled=!!S.poolTaken[k]||(baited&&S.bait.p!==who&&S.sTool!=="rock"); b.addEventListener("click",()=>safariPick(k)); g.appendChild(b);});
     pool.appendChild(g);
   }
