@@ -199,6 +199,9 @@ body.mode-gym .ball-top{background:linear-gradient(90deg,transparent 0 46%,#ffd3
 body.mode-gym h1 em{color:#ffd36b}
 body.mode-gym .steps .st.cur{background:#ffcf9a}
 .gymbtns{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.gymsub{margin:-4px 0 0 18px;padding:10px 12px;border:3px solid var(--ink);border-top-width:0;border-radius:0 0 12px 12px;background:#fff6cf;display:flex;flex-direction:column;gap:8px}
+.gymsub>b{text-align:left;font-family:var(--display);font-weight:600;font-size:15px}
+.gymsub .hardnote{margin:0}
 .gymtx{margin:4px 0 8px;font-size:15px;text-align:center}
 .gymopts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%}
 .gymopt{display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 6px;border:3px solid var(--ink);border-radius:14px;box-shadow:0 4px 0 var(--ink);font:inherit;font-weight:700;font-size:16px;cursor:pointer}
@@ -957,9 +960,9 @@ body.playing #roll{width:84px;height:84px;border-width:8px;font-size:15px}
     <h2 id="modeTitle">เลือกโหมด</h2>
     <p id="modeNote"></p>
     <div id="modeGrid" class="modelist"></div>
+    <div class="gymsub" id="gymRow" hidden><b id="gymRowL">🏟 รูปแบบยิม</b><div id="gymBtns" class="gymbtns"></div><p id="gymNote" class="hardnote"></p></div>
     <details class="modemore" id="modeMore"><summary><b id="modeMoreL">⚙ ตัวเลือกเพิ่มเติม</b><span id="modeMoreV"></span></summary>
       <div class="serrow"><b id="serL">ซีรีส์</b><div id="serBtns"></div></div>
-      <div class="serrow gymrow" id="gymRow" hidden><b>🏟 Gym Leader</b><div><div id="gymBtns" class="gymbtns"></div><p id="gymNote" class="hardnote"></p></div></div>
       <div class="serrow hardrow"><b id="hardL">💀</b><div><button id="hardTog" class="btn" type="button"></button><p id="hardNote" class="hardnote"></p></div></div>
     </details>
     <div class="modefoot"><button id="modeGo" class="btn" type="button">เริ่มเลย ✓</button></div>
@@ -1290,8 +1293,8 @@ const MODEINFO={
  chaos:{n:"Wild Field",lv:2,s:["ทุกรอบสุ่มสนามพิเศษ 2 อย่าง","2 random field effects each round"],d:["สนามป่วน: ทุกรอบสุ่มสนามพิเศษ 2 อย่างจาก 11 แบบ เช่น โลกกลับหัว ดวลนัดเดียว ไพ่หงาย","Two random field effects each round from 11, like Upside Down, Sudden Death or Open Hand."]},
  box:{n:"Mystery Box",lv:1,s:["เปิดกล่องปริศนา เก็บเองหรือยัดให้อีกฝ่าย","Open boxes: keep them or give them away"],d:["กล่องปริศนา 50 ใบ ทุกกล่องมีธาตุ บางกล่องได้ 2–3 ธาตุ เลือกเก็บเองหรือยัดให้อีกฝ่าย ทีมครบไว","50 mystery boxes, all holding types, some 2–3 at once. Keep or force them on the other side."]},
  gym:{n:"Gym Leader",lv:1,s:["ฝ่ายหนึ่งเป็นหัวหน้ายิมทีมธาตุเดียว อีกฝ่ายทายธาตุยิม","One side is a mono-type Gym Leader, the other guesses the type"],
-   d:["สลับกันเป็นหัวหน้ายิมทุกรอบ · หัวหน้ายิมเลือกธาตุยิมแบบลับจาก 3 ธาตุ ทั้งทีมต้องมีธาตุนั้น · ผู้ท้าชิงสุ่มทีม แล้วทายว่ายิมเป็นธาตุไหน ทายถูกได้เปลี่ยนธาตุทีมตัวเอง 2 ช่อง · ธาตุยิมถูกล็อก โดนการ์ดโจมตีจะติด Knock Off แทน · หัวหน้ายิมได้การ์ดเพิ่ม 1 ใบ",
-     "Take turns being the Gym Leader · the leader secretly picks the gym type from 3, and the whole team must have it · the Challenger draws a team and guesses the gym type; a correct guess lets them change 2 of their slots · the gym type is locked, so attack cards leave Knock Off instead · the leader holds 1 extra card"]},
+   d:["หัวหน้ายิมเลือกธาตุยิมแบบลับจาก 3 ธาตุ ทั้งทีมต้องมีธาตุนั้น · ผู้ท้าชิงสุ่มทีม แล้วทายว่ายิมเป็นธาตุไหน ทายถูกได้เปลี่ยนธาตุทีมตัวเอง 2 ช่อง · ธาตุยิมถูกล็อก โดนการ์ดโจมตีจะติด Knock Off แทน · หัวหน้ายิมได้การ์ดเพิ่ม 1 ใบ",
+     "The Gym Leader secretly picks the gym type from 3, and the whole team must have it · the Challenger draws a team and guesses the gym type; a correct guess lets them change 2 of their slots · the gym type is locked, so attack cards leave Knock Off instead · the leader holds 1 extra card"]},
  color:{n:"Color Draft",lv:1,s:["สุ่มสี ทั้งทีมต้องเป็นโปเกมอนสีนั้น","Draw a color; the whole team must match"],d:["ไม่สุ่มธาตุ สุ่มสีให้แต่ละฝ่าย ทั้งทีมต้องเป็นโปเกมอนสีนั้น แล้วสาปกันด้วยการ์ดสี","No types: each side draws a Pokédex color; the whole team must be that color."]},
  double:{n:"Double Cursed",lv:2,s:["จบแล้วทุกช่องโดนยัดไอเทม ห้ามเปลี่ยน","Every slot ends up with a forced item"],d:["สาปซ้อน: จบคำสั่งแล้วทุกช่องถูกยัดไอเทม + Mega Stone ห้ามเปลี่ยน","Every slot is forced to hold an item, plus a Mega Stone. No swaps."]}};
 const HARDINFO={
@@ -1313,7 +1316,7 @@ function renderModes(){
   const can=S.phase==="idle"||S.phase==="done";
   $("modeTitle").textContent=L("เลือกโหมด","Choose a mode");
   $("modeNote").textContent=can?L("แตะ 1 โหมด แล้วกดเริ่ม","Tap a mode, then start"):L("กำลังเล่นอยู่ เปลี่ยนโหมดได้ตอนจบรอบ","A round is in progress. Switch modes when it ends.");
-  const g=$("modeGrid"); g.textContent="";
+  const gr=renderModes.gr||(renderModes.gr=$("gymRow")), g=$("modeGrid"); g.textContent="";
   MODEORDER.forEach(k=>{
     const m=MODEINFO[k], sel=H.mode===k, b=document.createElement("button"); b.type="button"; b.className="moderow m-"+k+(sel?" sel":""); b.disabled=!can;
     b.setAttribute("aria-pressed",sel?"true":"false");
@@ -1321,24 +1324,25 @@ function renderModes(){
       +(sel?'<span class="mfull">'+L(m.d[0],m.d[1])+'</span>':'<span>'+L(m.s[0],m.s[1])+'</span>')+'</span><em class="mdiff" title="'+L("ระดับ: ","Difficulty: ")+L(DIFF[m.lv][0],DIFF[m.lv][1])+'">'
       +[0,1,2].map(j=>'<i class="dball'+(j<=m.lv?" on":"")+'"></i>').join("")+'<span class="sr">'+L("ระดับ ","Difficulty ")+L(DIFF[m.lv][0],DIFF[m.lv][1])+'</span></em>';
     b.addEventListener("click",()=>{setMode(k); renderModes(); sfx("select");}); g.appendChild(b);
+    if(k==="gym") g.appendChild(gr);
   });
   $("serL").textContent=L("ซีรีส์","Series");
   const sb=$("serBtns"); sb.textContent="";
   ["bo1","bo3","koth","tour"].forEach(v=>{
     const b=document.createElement("button"); b.type="button"; b.className="btn"+(H.series===v?" on":""); b.textContent=L(SERNAME[v][0],SERNAME[v][1]); b.disabled=!can;
     b.addEventListener("click",()=>{setSeries(v); renderModes(); sfx("select"); if(v==="tour"&&(!H.tour||H.tour.champ)) openTour2(true);}); sb.appendChild(b);});
-  const gr=$("gymRow"); gr.hidden=H.mode!=="gym";
-  if(H.mode==="gym"){const gb=$("gymBtns"); gb.textContent="";
+  gr.hidden=H.mode!=="gym";
+  if(H.mode==="gym"){gr.querySelector("#gymRowL").textContent=L("🏟 รูปแบบยิม","🏟 Gym format"); const gb=gr.querySelector("#gymBtns"); gb.textContent="";
     [["rotate","🔄 Gym Rotation"],["defend","🛡 Gym Defense"]].forEach(([v,nm])=>{const b=document.createElement("button"); b.type="button"; b.className="btn"+(gymRule()===v?" on":""); b.textContent=nm; b.disabled=!can;
       b.addEventListener("click",()=>{if(gymRule()!==v){H.gymRule=v; H.gymChamp=null; H.gymStreak=0; store(); render();} renderModes(); sfx("select");}); gb.appendChild(b);});
-    $("gymNote").textContent=gymRule()==="defend"?L("หัวหน้ายิมคุมยิมต่อจนกว่าจะแพ้ ผู้ท้าชิงที่ชนะจะขึ้นเป็นหัวหน้ายิมแทน","The Gym Leader keeps the gym until they lose; a winning Challenger takes over")
+    gr.querySelector("#gymNote").textContent=gymRule()==="defend"?L("หัวหน้ายิมคุมยิมต่อจนกว่าจะแพ้ ผู้ท้าชิงที่ชนะจะขึ้นเป็นหัวหน้ายิมแทน","The Gym Leader keeps the gym until they lose; a winning Challenger takes over")
       :L("สลับกันเป็นหัวหน้ายิมทุกรอบ","Take turns being the Gym Leader every round");}
   $("hardL").textContent=L("💀 กติกาโหด","💀 Hard rules");
   const ht=$("hardTog"); ht.textContent=H.hard?L("เปิดอยู่","On"):L("ปิดอยู่","Off"); ht.classList.toggle("on",!!H.hard); ht.disabled=!can;
   ht.onclick=()=>{H.hard=!H.hard; store(); setMode(H.mode); renderModes(); sfx(H.hard?"toggleOn":"toggleOff");};
   $("hardNote").textContent=L(HARDINFO[H.mode][0],HARDINFO[H.mode][1])+L(" · ทุกโหมด: Last Stand (แพ้ 2 รอบติดได้ Perish Song) และภาษีแชมป์ King of the Hill (จั่วน้อยลง 1 ใบ)"," · All modes: Last Stand (2 losses in a row earn Perish Song) and the King of the Hill champion's tax (1 card fewer)");
   $("modeMoreL").textContent=L("⚙ ตัวเลือกเพิ่มเติม","⚙ More options");
-  $("modeMoreV").textContent=L(SERNAME[H.series][0],SERNAME[H.series][1])+" · "+(H.mode==="gym"?(gymRule()==="defend"?"🛡 Gym Defense":"🔄 Gym Rotation")+" · ":"")+(H.hard?L("💀 กติกาโหด","💀 Hard rules"):L("กติกาปกติ","Normal rules"));
+  $("modeMoreV").textContent=L(SERNAME[H.series][0],SERNAME[H.series][1])+" · "+(H.hard?L("💀 กติกาโหด","💀 Hard rules"):L("กติกาปกติ","Normal rules"));
   $("modeGo").textContent=L("เริ่ม ","Start ")+MODEINFO[H.mode].n+" ✓";
 }
 /* ---------- First-time tour ---------- */
@@ -1444,7 +1448,7 @@ const RULES={
   ["🚫 แบนธาตุ","ในหน้าทาย Future Sight แต่ละคนแบนได้ 1 ธาตุ ธาตุนั้นจะไม่ออกตอนสุ่มทีมของอีกฝ่าย (การ์ดเปลี่ยนธาตุทีหลังยังทำให้ได้ธาตุนั้น)"],
   ["🏳 ยอมแพ้","ระหว่างสั่งการหรือก่อนบันทึกผล กดยอมแพ้ได้ อีกฝ่ายได้ 1 แต้ม รอบหน้าคนยอมแพ้เป็น Underdog (จั่วเพิ่ม 1 ใบ + Terastal)"],
   ["Mystery Box","กล่อง 50 ใบ ทุกกล่องมีธาตุ ผลัดกันเปิดจนทั้งสองทีมครบ 6 ช่อง: 📦 เดี่ยว (เก็บเองหรือยัดให้) · 🤝 แบ่งกัน (2 ธาตุ เก็บ 1 อีกธาตุไปหาอีกฝ่าย) · 👯 แฝด (ธาตุเดียวกัน 2 ช่อง เก็บหรือยัดทั้งคู่) · 🎉 แจกทั้งคู่ (ทั้งสองทีมได้ธาตุนั้นคนละช่อง) · 🎊 สามธาตุ (ส่ง 1 ให้อีกฝ่าย เก็บ 2) ถ้าทีมไหนเต็มแล้ว ธาตุจะไปอีกทีมแทน"],
-  ["Gym Leader","ฝ่ายหนึ่งเป็นหัวหน้ายิม อีกฝ่ายเป็นผู้ท้าชิง: หัวหน้ายิมเลือกธาตุยิมแบบลับจาก 3 ธาตุ → สุ่มทีมผู้ท้าชิง แล้วผู้ท้าชิงทายว่ายิมเป็นธาตุไหน → เปิดยิม ทั้งทีมหัวหน้ายิมต้องมีธาตุนั้น (ธาตุคู่ได้) ทายถูกได้เปลี่ยนธาตุทีมตัวเอง 2 ช่อง · ตอนสั่งการ ธาตุยิมถูกล็อก ช่องที่โดนเปลี่ยนจะเด้งกลับ ถ้าเป็นการ์ดโจมตีของผู้ท้าชิง ช่องนั้นติด Knock Off แทน · หัวหน้ายิมได้การ์ดเพิ่ม 1 ใบ · 🔄 Gym Rotation สลับกันเป็นหัวหน้ายิมทุกรอบ หรือ 🛡 Gym Defense คุมยิมต่อจนกว่าจะแพ้ (ตั้งใน ⚙ ตัวเลือกเพิ่มเติม)"],
+  ["Gym Leader","ฝ่ายหนึ่งเป็นหัวหน้ายิม อีกฝ่ายเป็นผู้ท้าชิง: หัวหน้ายิมเลือกธาตุยิมแบบลับจาก 3 ธาตุ → สุ่มทีมผู้ท้าชิง แล้วผู้ท้าชิงทายว่ายิมเป็นธาตุไหน → เปิดยิม ทั้งทีมหัวหน้ายิมต้องมีธาตุนั้น (ธาตุคู่ได้) ทายถูกได้เปลี่ยนธาตุทีมตัวเอง 2 ช่อง · ตอนสั่งการ ธาตุยิมถูกล็อก ช่องที่โดนเปลี่ยนจะเด้งกลับ ถ้าเป็นการ์ดโจมตีของผู้ท้าชิง ช่องนั้นติด Knock Off แทน · หัวหน้ายิมได้การ์ดเพิ่ม 1 ใบ · 🔄 Gym Rotation สลับกันเป็นหัวหน้ายิมทุกรอบ หรือ 🛡 Gym Defense คุมยิมต่อจนกว่าจะแพ้ (เลือกได้ใต้ Gym Leader ตอนเลือกโหมด)"],
   ["🔗 Link Battle","เล่นคนละเครื่อง: กด 🔗 Link Battle บนหัวเว็บ → สร้างห้อง แล้วส่งรหัส 4 ตัวหรือลิงก์ให้เพื่อน เจ้าของห้องเป็นผู้เล่น A คนแรกที่เข้าเป็นผู้เล่น B คนต่อไปเข้ามาดูได้ ทั้งสองฝ่ายสั่งการพร้อมกันบนเครื่องตัวเอง ซิงก์ทุก 2–3 วินาที เปลี่ยนโหมด ย้อนกลับ และเริ่มใหม่ได้เฉพาะเจ้าของห้อง ห้องปิดเองหลังไม่มีการเล่น 2 ชั่วโมง"],
   ["Color Draft","ไม่สุ่มธาตุ แต่ละฝ่ายสุ่มได้ 1 สีจาก 10 สีของโปเกเด็กซ์ (แดง น้ำเงิน เหลือง เขียว ดำ น้ำตาล ม่วง เทา ขาว ชมพู) ทั้งทีมต้องเป็นโปเกมอนสีนั้น จากนั้นสั่งการลับ 1 ครั้ง: ป้องกันสี · สุ่มสีอีกฝ่ายใหม่ · สลับสีกัน · สุ่มสีตัวเองใหม่"],
   ["🏆 Tournament","เลือกในช่องซีรีส์ ใส่ชื่อ 4 หรือ 8 คน ระบบสุ่มจับคู่แบบแพ้คัดออก บันทึกผลแต่ละแมตช์แล้วระบบเติมชื่อคู่ถัดไปให้ แตะแถบซีรีส์เพื่อดูสาย"],
@@ -1492,7 +1496,7 @@ const RULES={
   ["🚫 Type ban","In the Future Sight pop-up each player may ban 1 type; it won't appear in the other team's draw (cards can still bring it in later)."],
   ["🏳 Concede","During commands or before recording a result you can concede: the other side scores, and you are the Underdog next round (+1 card, +Terastal)."],
   ["Mystery Box","50 boxes, every one holds types. Take turns until both teams have 6: 📦 single (keep or give) · 🤝 share (2 types, keep 1, the other goes to them) · 👯 twins (2 of a type, keep or give both) · 🎉 for both (each team gets one) · 🎊 triple (send 1, keep 2). If a team is full, the type goes to the other."],
-  ["Gym Leader","One side is the Gym Leader, the other the Challenger: the leader secretly picks the gym type from 3 → the Challenger's team is drawn and they guess the gym type → the gym opens and the leader's whole team must have that type (dual types allowed); a correct guess lets the Challenger change 2 of their slots · During commands the gym type is locked: changed slots snap back, and an attack from the Challenger leaves Knock Off instead · The leader holds 1 extra card · 🔄 Gym Rotation swaps the leader every round, 🛡 Gym Defense keeps them until they lose (set under ⚙ More options)."],
+  ["Gym Leader","One side is the Gym Leader, the other the Challenger: the leader secretly picks the gym type from 3 → the Challenger's team is drawn and they guess the gym type → the gym opens and the leader's whole team must have that type (dual types allowed); a correct guess lets the Challenger change 2 of their slots · During commands the gym type is locked: changed slots snap back, and an attack from the Challenger leaves Knock Off instead · The leader holds 1 extra card · 🔄 Gym Rotation swaps the leader every round, 🛡 Gym Defense keeps them until they lose (pick it under Gym Leader in the mode picker)."],
   ["🔗 Link Battle","Play on two devices: press 🔗 Link Battle in the header → create a room and send the 4-letter code or link. The host is Trainer A, the first to join is Trainer B, and anyone after that watches. Both sides choose commands at the same time on their own device, syncing every 2–3 seconds. Only the host can change modes, undo or start over. A room closes after 2 hours without play."],
   ["Color Draft","No types: each side draws 1 of the 10 Pokédex colors (red, blue, yellow, green, black, brown, purple, gray, white, pink) and the whole team must be that color. Then one secret command: guard · reroll theirs · swap · reroll yours."],
   ["🏆 Tournament","Pick it under Series. Enter 4 or 8 names for a random knockout bracket; record each match and the next pairing fills in. Tap the series bar to see the bracket."],
