@@ -745,6 +745,64 @@ body.playing #roll{width:84px;height:84px;border-width:8px;font-size:15px}
 .logd summary{cursor:pointer;font-family:var(--display);font-weight:600;font-size:14px;color:var(--muted);min-height:32px;display:flex;align-items:center}
 .logd .log{border-top:0;padding-top:4px}
 .slot small.hint2{font-size:12px}
+/* ===== Phones and tablets =====
+   While a round is on, the big Poké Ball header folds into a slim bar (mode, Link Battle and reset move into the menu),
+   the phase bar and message box tighten up, and on narrow screens the side that isn't choosing folds to one row of slots. */
+.cmponly{display:none!important}
+.lmore{display:none}
+.lane,.pool,.timer,.mid{scroll-margin-top:72px}
+@media (max-width:1039px),(max-height:600px){
+  body.playing .cmponly{display:block!important}
+  body.playing .wrap{gap:12px;padding-top:10px}
+  body.playing .ball{display:grid;grid-template-columns:minmax(0,1fr) 72px;grid-template-areas:"top band" "bot band";border-width:4px;border-radius:18px;text-align:left;box-shadow:0 5px 0 #0b0f1c}
+  body.playing .ball-top{grid-area:top;padding:8px 12px 6px}
+  body.playing h1{font-size:20px;margin:0;display:flex;align-items:baseline;gap:4px 10px;flex-wrap:wrap}
+  body.playing h1 em{display:inline;margin:0;font-size:12px;letter-spacing:.1em}
+  body.playing .ball-band{grid-area:band;height:auto;border-left:4px solid var(--ink)}
+  body.playing #roll{width:58px;height:58px;border-width:6px;font-size:12px;line-height:1.1;padding:0;box-shadow:inset 0 0 0 3px #fff,inset 0 0 0 5px var(--edge),0 3px 0 rgba(0,0,0,.35)}
+  body.playing .ball-bot{grid-area:bot;padding:6px 12px 8px}
+  body.playing .bar{margin:0;justify-content:space-between;flex-wrap:nowrap;gap:8px}
+  body.playing .bar #modeBtn,body.playing .bar #resetTop,body.playing .bar #linkBtn:not(.on){display:none}
+  body.playing.over .bar #modeBtn{display:inline-block;font-size:14px;padding:6px 10px;min-height:44px;max-width:58%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  body.playing.over .bar #round{display:none}
+  body.playing .bar #linkBtn.on{font-size:13px;padding:6px 8px;min-height:40px;white-space:nowrap}
+  body.playing .bar #menuBtn{min-height:44px;padding:6px 14px}
+  body.playing .bar #round{font-size:12px}
+  body.playing .steps{padding:6px 8px}
+  body.playing #stepNow{display:none}
+  body.playing .dialog{padding:10px 34px 10px 14px;min-height:3.4em;font-size:16px;line-height:1.5}
+  body.playing .dialog::after{right:12px;bottom:8px}
+  body.playing .mid{padding:12px;gap:6px}
+  body.playing .mid > .note{display:none}
+  body.playing .score{font-size:18px;padding-bottom:8px}
+  body.playing .plate{min-height:44px;min-width:120px;font-size:18px;padding:4px 16px}
+  body.playing .verdict{margin:2px 0 0;padding-top:8px;font-size:13px}
+}
+@media (max-width:719px){
+  .lane.mini{padding-bottom:10px;gap:8px}
+  .lane.mini > :not(.lane-head):not(.slots){display:none!important}
+  .lane.mini .slots{grid-template-columns:repeat(6,minmax(0,1fr));gap:4px}
+  .lane.mini .slot{min-height:54px;padding:15px 1px 4px;font-size:13px;box-shadow:0 2px 0 var(--ink)}
+  .lane.mini .slot small,.lane.mini .slot .marks{display:none}
+  .lane.mini .lane-head{padding:8px 12px}
+  .lane.mini .lane-head input{font-size:17px;min-width:80px}
+  .lane.mini .lmore,.lane.opened .lmore{display:inline-flex;align-items:center;margin-left:auto;min-height:40px;padding:4px 10px;font-size:13px;font-family:var(--display);font-weight:600;color:var(--ink);background:#fff;border:2px solid var(--ink);border-radius:8px;cursor:pointer}
+}
+/* Phones on their side: little height, so everything gets shorter */
+@media (max-height:600px) and (min-width:560px){
+  body.playing .slot{min-height:66px;padding-top:15px}
+  body.playing .steps{position:static}
+  .lane,.pool,.timer,.mid{scroll-margin-top:8px}
+  .fab{padding-top:6px;padding-bottom:calc(6px + env(safe-area-inset-bottom,0px))}
+  .fab .btn{min-height:42px;padding-block:6px}
+  .wrap{padding-bottom:90px}
+}
+/* Readable text and thumb-sized targets */
+.slot::before{font-family:var(--display);font-weight:600;font-size:12px;top:3px;left:7px}
+.st b{font-size:11px}
+.marks b{font-size:11px}
+.lane select,.trow select,.surr .btn,.fsname{min-height:44px}
+.lane .row select{min-width:64px;font-size:16px}
 </style>
 
 <div class="wrap" id="wrap">
@@ -899,6 +957,8 @@ body.playing #roll{width:84px;height:84px;border-width:8px;font-size:15px}
       <button id="tourBtn" class="btn" type="button">📖 สอนเล่น</button>
       <button id="trophyBtn" class="btn" type="button">🏆 ทำเนียบ</button>
       <button id="achBtn" class="btn" type="button">🏅 ความสำเร็จ</button>
+      <button id="mMode" class="btn cmponly" type="button">🎮 เปลี่ยนโหมด</button>
+      <button id="mLink" class="btn cmponly" type="button">🔗 Link Battle</button>
       <button id="reset" class="btn resetbtn" type="button" disabled>🔄 เริ่มใหม่ (รีเซ็ต)</button>
     </div>
     <button id="menuClose" class="btn" type="button">ปิด</button>
@@ -1621,7 +1681,7 @@ function badgeSVG(t){
 
 $("lanes").innerHTML=P.map(p=>`
   <section class="box lane" id="lane${p}" data-p="${p}">
-    <div class="lane-head"><button class="avbtn" id="av${p}" type="button" aria-label="รูปเทรนเนอร์ ${p}"></button><span class="px" data-l="side">TRAINER ${p}</span><span class="ud px" id="ud${p}" hidden>UNDERDOG</span><input id="name${p}" value="ผู้เล่น ${p}" aria-label="ชื่อผู้เล่น ${p}" maxlength="24"><span class="crown" id="crown${p}"></span><span class="gb" id="gb${p}"></span></div>
+    <div class="lane-head"><button class="avbtn" id="av${p}" type="button" aria-label="รูปเทรนเนอร์ ${p}"></button><span class="px" data-l="side">TRAINER ${p}</span><span class="ud px" id="ud${p}" hidden>UNDERDOG</span><input id="name${p}" value="ผู้เล่น ${p}" aria-label="ชื่อผู้เล่น ${p}" maxlength="24"><span class="crown" id="crown${p}"></span><span class="gb" id="gb${p}"></span><button class="lmore" id="more${p}" type="button"></button></div>
     <div class="row"><label for="bet${p}"><b class="px" data-l="fs">FUTURE SIGHT</b><span id="betL${p}"> ทายว่าในทีมจะมีกี่ธาตุ</span></label>
       <select id="bet${p}"><option value="">เลือก</option>${[1,2,3,4,5,6].map(n=>`<option>${n}</option>`).join("")}</select></div>
     <div class="slots" id="slots${p}"></div>
@@ -2310,8 +2370,9 @@ function render(){
   else if(S.phase==="cmd") s=L("คำสั่ง "+S.cmdN+"/"+S.maxCmd+": ส่งเครื่องให้ "+pname(S.picker)+" ให้ "+pname(other(S.picker))+" หันหน้าหนี แล้วกด COMMAND","Command "+S.cmdN+"/"+S.maxCmd+": hand the device to "+pname(S.picker)+". "+pname(other(S.picker))+" looks away. Then press COMMAND.");
   else s=L("ใช้คำสั่งครบแล้ว! กดเริ่มจับเวลา Team Preview มีเวลาจัดทีม "+mins()+" นาที จบแบทเทิลแล้วกดบันทึกว่าใครชนะ","All commands done! Start the Team Preview timer: "+mins()+" min to build teams. After the battle, record who won.");
   setDialog(S.flash||s);
-  document.body.classList.toggle("playing",S.phase!=="idle");
-  for(const q of P) document.body.classList.toggle("turn"+q,S.phase==="cmd"&&(S.draft?S.draft.p:S.picker)===q);
+  document.body.classList.toggle("playing",S.phase!=="idle"); document.body.classList.toggle("over",S.phase==="done");
+  const act=actSide();
+  for(const q of P) document.body.classList.toggle("turn"+q,act===q);
   $("timer").hidden=S.phase!=="done";
   $("hlBox").hidden=S.phase!=="done"; if(S.phase==="done"){$("hlList").innerHTML=hlLines().map(t=>"<li>"+t.replace(/</g,"&lt;")+"</li>").join(""); $("hlShot").textContent=L("📸 บันทึกรูปสรุป","📸 Save the result card");}
   $("round").textContent="ROUND "+S.round;
@@ -2325,8 +2386,40 @@ function render(){
   for(const p of P){const b=$("win"+p); b.textContent=L(pname(p)+" ชนะ",pname(p)+" won"); b.classList.toggle("on",S.winner===p);}
   $("scA").textContent=H.score.A; $("scB").textContent=H.score.B;
   if(COLOR()) renderColor();
-  renderSteps(); renderWizard(); renderFab(); netBadge(); renderAv(); netDirty();
+  renderSteps(); renderWizard(); renderFab(); netBadge(); renderAv(); netDirty(); mobileLay(act);
 }
+// The side that needs the screen right now: whoever is commanding (offline), or this device's side (online).
+function actSide(){
+  if(S.phase!=="cmd") return null;
+  if(NET.on) return NET.role==="spec"?null:ME();
+  return S.draft?S.draft.p:S.picker;
+}
+// Phones and tablets: fold the side that isn't choosing, and scroll to whatever needs a tap next.
+function mqCmp(){return mqCmp.m||(mqCmp.m=matchMedia("(max-width:1039px),(max-height:600px)"));}
+function mqNarrow(){return mqNarrow.m||(mqNarrow.m=matchMedia("(max-width:719px)"));}
+function mobileLay(act){
+  const st=mobileLay.st||(mobileLay.st={act:null,open:{},key:""});
+  if(st.act!==act){st.act=act; st.open={};}
+  const narrow=mqNarrow().matches;
+  for(const p of P){
+    const fold=narrow&&!!act&&p!==act, mini=fold&&!st.open[p], ln=$("lane"+p), mb=$("more"+p);
+    ln.classList.toggle("mini",mini); ln.classList.toggle("opened",fold&&!mini);
+    mb.textContent=mini?L("ดูทั้งหมด ▾","Show all ▾"):L("ย่อ ▴","Fold ▴"); mb.setAttribute("aria-expanded",mini?"false":"true");
+  }
+  let veil=true; try{veil=anyVeil();}catch(e){} // anyVeil is defined further down; skip until it exists
+  if(!mqCmp().matches||S.phase==="rolling"||veil) return;
+  let key="", el=null;
+  if(act){key="cmd"+S.round+"-"+S.cmdN+act; el=$("lane"+act);}
+  else if(["safari","box","gymPick","gymGuess","gymFix","ccmd"].includes(S.phase)){key=S.phase+S.round; el=$("pool").hidden?document.querySelector(".mid"):$("pool");}
+  else if(S.phase==="done"){key="done"+S.round; el=document.querySelector(".mid");}
+  if(!el||key===st.key) return;
+  st.key=key;
+  const r=el.getBoundingClientRect(); if(r.top>=56&&r.top<innerHeight*.4) return;
+  requestAnimationFrame(()=>el.scrollIntoView({behavior:still()?"auto":"smooth",block:"start"}));
+}
+for(const p of P) $("more"+p).addEventListener("click",()=>{const st=mobileLay.st; if(!st) return; st.open[p]=!st.open[p]; render(); sfx("click");});
+$("mMode").addEventListener("click",()=>{modal("menuVeil",false); openModes(); sfx("open");});
+$("mLink").addEventListener("click",()=>{modal("menuVeil",false); openLobby();});
 
 /* ---------- Command wizard: one big step at a time ---------- */
 const anyVeil=()=>["avVeil","achVeil","titleVeil","gymVeil","resetVeil","lobbyVeil","colorVeil","tourVeil2","trophyVeil","tradeVeil","fieldVeil","tourVeil","menuVeil","modeVeil","rvVeil","veil","teraVeil","chartVeil","imgVeil","fsVeil","cmdVeil"].some(id=>$(id)&&!$(id).hidden);
