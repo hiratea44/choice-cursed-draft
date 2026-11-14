@@ -1078,6 +1078,19 @@ body.playing #roll{width:84px;height:84px;border-width:8px;font-size:15px}
 </div>
 
 <script>
+// Safety net: if start-up ever fails (for example on old saved data), say so and offer a clean restart instead of a frozen page.
+window.__booted=false;
+window.addEventListener("error",function(ev){
+  if(window.__booted||document.getElementById("bootErr")) return;
+  var d=document.createElement("div"); d.id="bootErr";
+  d.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:9999;background:#fff;color:#1f2638;border:4px solid #d92b34;border-radius:14px;padding:14px 16px;font:15px/1.5 sans-serif;box-shadow:0 6px 0 rgba(0,0,0,.35)";
+  d.innerHTML="<b>เกมโหลดไม่สำเร็จ</b><br>ข้อมูลที่บันทึกไว้ในเครื่องอาจเข้ากับเวอร์ชันใหม่ไม่ได้ กดปุ่มด้านล่างเพื่อล้างข้อมูลเกมแล้วโหลดใหม่ (ความสำเร็จยังอยู่)<br><small style='color:#5a6381'></small><br>";
+  d.querySelector("small").textContent=String(ev.message||"").slice(0,140);
+  var b=document.createElement("button"); b.textContent="🔄 ล้างข้อมูลแล้วโหลดใหม่"; b.style.cssText="margin-top:8px;font:inherit;font-weight:700;padding:10px 16px;border:3px solid #1f2638;border-radius:10px;background:#f6c61c";
+  b.onclick=function(){try{var o=localStorage.getItem("choiceCD"); if(o) localStorage.setItem("choiceCD_backup",o); localStorage.removeItem("choiceCD"); sessionStorage.clear();}catch(x){} location.href=location.pathname;};
+  d.appendChild(b); document.body.appendChild(d);
+});
+
 const TYPES=[
  ["ปกติ","Normal","#A8A77A",0],["ไฟ","Fire","#EE8130",0],["น้ำ","Water","#6390F0",0],
  ["ไฟฟ้า","Electric","#F7D02C",0],["หญ้า","Grass","#7AC74C",0],["น้ำแข็ง","Ice","#96D9D6",0],
@@ -3806,7 +3819,7 @@ function drawTeam(){let r=pick(100), k=0; while(r>=TYPE_ODDS[k]){r-=TYPE_ODDS[k]
   const ts=shuffle([...Array(TYPES.length).keys()]).slice(0,k), a=ts.slice(); while(a.length<N) a.push(ts[pick(k)]); return shuffle(a);}
 function gkoAt(p,i){return !!(S.gko&&S.gko[p]&&S.gko[p].includes(i));}
 // Gym Rotation swaps the leader every round; Gym Defense keeps them until a Challenger beats them.
-const gymRule=()=>H.gymRule==="defend"?"defend":"rotate";
+function gymRule(){return H.gymRule==="defend"?"defend":"rotate";}
 function gymRoll(preKO){
   const Ld=gymRule()==="defend"?(P.includes(H.gymChamp)?H.gymChamp:P[pick(2)]):(P.includes(H.gymNext)?H.gymNext:P[pick(2)]);
   H.gymNext=other(Ld); if(gymRule()==="defend") H.gymChamp=Ld; store();
@@ -4208,6 +4221,7 @@ for(const p of P){$("name"+p).addEventListener("input",()=>netName(p)); $("bet"+
 
 applyLang(); drawHist(); stopTimer(); render();
 $("ttMedal").innerHTML='<svg viewBox="0 0 100 100"><defs><linearGradient id="tmr" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff8d6"/><stop offset=".3" stop-color="#f2c94c"/><stop offset=".55" stop-color="#a87a1e"/><stop offset=".72" stop-color="#ffe9a0"/><stop offset="1" stop-color="#7a5612"/></linearGradient><radialGradient id="tmf" cx=".38" cy=".32" r=".8"><stop offset="0" stop-color="#ff7a80"/><stop offset=".5" stop-color="#d92b34"/><stop offset="1" stop-color="#7d0f17"/></radialGradient></defs><polygon points="'+hexPts(47)+'" fill="url(#tmr)" stroke="#1f2638" stroke-width="3.5" stroke-linejoin="round"/><polygon points="'+hexPts(41.5)+'" fill="none" stroke="#fff" stroke-opacity=".55" stroke-width="1.5"/><polygon points="'+hexPts(36)+'" fill="url(#tmf)" stroke="#1f2638" stroke-width="3" stroke-linejoin="round"/><text x="50" y="66" text-anchor="middle" font-family="Mitr,sans-serif" font-weight="600" font-size="50" fill="#fff" stroke="#1f2638" stroke-width="3" paint-order="stroke">?</text><path d="M78 14C79 19 80 20 85 21C80 22 79 23 78 28C77 23 76 22 71 21C76 20 77 19 78 14Z" fill="#fff" stroke="#1f2638" stroke-width="1.2"/></svg>';
+window.__booted=true;
 showTitle(()=>{const rc=new URLSearchParams(location.search).get("room");
  if(rc){let sv=null; try{sv=JSON.parse(sessionStorage.getItem("choiceNet")||"null")}catch(e){} netJoin(rc,sv&&sv.code===rc.toUpperCase()?sv:{code:"",role:""});}
  else if(!H.seenModes) openModes();});
